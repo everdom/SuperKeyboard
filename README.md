@@ -62,6 +62,8 @@ very normal at all)
 - `d,}` scroll down faster
 - `u,{` scroll up faster
 - `Y` "yank" a window (reposition it) (press i to release)
+- `X` "close" a window (move to the close button of window) (press i to click)
+- `Z` "resize" a window (press i to release)
 - `b` "back" mouse button
 - `n` "forward" mouse button
 - `Insert,Win+Alt+i` enter Insert mode
