@@ -18,7 +18,7 @@ global WASD := true
 ;global MAX_VELOCITY := 72
 
 ; mouse speed variables
-global FORCE := 1.8
+global FORCE := 7.8
 global RESISTANCE := 0.982
 
 global VELOCITY_X := 0
@@ -39,6 +39,15 @@ Accelerate(velocity, pos, neg) {
   Else If (pos + neg == 0) {
     Return velocity * 0.666
   }
+
+  If (velocity > 0 && pos+neg <0) {
+    Return 0
+  }
+
+  If (velocity < 0 && pos+neg >0) {
+    Return 0
+  }
+
   ; physicszzzzz
   Else {
     Return velocity * RESISTANCE + FORCE * (pos + neg)
@@ -302,9 +311,11 @@ MouseForward() {
 
 ScrollUp() {
   Click, WheelUp
+  Click, WheelUp
 }
 
 ScrollDown() {
+  Click, WheelDown
   Click, WheelDown
 }
 
@@ -397,7 +408,7 @@ Insert:: EnterInsertMode()
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
   +Capslock:: EnterInsertMode()
-; Addl Vim hotkeys that conflict with WASD mode
+; Addl Vimik hotkeys that conflict with WASD mode
 #If (NORMAL_MODE && WASD == false)
   <#<!r:: EnterWASDMode()
   e:: ScrollDown()
