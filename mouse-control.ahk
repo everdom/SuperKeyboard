@@ -410,9 +410,9 @@ Insert:: EnterInsertMode()
   +Capslock:: EnterInsertMode()
 ; Addl Vimik hotkeys that conflict with WASD mode
 #If (NORMAL_MODE && WASD == false)
-  <#<!r:: EnterWASDMode()
-  e:: ScrollDown()
-  y:: ScrollUp()
+  <#<!v:: EnterWASDMode()
+  e:: ScrollUpMore()
+  ; y:: ScrollUp()
   d:: ScrollDownMore()
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
@@ -440,7 +440,7 @@ Insert:: EnterInsertMode()
   Capslock:: EnterNormalMode()
   +Capslock:: EnterNormalMode()
 #If (NORMAL_MODE && WASD)
-  <#<!r:: ExitWASDMode()
+  <#<!v:: ExitWASDMode()
   ; Intercept movement keys
   w:: Return
   a:: Return
