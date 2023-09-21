@@ -229,6 +229,30 @@ Yank() {
   Drag()
 }
 
+Close(){
+  wx := 0
+  wy := 0
+  width := 0
+  WinGetPos,wx,wy,width,,A
+  center := wx + width - 22
+  y := wy + 12
+  ;MsgBox, Hello %width% %center%
+  MouseMove, center, y
+}
+
+Resize(){
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  center := wx + width - 6 
+  y := wy + height - 6
+  ;MsgBox, Hello %width% %center%
+  MouseMove, center, y
+  Drag()
+}
+
 MouseLeft() {
   Click
   DRAGGING := false
@@ -383,6 +407,8 @@ Insert:: EnterInsertMode()
   *p:: MouseMiddle()
   ; do not conflict with y as in "scroll up"
   +Y:: Yank()
+  +X:: Close()
+  +Z:: Resize()
   v:: Drag()
   z:: RightDrag()
   c:: MiddleDrag()
@@ -421,6 +447,8 @@ Insert:: EnterInsertMode()
   ,:: JumpMiddle2()
   .:: JumpMiddle3()
   y:: Yank()
+  x:: Close()
+  z:: Resize()
   ; for windows explorer
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass"))
   ^h:: Send {Left}
