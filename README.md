@@ -69,7 +69,7 @@ very normal at all)
 ### Normal "WASD" mode
 
 You can also use the WASD keys if they're more natural to you than vim movement keys. Switch into
-and out of WASD mode with `Win Alt r`
+and out of WASD mode with `Win Alt v`
 
 WASD mode is now the default for Normal mode.
 
