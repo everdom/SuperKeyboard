@@ -168,9 +168,12 @@ DoubleClickInsert(quick:=true) {
 ShowModePopup(msg) {
   ; clean up any lingering popups
   ClosePopup()
-  center := MonitorLeftEdge() + (A_ScreenWidth // 2)
-  popx := center - 150
-  popy := (A_ScreenHeight // 2) - 28
+  centerx := MonitorLeftEdge() + (A_ScreenWidth // 2)
+  centery := A_ScreenHeight // 2
+  right := MonitorLeftEdge() + A_ScreenWidth
+  bottom := A_ScreenHeight
+  popx := right - 150*2
+  popy := bottom - 28*2 - 48
   Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
   SetTimer, ClosePopup, -1600
   POP_UP := true
@@ -361,13 +364,13 @@ ScrollDownMore() {
 
 
 ; "FINAL" MODE SWITCH BINDINGS
-Home:: EnterNormalMode()
+; Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
 <#<!i:: EnterInsertMode()
 
 ; escape hatches
-+Home:: Send, {Home}
+; +Home:: Send, {Home}
 +Insert:: Send, {Insert}
 ;FIXME
 ; doesn't turn caplsock off.
