@@ -165,6 +165,19 @@ DoubleClickInsert(quick:=true) {
   EnterInsertMode(quick)
 }
 
+ShowPopup(msg) {
+  ; clean up any lingering popups
+  ; ClosePopup()
+  centerx := MonitorLeftEdge() + (A_ScreenWidth // 2)
+  centery := A_ScreenHeight // 2
+  right := MonitorLeftEdge() + A_ScreenWidth
+  bottom := A_ScreenHeight
+  popx := right - 150*2
+  popy := bottom - 28*2 - 48
+  Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
+  POP_UP := true
+}
+
 ShowModePopup(msg) {
   ; clean up any lingering popups
   ClosePopup()
@@ -188,7 +201,9 @@ Drag() {
   If (DRAGGING) {
     Click, Left, Up
     DRAGGING := false
+    ClosePopup() 
   } else {
+    ShowPopup("DRAG")
     Click, Left, Down
     DRAGGING := true
   }
@@ -198,7 +213,9 @@ RightDrag() {
   If (DRAGGING) {
     Click, Right, Up
     DRAGGING := false
+    ClosePopup() 
   } else {
+    ShowPopup("RIGHT DRAG")
     Click, Right, Down
     DRAGGING := true
   }
@@ -208,7 +225,9 @@ MiddleDrag() {
   If (DRAGGING) {
     Click, Middle, Up
     DRAGGING := false
+    ClosePopup() 
   } else {
+    ShowPopup("MIDDLE DRAG")
     Send, {MButton down}
     DRAGGING := true
   }
@@ -218,6 +237,7 @@ ReleaseDrag(button) {
   Click, Middle, Up
   Click, button
   DRAGGING := false
+  ClosePopup()
 }
 
 Yank() {
@@ -492,6 +512,9 @@ Insert:: EnterInsertMode()
   LButton:: ReleaseDrag(1)
   MButton:: ReleaseDrag(2)
   RButton:: ReleaseDrag(3)
+  i:: ReleaseDrag(1)
+  p:: ReleaseDrag(2)
+  o:: ReleaseDrag(3)
 #If (POP_UP)
   Escape:: ClosePopup()
 #If
