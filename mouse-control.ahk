@@ -27,6 +27,7 @@ global VELOCITY_Y := 0
 global POP_UP := false
 
 global DRAGGING := false
+global SHIFT_DRAGGING := false
 
 ; Insert Mode by default
 EnterInsertMode()
@@ -233,10 +234,29 @@ MiddleDrag() {
   }
 }
 
+; For Fusion360
+ShiftMiddleDrag() {
+  If (DRAGGING) {
+    Click, Middle, Up
+    DRAGGING := false
+    SHIFT_DRAGGING := false
+    Send, {Shift up}
+    ClosePopup() 
+  } else {
+    ShowPopup("SHIFT MIDDLE DRAG")
+    Send, {Shift down}
+    Send, {MButton down}
+    DRAGGING := true
+    SHIFT_DRAGGING := true
+  }
+}
+
 ReleaseDrag(button) {
+  Send, {Shift up}
   Click, Middle, Up
   Click, button
   DRAGGING := false
+  SHIFT_DRAGGING := false
   ClosePopup()
 }
 
@@ -277,18 +297,30 @@ Resize(){
 }
 
 MouseLeft() {
+  if (SHIFT_DRAGGING){
+    Send, {Shift up}
+  }
   Click
   DRAGGING := false
+  SHIFT_DRAGGING := false
 }
 
 MouseRight() {
+  if (SHIFT_DRAGGING){
+    Send, {Shift up}
+  }
   Click, Right
   DRAGGING := false
+  SHIFT_DRAGGING := false
 }
 
 MouseMiddle() {
+  if (SHIFT_DRAGGING){
+    Send, {Shift up}
+  }
   Click, Middle
   DRAGGING := false
+  SHIFT_DRAGGING := false
 }
 
 ; TODO: When we have more monitors, set up H and L to use current screen as basis
@@ -319,6 +351,9 @@ MonitorLeftEdge() {
 }
 
 JumpLeftEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
   x := MonitorLeftEdge() + 2
   y := 0
   CoordMode, Mouse, Screen
@@ -327,6 +362,9 @@ JumpLeftEdge() {
 }
 
 JumpBottomEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
   x := 0
   CoordMode, Mouse, Screen
   MouseGetPos, x
@@ -334,6 +372,9 @@ JumpBottomEdge() {
 }
 
 JumpTopEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
   x := 0
   CoordMode, Mouse, Screen
   MouseGetPos, x
@@ -341,6 +382,9 @@ JumpTopEdge() {
 }
 
 JumpRightEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
   x := MonitorLeftEdge() + A_ScreenWidth - 2
   y := 0
   CoordMode, Mouse, Screen
@@ -385,13 +429,13 @@ ScrollDownMore() {
 
 ; "FINAL" MODE SWITCH BINDINGS
 ; Home:: EnterNormalMode()
-Insert:: EnterInsertMode()
+; Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
 <#<!i:: EnterInsertMode()
 
 ; escape hatches
 ; +Home:: Send, {Home}
-+Insert:: Send, {Insert}
+; +Insert:: Send, {Insert}
 ;FIXME
 ; doesn't turn caplsock off.
 ^Capslock:: Send, {Capslock}
@@ -435,6 +479,8 @@ Insert:: EnterInsertMode()
   v:: Drag()
   z:: RightDrag()
   c:: MiddleDrag()
+  ^c:: ShiftMiddleDrag()
+  ^+C:: ShiftMiddleDrag()
   +M:: JumpMiddle()
   +,:: JumpMiddle2()
   +.:: JumpMiddle3()
@@ -515,8 +561,24 @@ Insert:: EnterInsertMode()
   i:: ReleaseDrag(1)
   p:: ReleaseDrag(2)
   o:: ReleaseDrag(3)
+#IF (SHIFT_DRAGGING)
+  LButton:: ReleaseDrag(1)
+  MButton:: ReleaseDrag(2)
+  RButton:: ReleaseDrag(3)
+  +i:: ReleaseDrag(1)
+  +p:: ReleaseDrag(2)
+  +o:: ReleaseDrag(3)
 #If (POP_UP)
-  Escape:: ClosePopup()
+  Escape:: 
+    ClosePopup()
+    ReleaseDrag(1)
+    ReleaseDrag(2)
+    ReleaseDrag(3)
+  +Escape:: 
+    ClosePopup()
+    ReleaseDrag(1)
+    ReleaseDrag(2)
+    ReleaseDrag(3)
 #If
 
 ; FUTURE CONSIDERATIONS
