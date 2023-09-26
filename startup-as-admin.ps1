@@ -8,3 +8,5 @@ $P = New-ScheduledTaskPrincipal -GroupId "BUILTIN\Administrators" -RunLevel High
 $S = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit 0
 $D = New-ScheduledTask -Action $A -Principal $P -Trigger $T -Settings $S
 Register-ScheduledTask MouseControl -InputObject $D
+Start-ScheduledTask MouseControl 
+
