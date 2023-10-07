@@ -438,10 +438,13 @@ ScrollDownMore() {
 ; +Insert:: Send, {Insert}
 ;FIXME
 ; doesn't turn caplsock off.
-^Capslock:: Send, {Capslock}
-; meh. good enough.
-^+Capslock:: SetCapsLockState, Off
+; ^Capslock:: Send, {Capslock}
+; ; meh. good enough.
+; ^+Capslock:: SetCapsLockState, Off
 
+; disable ctrl+Capslock, use win+Capslock
+^Capslock:: Return
+^+Capslock:: Return
 
 #If (NORMAL_MODE)
   ; focus window and enter Insert
