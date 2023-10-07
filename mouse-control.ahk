@@ -428,14 +428,14 @@ ScrollDownMore() {
 
 
 ; "FINAL" MODE SWITCH BINDINGS
-; Home:: EnterNormalMode()
-; Insert:: EnterInsertMode()
+Home:: EnterNormalMode()
+Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
 <#<!i:: EnterInsertMode()
 
 ; escape hatches
-; +Home:: Send, {Home}
-; +Insert:: Send, {Insert}
++Home:: Send, {Home}
++Insert:: Send, {Insert}
 ;FIXME
 ; doesn't turn caplsock off.
 ; ^Capslock:: Send, {Capslock}
