@@ -174,7 +174,7 @@ ShowPopup(msg) {
   right := MonitorLeftEdge() + A_ScreenWidth
   bottom := A_ScreenHeight
   popx := right - 150*2
-  popy := bottom - 28*2 - 48
+  popy := bottom - 28*2 - 50
   Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
   POP_UP := true
 }
@@ -187,7 +187,7 @@ ShowModePopup(msg) {
   right := MonitorLeftEdge() + A_ScreenWidth
   bottom := A_ScreenHeight
   popx := right - 150*2
-  popy := bottom - 28*2 - 48
+  popy := bottom - 28*2 - 50
   Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
   SetTimer, ClosePopup, -1600
   POP_UP := true
