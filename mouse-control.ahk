@@ -425,7 +425,16 @@ ScrollDownMore() {
   Click, WheelDown
   Return
 }
-
+SetCapslock(){
+  state := GetKeyState("CapsLock", "T")
+  IF(state == 0){
+    SetCapsLockState, On
+    ShowModePopup("CapsLock(ON)")
+  }Else{
+    SetCapsLockState, Off
+    ShowModePopup("CapsLock(OFF)")
+  }
+}
 
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
@@ -443,8 +452,14 @@ Insert:: EnterInsertMode()
 ; ^+Capslock:: SetCapsLockState, Off
 
 ; disable ctrl+Capslock, use win+Capslock
-^Capslock:: Return
-^+Capslock:: Return
+^Capslock:: SetCapslock()
+*^+Capslock:: Return
+*!Capslock:: Return
+; !+Capslock:: Return
+; ^!+Capslock:: Return
+*#Capslock:: Return
+; #+Capslock:: Return
+; ^#+Capslock:: Return
 
 #If (NORMAL_MODE)
   ; focus window and enter Insert
