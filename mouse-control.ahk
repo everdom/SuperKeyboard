@@ -435,6 +435,15 @@ SetCapslock(){
     ShowModePopup("CapsLock(OFF)")
   }
 }
+SetVolume(volume){
+ If(volume>0){
+   SoundSet, +volume 
+ }Else{
+   SoundSet, volume 
+ }
+ SoundGet, masterVolume
+ ShowModePopup(Format("Volume: {:d}%", Round(masterVolume)))
+}
 
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
@@ -517,6 +526,8 @@ Insert:: EnterInsertMode()
   [:: ScrollUp()
   +]:: ScrollDownMore()
   +[:: ScrollUpMore()
+  =:: SetVolume(+10)
+  -:: SetVolume(-10)
   End:: Click, Up
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
