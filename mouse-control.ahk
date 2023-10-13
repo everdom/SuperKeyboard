@@ -56,6 +56,12 @@ Accelerate(velocity, pos, neg) {
 }
 
 MoveCursor() {
+  If (WinActive("ahk_class CabinetWClass")){
+    ALT := GetKeyState("Alt", "P")
+    if(ALT){
+      return
+    }
+  }
   LEFT := 0
   DOWN := 0
   UP := 0
@@ -529,13 +535,12 @@ Insert:: EnterInsertMode()
   n:: MouseForward()
   b:: MouseBack()
   ; allow for modifier keys (or more importantly a lack of them) by lifting ctrl requirement for these hotkeys
-  u:: ScrollUpMore()
-  *0:: ScrollDown()
-  *9:: ScrollUp()
+  *0:: ScrollDownMore()
+  *9:: ScrollUpMore()
   ]:: ScrollDown()
   [:: ScrollUp()
-  +]:: ScrollDownMore()
-  +[:: ScrollUpMore()
+  }:: ScrollDownMore()
+  {:: ScrollUpMore()
   =:: SetVolume(+10)
   -:: SetVolume(-10)
   f12:: SetForce(+3, 1)
@@ -551,6 +556,7 @@ Insert:: EnterInsertMode()
   e:: ScrollUpMore()
   ; y:: ScrollUp()
   d:: ScrollDownMore()
+  u:: ScrollUpMore()
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
@@ -561,11 +567,12 @@ Insert:: EnterInsertMode()
   x:: Close()
   z:: Resize()
   ; for windows explorer
-#If (NORMAL_MODE && WinActive("ahk_class CabinetWClass"))
-  ^h:: Send {Left}
-  ^j:: Send {Down}
-  ^k:: Send {Up}
-  ^l:: Send {Right}
+#If (WinActive("ahk_class CabinetWClass"))
+  !h:: Send {Left}
+  !j:: Send {Down}
+  !k:: Send {Up}
+  !l:: Send {Right}
+  !u:: Send !{Up}
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
