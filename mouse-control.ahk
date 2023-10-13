@@ -18,7 +18,7 @@ global WASD := true
 ;global MAX_VELOCITY := 72
 
 ; mouse speed variables
-global FORCE := 7.8
+global FORCE := 10
 global RESISTANCE := 0.982
 
 global VELOCITY_X := 0
@@ -445,6 +445,16 @@ SetVolume(volume){
  ShowModePopup(Format("Volume: {:d}%", Round(masterVolume)))
 }
 
+SetForce(v, relative){
+  if(relative == 1){
+    if(FORCE+v>0){
+      FORCE += v
+    }
+  }else{
+   FORCE:=v
+  }
+  ShowModePopup(Format("Speed: {:.1f}", FORCE))
+}
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
@@ -528,6 +538,9 @@ Insert:: EnterInsertMode()
   +[:: ScrollUpMore()
   =:: SetVolume(+10)
   -:: SetVolume(-10)
+  f12:: SetForce(+3, 1)
+  f11:: SetForce(-3, 1)
+  f10:: SetForce(10, 0)
   End:: Click, Up
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
