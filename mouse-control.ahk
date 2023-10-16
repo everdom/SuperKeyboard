@@ -271,7 +271,7 @@ Yank() {
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx + width - 180
+  center := wx + width - 180-24
   y := wy + 12
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
@@ -283,7 +283,29 @@ Close(){
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx + width - 22
+  center := wx + width - 24
+  y := wy + 12
+  ;MsgBox, Hello %width% %center%
+  MouseMove, center, y
+}
+
+Min(){
+  wx := 0
+  wy := 0
+  width := 0
+  WinGetPos,wx,wy,width,,A
+  center := wx + width - 24-48*2
+  y := wy + 12
+  ;MsgBox, Hello %width% %center%
+  MouseMove, center, y
+}
+
+Max(){
+  wx := 0
+  wy := 0
+  width := 0
+  WinGetPos,wx,wy,width,,A
+  center := wx + width - 24 -48
   y := wy + 12
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
@@ -417,18 +439,20 @@ ScrollDown() {
 }
 
 ScrollUpMore() {
-  Click, WheelUp
-  Click, WheelUp
-  Click, WheelUp
-  Click, WheelUp
+  ; Click, WheelUp
+  ; Click, WheelUp
+  ; Click, WheelUp
+  ; Click, WheelUp
+  Send {PgUp}
   Return
 }
 
 ScrollDownMore() {
-  Click, WheelDown
-  Click, WheelDown
-  Click, WheelDown
-  Click, WheelDown
+  ; Click, WheelDown
+  ; Click, WheelDown
+  ; Click, WheelDown
+  ; Click, WheelDown
+  Send {PgDn}
   Return
 }
 SetCapslock(){
@@ -517,10 +541,10 @@ Insert:: EnterInsertMode()
   *p:: MouseMiddle()
   ; do not conflict with y as in "scroll up"
   +Y:: Yank()
-  +X:: Close()
+  ; +X:: Close()
   +Z:: Resize()
   v:: Drag()
-  z:: RightDrag()
+  x:: RightDrag()
   c:: MiddleDrag()
   ^c:: ShiftMiddleDrag()
   ^+C:: ShiftMiddleDrag()
@@ -530,22 +554,27 @@ Insert:: EnterInsertMode()
   ; ahh what the heck, remove shift requirements for jump bindings
   ; maybe take "m" back if we ever make marks
   m:: JumpMiddle()
-  ,:: JumpMiddle2()
-  .:: JumpMiddle3()
+  ; ,:: JumpMiddle2()
+  ; .:: JumpMiddle3()
   n:: MouseForward()
   b:: MouseBack()
   ; allow for modifier keys (or more importantly a lack of them) by lifting ctrl requirement for these hotkeys
-  *0:: ScrollDownMore()
-  *9:: ScrollUpMore()
-  ]:: ScrollDown()
-  [:: ScrollUp()
-  }:: ScrollDownMore()
-  {:: ScrollUpMore()
+  *[:: End
+  *]:: Home
+  `;:: ScrollDown()
+  ':: ScrollUp()
+  ; }:: ScrollDownMore()
+  ; {:: ScrollUpMore()
+  ::: ScrollDownMore()
+  ":: ScrollUpMore()
   =:: SetVolume(+10)
   -:: SetVolume(-10)
   f12:: SetForce(+3, 1)
   f11:: SetForce(-3, 1)
   f10:: SetForce(10, 0)
+  ,:: Min()
+  .:: Max()
+  /:: Close()
   End:: Click, Up
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
@@ -557,6 +586,8 @@ Insert:: EnterInsertMode()
   ; y:: ScrollUp()
   d:: ScrollDownMore()
   u:: ScrollUpMore()
+  g:: Home
+  +g::End
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
@@ -564,7 +595,7 @@ Insert:: EnterInsertMode()
   ,:: JumpMiddle2()
   .:: JumpMiddle3()
   y:: Yank()
-  x:: Close()
+  ; x:: Close()
   z:: Resize()
   ; for windows explorer
 #If (WinActive("ahk_class CabinetWClass"))
@@ -592,6 +623,7 @@ Insert:: EnterInsertMode()
   a:: Return
   s:: Return
   d:: Return
+  u:: Return
   +C:: JumpMiddle()
   +W:: JumpTopEdge()
   +A:: JumpLeftEdge()

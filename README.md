@@ -55,15 +55,22 @@ very normal at all)
 - `o` right click
 - `p` middle click
 - `v` hold down left click (hit `v` or any mouse button again to release)
-- `z` hold down right click (hit `z` or any mouse button again to release)
 - `c` hold down middle click (hit `c` or any mouse button again to release)
-- `e,0,]` scroll down
-- `y,9,[` scroll up
-- `d,}` scroll down faster
-- `u,{` scroll up faster
-- `Y` "yank" a window (reposition it) (press i to release)
-- `X` "close" a window (move to the close button of window) (press i to click)
-- `Z` "resize" a window (press i to release)
+- `x` hold down right click (hit `x` or any mouse button again to release)
+- `^c` hold down shft+middle click (hit `^c` or any mouse button again to release)
+- `;` scroll down
+- `'` scroll up
+- `"` page up
+- `:` page down
+- `]` home
+- `[` end
+- `d,` page down(vim mode)
+- `u, e` page up(vim mode)
+- `,` "min" a window (move to the min button of window) (press i to click)
+- `.` "max" a window (move to the max button of window) (press i to click)
+- `/` "close" a window (move to the close button of window) (press i to click)
+- `Y` "yank" a window (reposition it) (press i or v to release)
+- `Z` "resize" a window (press i or v to release)
 - `b` "back" mouse button
 - `n` "forward" mouse button
 - `Insert,Win+Alt+i` enter Insert mode
