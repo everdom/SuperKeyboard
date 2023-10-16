@@ -559,8 +559,8 @@ Insert:: EnterInsertMode()
   n:: MouseForward()
   b:: MouseBack()
   ; allow for modifier keys (or more importantly a lack of them) by lifting ctrl requirement for these hotkeys
-  *[:: End
-  *]:: Home
+  *]:: End
+  *[:: Home
   `;:: ScrollDown()
   ':: ScrollUp()
   ; }:: ScrollDownMore()
@@ -604,6 +604,9 @@ Insert:: EnterInsertMode()
   !k:: Send {Up}
   !l:: Send {Right}
   !u:: Send !{Up}
+  !i:: Send {Enter}
+  !b:: MouseBack()
+  !n:: MouseForward()
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
