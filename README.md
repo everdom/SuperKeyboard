@@ -62,8 +62,8 @@ very normal at all)
 - `'` scroll up
 - `"` page up
 - `:` page down
-- `]` home
-- `[` end
+- `[` home
+- `]` end
 - `d,` page down(vim mode)
 - `u, e` page up(vim mode)
 - `,` "min" a window (move to the min button of window) (press i to click)
