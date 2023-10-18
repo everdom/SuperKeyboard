@@ -592,6 +592,7 @@ Insert:: EnterInsertMode()
   ,:: Min()
   .:: Max()
   /:: Close()
+  !p:: Send {PrintScreen}
   End:: Click, Up
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
@@ -624,6 +625,11 @@ Insert:: EnterInsertMode()
   !i:: Send {Enter}
   !b:: MouseBack()
   !n:: MouseForward()
+  ^o:: Send {AppsKey}
+  ^h:: Send {Left}
+  ^j:: Send {Down}
+  ^k:: Send {Up}
+  ^l:: Send {Right}
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
