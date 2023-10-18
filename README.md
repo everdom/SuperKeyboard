@@ -73,6 +73,9 @@ very normal at all)
 - `Z` "resize" a window (press i or v to release)
 - `b` "back" mouse button
 - `n` "forward" mouse button
+- `f12,+` increase mouse move speed
+- `f11,_` decrease mouse move speed
+- `f10,)` set mouse move speed to default
 - `Insert,Win+Alt+i` enter Insert mode
 
 ### Normal "WASD" mode

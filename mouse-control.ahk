@@ -586,9 +586,9 @@ Insert:: EnterInsertMode()
   f12:: SetForce(+3, 1)
   f11:: SetForce(-3, 1)
   f10:: SetForce(10, 0)
-  +:: SetForce(+3, 1)
-  _:: SetForce(-3, 1)
-  ):: SetForce(10, 0)
+  +=:: SetForce(+3, 1)
+  +-:: SetForce(-3, 1)
+  +0:: SetForce(10, 0)
   ,:: Min()
   .:: Max()
   /:: Close()
@@ -640,17 +640,6 @@ Insert:: EnterInsertMode()
   !,::Send {Numpad2}
   !.::Send {Numpad3}
   !n::Send {Numpad0}
-#If (INSERT_MODE && NUMPAD == false)
-  !u::Return
-  !i::Return
-  !o::Return
-  !j::Return
-  !k::Return
-  !l::Return
-  !m::Return
-  !,::Return
-  !n::Return
-  !.::Return
 #If (INSERT_MODE && INSERT_QUICK)
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
