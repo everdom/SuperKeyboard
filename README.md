@@ -98,6 +98,21 @@ remain unchanged.
 
 Acts like a normal keyboard.
 
+### Insert "Numpad" mode
+
+You can also use the alt+alpha keys to input number instead of the number pad. Switch into
+and out of numpad mode with `Win Alt p`
+- `!u`:: Numpad7
+- `!i`:: Numpad8
+- `!o`:: Numpad9
+- `!j`:: Numpad4
+- `!k`:: Numpad5
+- `!l`:: Numpad6
+- `!m`:: Numpad1
+- `!,`:: Numpad2
+- `!.`:: Numpad3
+- `!n`:: Numpad0
+
 `Home` and `Win Alt n` put you in Normal mode.
 
 ### Normal "Quick" mode
