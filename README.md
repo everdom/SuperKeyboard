@@ -73,6 +73,9 @@ very normal at all)
 - `Z` "resize" a window (press i or v to release)
 - `b` "back" mouse button
 - `n` "forward" mouse button
+- `f12,+` increase mouse move speed
+- `f11,_` decrease mouse move speed
+- `f10,)` set mouse move speed to default
 - `Insert,Win+Alt+i` enter Insert mode
 
 ### Normal "WASD" mode
@@ -97,6 +100,21 @@ remain unchanged.
 ### Insert mode
 
 Acts like a normal keyboard.
+
+### Insert "Numpad" mode
+
+You can also use the alt+alpha keys to input number instead of the number pad. Switch into
+and out of numpad mode with `Win Alt p`
+- `!u`:: Numpad7
+- `!i`:: Numpad8
+- `!o`:: Numpad9
+- `!j`:: Numpad4
+- `!k`:: Numpad5
+- `!l`:: Numpad6
+- `!m`:: Numpad1
+- `!,`:: Numpad2
+- `!.`:: Numpad3
+- `!n`:: Numpad0
 
 `Home` and `Win Alt n` put you in Normal mode.
 

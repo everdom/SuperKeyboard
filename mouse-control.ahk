@@ -12,6 +12,7 @@ global INSERT_MODE := false
 global INSERT_QUICK := false
 global NORMAL_MODE := false
 global NORMAL_QUICK := false
+global NUMPAD := false
 global WASD := true
 
 ; Drag takes care of this now
@@ -154,6 +155,18 @@ EnterInsertMode(quick:=false) {
   ShowModePopup(msg)
   INSERT_MODE := true
   INSERT_QUICK := quick
+  NUMPAD := false
+  NORMAL_MODE := false
+  NORMAL_QUICK := false
+}
+
+EnterNumpadMode(quick:=false) {
+  ;MsgBox, "Welcome to Insert Mode"
+  msg := "INSERT (NUMPAD)"
+  ShowModePopup(msg)
+  INSERT_MODE := true
+  INSERT_QUICK := quick
+  NUMPAD := true
   NORMAL_MODE := false
   NORMAL_QUICK := false
 }
@@ -490,6 +503,7 @@ Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
 <#<!i:: EnterInsertMode()
+<#<!p:: EnterNumpadMode()
 
 ; escape hatches
 +Home:: Send, {Home}
@@ -572,9 +586,13 @@ Insert:: EnterInsertMode()
   f12:: SetForce(+3, 1)
   f11:: SetForce(-3, 1)
   f10:: SetForce(10, 0)
+  +=:: SetForce(+3, 1)
+  +-:: SetForce(-3, 1)
+  +0:: SetForce(10, 0)
   ,:: Min()
   .:: Max()
   /:: Close()
+  !p:: Send {PrintScreen}
   End:: Click, Up
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
@@ -607,11 +625,27 @@ Insert:: EnterInsertMode()
   !i:: Send {Enter}
   !b:: MouseBack()
   !n:: MouseForward()
+  ^o:: Send {AppsKey}
+  ^h:: Send {Left}
+  ^j:: Send {Down}
+  ^k:: Send {Up}
+  ^l:: Send {Right}
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
   Capslock:: EnterNormalMode(true)
   +Capslock:: EnterNormalMode()
+#If (INSERT_MODE && NUMPAD)
+  !u::Send {Numpad7}
+  !i::Send {Numpad8}
+  !o::Send {Numpad9}
+  !j::Send {Numpad4}
+  !k::Send {Numpad5}
+  !l::Send {Numpad6}
+  !m::Send {Numpad1}
+  !,::Send {Numpad2}
+  !.::Send {Numpad3}
+  !n::Send {Numpad0}
 #If (INSERT_MODE && INSERT_QUICK)
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
