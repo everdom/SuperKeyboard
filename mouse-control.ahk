@@ -13,6 +13,7 @@ global INSERT_QUICK := false
 global NORMAL_MODE := false
 global NORMAL_QUICK := false
 global NUMPAD := false
+global NUMPAD_QUICK := false
 global WASD := true
 
 ; Drag takes care of this now
@@ -498,6 +499,16 @@ SetForce(v, relative){
   }
   ShowModePopup(Format("Speed: {:.1f}", FORCE))
 }
+
+SwitchNumpadQuick(){
+  NUMPAD_QUICK := !NUMPAD_QUICK
+  if(NUMPAD_QUICK){
+    ShowPopup("NUMPAD QUICK ON")
+  }else{
+    ShowPopup("NUMPAD QUICK OFF")
+  }
+}
+
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
@@ -635,7 +646,7 @@ Insert:: EnterInsertMode()
 #If (INSERT_MODE && INSERT_QUICK == false)
   Capslock:: EnterNormalMode(true)
   +Capslock:: EnterNormalMode()
-#If (INSERT_MODE && NUMPAD)
+#If (INSERT_MODE && NUMPAD && NUMPAD_QUICK == false)
   !u::Send {Numpad7}
   !i::Send {Numpad8}
   !o::Send {Numpad9}
@@ -652,6 +663,23 @@ Insert:: EnterInsertMode()
   !8::Send {*}
   !/::Send {/}
   !Enter::Send {Enter}
+  !`:: SwitchNumpadQuick()
+#If (INSERT_MODE && NUMPAD && NUMPAD_QUICK)
+  u::Send {Numpad7}
+  i::Send {Numpad8}
+  o::Send {Numpad9}
+  j::Send {Numpad4}
+  k::Send {Numpad5}
+  l::Send {Numpad6}
+  m::Send {Numpad1}
+  ,::Send {Numpad2}
+  .::Send {Numpad3}
+  n::Send {Numpad0}
+  Backspace::Send {Backspace}
+  =::Send {+}
+  8::Send {*}
+  !`:: SwitchNumpadQuick()
+
 #If (INSERT_MODE && INSERT_QUICK)
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
