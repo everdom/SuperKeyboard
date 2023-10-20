@@ -646,6 +646,12 @@ Insert:: EnterInsertMode()
   !,::Send {Numpad2}
   !.::Send {Numpad3}
   !n::Send {Numpad0}
+  !Backspace::Send {Backspace}
+  !=::Send {+}
+  !-::Send {-}
+  !8::Send {*}
+  !/::Send {/}
+  !Enter::Send {Enter}
 #If (INSERT_MODE && INSERT_QUICK)
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
