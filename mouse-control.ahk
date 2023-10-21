@@ -291,14 +291,58 @@ CtrlMiddleDrag() {
 }
 
 ReleaseDrag(button) {
-  Send {Shift up}
-  Send {Ctrl up}
-  Click, Middle, Up
-  Click, button
+  if(SHIFT_DRAGGING){
+    Send {Shift up}
+  }
+  if(CTRL_DRAGGING){
+    Send {Ctrl up}
+  }
+  if(button == 1){
+    Click, Left, Up
+  }
+
+  if(button == 2){
+    Click, Middle, Up
+  }
+
+  if(button == 3){
+    Click, Right, Up
+  }
   DRAGGING := false
   SHIFT_DRAGGING := false
   CTRL_DRAGGING := false
   ClosePopup()
+}
+
+ReleaseAllDrag() {
+  If (DRAGGING) {
+    if(SHIFT_DRAGGING){
+      Send {Shift up}
+    }
+    if(CTRL_DRAGGING){
+      Send {Ctrl up}
+    }
+
+    lState := GetKeyState("LButton")
+    MState := GetKeyState("MButton")
+    RState := GetKeyState("RButton")
+    if(LState){
+      Click, Left, Up
+    }
+
+    if(MState){
+      Click, Middle, Up
+    }
+
+    if(RState){
+      Click, Right, Up
+    }
+
+    DRAGGING := false
+    SHIFT_DRAGGING := false
+    CTRL_DRAGGING := false
+    ClosePopup() 
+  }
 }
 
 Yank() {
@@ -745,8 +789,10 @@ Insert:: EnterInsertMode()
   +A:: JumpLeftEdge()
   +S:: JumpBottomEdge()
   +D:: JumpRightEdge()
-  *e:: ScrollDown()
-  *q:: ScrollUp()
+  e:: ScrollDown()
+  q:: ScrollUp()
+  +e:: ScrollDownMore()
+  +q:: ScrollUpMore()
   *r:: MouseLeft()
   t:: MouseRight()
   +T:: MouseRight()
@@ -767,8 +813,8 @@ Insert:: EnterInsertMode()
   ^MButton:: ReleaseDrag(2)
   ^RButton:: ReleaseDrag(3)
   ^i:: ReleaseDrag(1)
-  ^p:: ReleaseDrag(2)
   ^o:: ReleaseDrag(3)
+  ^p:: ReleaseDrag(2)
 #If (CTRL_DRAGGING && WASD)
   ^r:: ReleaseDrag(1)
   ^t:: ReleaseDrag(3)
@@ -778,23 +824,17 @@ Insert:: EnterInsertMode()
   +MButton:: ReleaseDrag(2)
   +RButton:: ReleaseDrag(3)
   +i:: ReleaseDrag(1)
-  +p:: ReleaseDrag(2)
   +o:: ReleaseDrag(3)
+  +p:: ReleaseDrag(2)
 #If (SHIFT_DRAGGING && WASD)
   +r:: ReleaseDrag(1)
   +t:: ReleaseDrag(3)
   +y:: ReleaseDrag(2)
-#If (POP_UP)
+#If (POP_UP && DRAGGING == false)
   Escape:: 
     ClosePopup()
-    ReleaseDrag(1)
-    ReleaseDrag(2)
-    ReleaseDrag(3)
-  +Escape:: 
-    ClosePopup()
-    ReleaseDrag(1)
-    ReleaseDrag(2)
-    ReleaseDrag(3)
+#If (DRAGGING)
+  *Escape:: ReleaseAllDrag()
 #If
 
 ; FUTURE CONSIDERATIONS
