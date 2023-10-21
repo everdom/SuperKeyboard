@@ -30,6 +30,7 @@ global POP_UP := false
 
 global DRAGGING := false
 global SHIFT_DRAGGING := false
+global CTRL_DRAGGING := false
 
 ; Insert Mode by default
 EnterInsertMode()
@@ -249,7 +250,7 @@ MiddleDrag() {
     ClosePopup() 
   } else {
     ShowPopup("MIDDLE DRAG")
-    Send, {MButton down}
+    Send {MButton down}
     DRAGGING := true
   }
 }
@@ -260,23 +261,43 @@ ShiftMiddleDrag() {
     Click, Middle, Up
     DRAGGING := false
     SHIFT_DRAGGING := false
-    Send, {Shift up}
+    Send {Shift up}
     ClosePopup() 
   } else {
+    KeyWait Shift
     ShowPopup("SHIFT MIDDLE DRAG")
-    Send, {Shift down}
-    Send, {MButton down}
+    Send {Shift down}
+    Send {MButton down}
     DRAGGING := true
     SHIFT_DRAGGING := true
   }
 }
 
+CtrlMiddleDrag() {
+  If (DRAGGING) {
+    Click, Middle, Up
+    DRAGGING := false
+    CTRL_DRAGGING := false
+    Send {Ctrl up}
+    ClosePopup() 
+  } else {
+    KeyWait Shift
+    ShowPopup("CTRL MIDDLE DRAG")
+    Send {Ctrl down}
+    Send {MButton down}
+    DRAGGING := true
+    CTRL_DRAGGING := true
+  }
+}
+
 ReleaseDrag(button) {
-  Send, {Shift up}
+  Send {Shift up}
+  Send {Ctrl up}
   Click, Middle, Up
   Click, button
   DRAGGING := false
   SHIFT_DRAGGING := false
+  CTRL_DRAGGING := false
   ClosePopup()
 }
 
@@ -340,29 +361,41 @@ Resize(){
 
 MouseLeft() {
   if (SHIFT_DRAGGING){
-    Send, {Shift up}
+    Send {Shift up}
+  }
+  if (CTRL_DRAGGING){
+    Send {Ctrl up}
   }
   Click
   DRAGGING := false
   SHIFT_DRAGGING := false
+  CTRL_DRAGGING := false
 }
 
 MouseRight() {
   if (SHIFT_DRAGGING){
-    Send, {Shift up}
+    Send {Shift up}
+  }
+  if (CTRL_DRAGGING){
+    Send {Ctrl up}
   }
   Click, Right
   DRAGGING := false
   SHIFT_DRAGGING := false
+  CTRL_DRAGGING := false
 }
 
 MouseMiddle() {
   if (SHIFT_DRAGGING){
-    Send, {Shift up}
+    Send {Shift up}
+  }
+  if (CTRL_DRAGGING){
+    Send {Ctrl up}
   }
   Click, Middle
   DRAGGING := false
   SHIFT_DRAGGING := false
+  CTRL_DRAGGING := false
 }
 
 ; TODO: When we have more monitors, set up H and L to use current screen as basis
@@ -529,11 +562,11 @@ Insert:: EnterInsertMode()
 <#<!p:: EnterNumpadMode()
 
 ; escape hatches
-+Home:: Send, {Home}
-+Insert:: Send, {Insert}
++Home:: Send {Home}
++Insert:: Send {Insert}
 ;FIXME
 ; doesn't turn caplsock off.
-; ^Capslock:: Send, {Capslock}
+; ^Capslock:: Send {Capslock}
 ; ; meh. good enough.
 ; ^+Capslock:: SetCapsLockState, Off
 
@@ -552,7 +585,7 @@ Insert:: EnterInsertMode()
   +`:: ClickInsert(false)
   ; Many paths to Quick Insert
   `:: ClickInsert(true)
-  +S:: DoubleClickInsert()
+  ; +S:: DoubleClickInsert()
   ; passthru for Vimium hotlinks 
   ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
@@ -583,8 +616,8 @@ Insert:: EnterInsertMode()
   v:: Drag()
   x:: RightDrag()
   c:: MiddleDrag()
-  ^c:: ShiftMiddleDrag()
-  ^+C:: ShiftMiddleDrag()
+  +c:: ShiftMiddleDrag()
+  ^c:: CtrlMiddleDrag()
   +M:: JumpMiddle()
   +,:: JumpMiddle2()
   +.:: JumpMiddle3()
@@ -707,7 +740,7 @@ Insert:: EnterInsertMode()
   s:: Return
   d:: Return
   u:: Return
-  +C:: JumpMiddle()
+  z:: JumpMiddle()
   +W:: JumpTopEdge()
   +A:: JumpLeftEdge()
   +S:: JumpBottomEdge()
@@ -723,15 +756,34 @@ Insert:: EnterInsertMode()
   MButton:: ReleaseDrag(2)
   RButton:: ReleaseDrag(3)
   i:: ReleaseDrag(1)
-  p:: ReleaseDrag(2)
   o:: ReleaseDrag(3)
-#IF (SHIFT_DRAGGING)
-  LButton:: ReleaseDrag(1)
-  MButton:: ReleaseDrag(2)
-  RButton:: ReleaseDrag(3)
+  p:: ReleaseDrag(2)
+#If (DRAGGING && WASD)
+  r:: ReleaseDrag(1)
+  t:: ReleaseDrag(3)
+  y:: ReleaseDrag(2)
+#IF (CTRL_DRAGGING && WASD)
+  ^LButton:: ReleaseDrag(1)
+  ^MButton:: ReleaseDrag(2)
+  ^RButton:: ReleaseDrag(3)
+  ^i:: ReleaseDrag(1)
+  ^p:: ReleaseDrag(2)
+  ^o:: ReleaseDrag(3)
+#If (CTRL_DRAGGING && WASD)
+  ^r:: ReleaseDrag(1)
+  ^t:: ReleaseDrag(3)
+  ^y:: ReleaseDrag(2)
+#IF (SHIFT_DRAGGING )
+  +LButton:: ReleaseDrag(1)
+  +MButton:: ReleaseDrag(2)
+  +RButton:: ReleaseDrag(3)
   +i:: ReleaseDrag(1)
   +p:: ReleaseDrag(2)
   +o:: ReleaseDrag(3)
+#If (SHIFT_DRAGGING && WASD)
+  +r:: ReleaseDrag(1)
+  +t:: ReleaseDrag(3)
+  +y:: ReleaseDrag(2)
 #If (POP_UP)
   Escape:: 
     ClosePopup()

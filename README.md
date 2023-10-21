@@ -57,7 +57,8 @@ very normal at all)
 - `v` hold down left click (hit `v` or any mouse button again to release)
 - `c` hold down middle click (hit `c` or any mouse button again to release)
 - `x` hold down right click (hit `x` or any mouse button again to release)
-- `^c` hold down shft+middle click (hit `^c` or any mouse button again to release)
+- `+c` hold down shft+middle click (hit `+c` or any mouse button again to release)
+- `^c` hold down ctrl+middle click (hit `^c` or any mouse button again to release)
 - `;` scroll down
 - `'` scroll up
 - `"` page up
@@ -77,6 +78,15 @@ very normal at all)
 - `f11,_` decrease mouse move speed
 - `f10,)` set mouse move speed to default
 - `Insert,Win+Alt+i` enter Insert mode
+
+#### Only in Explorer 
+- `!hjkl|^hjkl`  move the cursor using arrow dirction key
+- `!u` move to the upper dir
+- `!i` enter the item 
+- `!p` prev dir
+- `!b` next dir 
+- `^o` pop up the quick menu from the item
+
 
 ### Normal "WASD" mode
 
@@ -115,6 +125,7 @@ and out of numpad mode with `Win Alt p`
 - `!,`:: Numpad2
 - `!.`:: Numpad3
 - `!n`:: Numpad0
+- `!``:: switch "Quick Numpad" Mode(don't need to press alt key to input number)
 
 `Home` and `Win Alt n` put you in Normal mode.
 
@@ -145,6 +156,11 @@ From quick Insert mode:
 
 `Home` enters Normal mode
 `Insert` enters regular (persistent) Insert mode
+
+### Explorer mode
+
+You can also use the alt+alpha keys to input number instead of the number pad. Switch into
+and out of numpad mode with `Win Alt p`
 
 ## Last Remarks
 
