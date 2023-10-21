@@ -383,6 +383,18 @@ JumpMiddle3() {
   MouseMove, (A_ScreenWidth * 2 + A_ScreenWidth // 2), (A_ScreenHeight // 2)
 }
 
+JumpWindowMiddle() {
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  ;MsgBox, Hello %width% %center%
+  MouseMove, centerx, centery
+}
+
 MonitorLeftEdge() {
   mx := 0
   CoordMode, Mouse, Screen
@@ -578,7 +590,7 @@ Insert:: EnterInsertMode()
   +.:: JumpMiddle3()
   ; ahh what the heck, remove shift requirements for jump bindings
   ; maybe take "m" back if we ever make marks
-  m:: JumpMiddle()
+  m:: JumpWindowMiddle()
   ; ,:: JumpMiddle2()
   ; .:: JumpMiddle3()
   n:: MouseForward()
