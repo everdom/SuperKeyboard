@@ -64,6 +64,10 @@ MoveCursor() {
     if(ALT){
       return
     }
+    CTRL := GetKeyState("Ctrl", "P")
+    if(CTRL){
+      return
+    }
   }
   LEFT := 0
   DOWN := 0
