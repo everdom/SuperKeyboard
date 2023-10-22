@@ -687,8 +687,9 @@ Insert:: EnterInsertMode()
   ; {:: ScrollUpMore()
   ::: ScrollDownMore()
   ":: ScrollUpMore()
-  =:: SetVolume(+6)
-  -:: SetVolume(-6)
+  =:: Send {Volume_Up}
+  -:: Send {Volume_Down}
+  0:: Send {Volume_Mute}
   f12:: SetForce(+3, 1)
   f11:: SetForce(-3, 1)
   f10:: SetForce(10, 0)
