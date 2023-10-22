@@ -737,6 +737,8 @@ Insert:: EnterInsertMode()
   ^j:: Send {Down}
   ^k:: Send {Up}
   ^l:: Send {Right}
+#If (WinActive("ahk_class Chrome_WidgetWin_1"))
+  !x:: Send ^{w}
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
