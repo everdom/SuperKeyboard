@@ -164,6 +164,7 @@ EnterInsertMode(quick:=false) {
   NUMPAD := false
   NORMAL_MODE := false
   NORMAL_QUICK := false
+  NUMPAD_QUICK := false
 }
 
 EnterNumpadMode(quick:=false) {
@@ -173,6 +174,7 @@ EnterNumpadMode(quick:=false) {
   INSERT_MODE := true
   INSERT_QUICK := quick
   NUMPAD := true
+  NUMPAD_QUICK := true
   NORMAL_MODE := false
   NORMAL_QUICK := false
 }
@@ -285,7 +287,7 @@ CtrlMiddleDrag() {
     Send {Ctrl up}
     ClosePopup() 
   } else {
-    KeyWait Shift
+    KeyWait Ctrl
     ShowPopup("CTRL MIDDLE DRAG")
     Send {Ctrl down}
     Send {MButton down}
@@ -771,6 +773,8 @@ Insert:: EnterInsertMode()
   Backspace::Send {Backspace}
   =::Send {+}
   8::Send {*}
+  !,::Send {,}
+  !.::Send {.}
   !`:: SwitchNumpadQuick()
 
 #If (INSERT_MODE && INSERT_QUICK)
