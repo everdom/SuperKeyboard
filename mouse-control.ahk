@@ -756,10 +756,10 @@ Insert:: EnterInsertMode()
   !.::Send {Numpad3}
   !n::Send {Numpad0}
   !Backspace::Send {Backspace}
-  !=::Send {+}
-  !-::Send {-}
-  !8::Send {*}
-  !/::Send {/}
+  !`;::Send {+}
+  !'::Send {-}
+  ![::Send {*}
+  !]::Send {/}
   !Enter::Send {Enter}
   !`:: SwitchNumpadQuick()
 #If (INSERT_MODE && NUMPAD && NUMPAD_QUICK)
@@ -773,11 +773,44 @@ Insert:: EnterInsertMode()
   ,::Send {Numpad2}
   .::Send {Numpad3}
   n::Send {Numpad0}
-  Backspace::Send {Backspace}
-  =::Send {+}
-  8::Send {*}
+  `;::Send {+}
+  '::Send {-}
+  [::Send {*}
+  ]::Send {/}
+  !u::Send {u}
+  !i::Send {i}
+  !o::Send {o}
+  !j::Send {j}
+  !k::Send {k}
+  !l::Send {l}
+  !m::Send {m}
   !,::Send {,}
   !.::Send {.}
+  !n::Send {n}
+  !`;::Send {;}
+  !'::Send {'}
+  ![::Send {[}
+  !]::Send {]}
+  /::Send {=}
+
+  ; left hand mode
+  w::Send {Numpad7}
+  e::Send {Numpad8}
+  r::Send {Numpad9}
+  s::Send {Numpad4}
+  d::Send {Numpad5}
+  f::Send {Numpad6}
+  x::Send {Numpad1}
+  c::Send {Numpad2}
+  v::Send {Numpad3}
+  z::Send {Numpad0}
+  a::Send {+}
+  q::Send {-}
+  g::Send {*}
+  t::Send {/}
+  b::Send {.}
+  `::Send {Backspace}
+  Tab::Send {=}
   !`:: SwitchNumpadQuick()
 
 #If (INSERT_MODE && INSERT_QUICK)
