@@ -8,6 +8,9 @@
 ;
 ; Last updated 2022-02-05
 
+
+#Include Gdip_All.ahk
+
 global INSERT_MODE := false
 global INSERT_QUICK := false
 global NORMAL_MODE := false
@@ -31,6 +34,13 @@ global POP_UP := false
 global DRAGGING := false
 global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
+
+; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
+If !pToken := Gdip_Startup()
+{
+	MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
+	ExitApp
+}
 
 ; Insert Mode by default
 EnterInsertMode()
@@ -604,6 +614,101 @@ SwitchNumpadQuick(){
   }
 }
 
+; Gui, 1:+LastFound +AlwaysOnTop +ToolWindow
+Gui, 1: -Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
+Gui, 1:Show, NA
+Gui, 1:Maximize
+GuiHwnd := WinExist() ; capture window handle
+
+; Gui, 1:Hide
+
+; Gui, 2:-Caption +AlwaysOnTop
+; Gui, 2:Font, s50 w700 q4, Arial
+; Gui, 2:Color, White
+; Gui, 2:Margin, 10, 5
+; Gui, 2:Add, Text, Center, Toggle is on
+; Gui, 2:Show, NA
+; Gui, 2:Hide
+
+global FAST_MODE:=false
+
+; global hBm:=0
+global hDc:=0
+global hCurrPen:=0
+; global G:=0
+; global obm:=0
+EnterFastMode(){
+  if(FAST_MODE){
+    Gui, 1:Hide
+    ; Gui, 2:Hide
+    FAST_MODE := false
+  }else{
+    Gui, 1:Show
+    ; Gui, 2:Show,NA
+    Canvas_Open(GuiHwnd, "0x00FF00")
+
+    i=1
+    Loop, 9 {
+    Canvas_DrawLine(GuiHwnd, 0, A_ScreenHeight/10*i, A_ScreenWidth, A_ScreenHeight/10*i, 1)
+    Canvas_DrawLine(GuiHwnd, A_ScreenWidth/10*i, 0, A_ScreenWidth/10*i, A_ScreenHeight, 1)
+     i+=1
+    }
+
+    DrawText(0, 0, 0,0, "hello")
+    FAST_MODE := true
+  }
+}
+
+DrawText(x0, y0, dx, dy, text){
+  Gui, 2:Add, Text,, text
+}
+
+
+; Canvas_Open(hWnd, p_color){
+;   hBm := CreateDIBSection(800, 600)
+;   hDc := CreateCompatibleDC()
+;   obm := SelectObject(hdc, hbm)
+;   G := Gdip_GraphicsFromHDC(hdc)
+;   Gdip_SetSmoothingMode(G, 4)
+; }
+; Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2, p_w )
+; {
+;   p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
+;   pPen := Gdip_CreatePen(0xffff0000, 3)
+;   Gdip_DrawEllipse(G, pPen, 100, 50, 200, 300)
+;   Gdip_DeletePen(pPen)
+;   pPen := Gdip_CreatePen(0x660000ff, 10)
+;   ; Draw a rectangle onto the graphics of the bitmap using the pen just created
+;   ; Draws the rectangle from coordinates (250,80) a rectangle of 300x200 and outline width of 10 (specified when creating the pen)
+;   ; 用刚那支蓝笔在画布上画一个矩形。
+;   ; 整个函数的参数分别是 Gdip_DrawRectangle(画布, 画笔, x, y, 矩形宽, 矩形高)
+;   Gdip_DrawRectangle(G, pPen, 250, 80, 300, 200)
+;   ; Delete the brush as it is no longer needed and wastes memory
+;   ; 同样删除画笔。
+;   Gdip_DeletePen(pPen)
+; }
+; Canvas_Close(){
+;   Gdip_DeleteGraphics(G)
+;   SelectObject(hDc, obm)
+;   DeleteDC(hDc)
+;   DeleteObject(hBm)
+; }
+
+Canvas_Open(hWnd, p_color){
+ hDC := DllCall("GetDC", UInt, hWnd)
+ hCurrPen := DllCall("CreatePen", UInt, 0, UInt, p_w, UInt, p_color)
+}
+Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2, p_w )
+{
+ p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
+ DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
+ DllCall("gdi32.dll\MoveToEx", UInt, hdc, Uint,p_x1, Uint, p_y1, Uint, 0 )
+ DllCall("gdi32.dll\LineTo", UInt, hdc, Uint, p_x2, Uint, p_y2 )
+}
+Canvas_Close(){
+ DllCall("ReleaseDC", UInt, 0, UInt, hDC)  ; Clean-up.
+ DllCall("DeleteObject", UInt,hCurrPen)
+}
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
@@ -640,6 +745,7 @@ Insert:: EnterInsertMode()
   ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
+  +f:: EnterFastMode()
   ; passthru for new tab
   ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
