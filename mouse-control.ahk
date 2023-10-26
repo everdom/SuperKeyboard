@@ -38,7 +38,7 @@ global CTRL_DRAGGING := false
 global FAST_MODE_X :=8
 global FAST_MODE_Y :=5
 global FAST_MODE_FONT_SIZE :=48
-global FAST_MODE_FONT_COLOR :="Yellow"
+global FAST_MODE_FONT_COLOR :="01AFFD"
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
 ; {
