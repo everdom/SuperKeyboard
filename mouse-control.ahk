@@ -204,7 +204,7 @@ EnterFastMode(){
   NORMAL_QUICK := false
   INSERT_MODE := false
   INSERT_QUICK := false
-  SetTimer ShowFastHints, -10
+  SetTimer ShowFastHints, -100
 }
 
 ClickInsert(quick:=true) {
