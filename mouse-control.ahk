@@ -686,7 +686,6 @@ ShowText(show){
   }
 }
 ShowFastHints(){
-    ShowText(true)
     ; Gui, 1:Show
     ; Gui, 2:Show,NA 
     ; Canvas_Open(GuiHwnd, "0x00FF00", 3)
@@ -718,7 +717,10 @@ ShowFastHints(){
       i+=1
     }
     matches:=SubStr(matches, 1, StrLen(matches)-1)
+
+    ShowText(true)
     Input, UserInput, B L2, {enter}{esc}, %matches%
+
     if (ErrorLevel = "Max")
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
@@ -770,9 +772,6 @@ ShowFastHints(){
         ShowText(false)
         EnterNormalMode()
         return
-    ShowText(false)
-    EnterNormalMode()
-    return
 }
 
 ; Canvas_Open(hWnd, p_color){
