@@ -672,17 +672,13 @@ ShowText(show){
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
         
-        Gui add, text,% "cRed " "TransColor " "X" A_ScreenWidth/5*j " Y" A_ScreenHeight/5*i " W"A_ScreenWidth/5 " H"A_ScreenHeight/5, %label% 
+        Gui add, text,% "cRed " "TransColor " "X" A_ScreenWidth/5*j+1 " Y" A_ScreenHeight/5*i+1 " W"A_ScreenWidth/5-2 " H"A_ScreenHeight/5-2, %label% 
         j+=1
       }
       gui, add, text, % "x0" " y" A_ScreenHeight/5*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
       gui, add, text, % "x" A_ScreenWidth/5*i " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line > Etched Gray
       i+=1
     }
-    ; gui, add, text, x10 y10 w100 0x10  ;Horizontal Line > Etched Gray
-    ; gui, add, text, x10 y15 h70 0x11  ;Vertical Line > Etched Gray
-    ; gui, add, text, x10 y+10 w75 h1 0x7  ;Horizontal Line > Black
-    ; gui, add, text, x10 y+10 w1 h75 0x7  ;Vertical Line > Black
     Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
     WinSet TransColor, White, TRANS-WIN
   }else{
@@ -706,7 +702,22 @@ ShowFastHints(){
     ; Input, UserInput, V B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az, ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz, ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz, da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz
     ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
     ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
-    Input, UserInput, B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az
+
+    matches:=""
+    i:=0
+    Loop, 5{
+      j:=0
+      Loop, 5{
+        k:=i*5+j
+        alpha1 :=alphaTable[k//26+1]
+        alpha2 :=alphaTable[Mod(k, 26)+1]
+        label:= alpha1 alpha2
+        matches:=matches label ","
+        j+=1
+      }
+      i+=1
+    }
+    Input, UserInput, B L2, {enter}{esc}, %matches%
     if (ErrorLevel = "Max")
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
@@ -734,59 +745,20 @@ ShowFastHints(){
     }
     if (ErrorLevel = "Match")
     {
-      if (UserInput = "aa")
-        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*1
-      else if (UserInput = "ab")
-        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*1
-      else if (UserInput = "ac")
-        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*1
-      else if (UserInput = "ad")
-        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*1
-      else if (UserInput = "ae")
-        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*1
-      else if (UserInput = "af")
-        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*3
-      else if (UserInput = "ag")     
-        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*3
-      else if (UserInput = "ah")     
-        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*3
-      else if (UserInput = "ai")     
-        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*3
-      else if (UserInput = "aj")     
-        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*3
-      else if (UserInput = "ak")
-        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*5
-      else if (UserInput = "al")     
-        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*5
-      else if (UserInput = "am")     
-        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*5
-      else if (UserInput = "an")     
-        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*5
-      else if (UserInput = "ao")     
-        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*5
-      else if (UserInput = "ap")
-        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*7
-      else if (UserInput = "aq")     
-        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*7
-      else if (UserInput = "ar")     
-        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*7
-      else if (UserInput = "as")     
-        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*7
-      else if (UserInput = "at")     
-        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*7
-      else if (UserInput = "au")
-        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*9
-      else if (UserInput = "av")     
-        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*9
-      else if (UserInput = "aw")     
-        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*9
-      else if (UserInput = "ax")     
-        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*9
-      else if (UserInput = "ay")     
-        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*9
-      else if (UserInput = "az")
-        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/5*1
-      ; Gui, 1:Hide
+      i:=0
+      Loop, 5{
+        j:=0
+        Loop, 5{
+          k:=i*5+j
+          alpha1 :=alphaTable[k//26+1]
+          alpha2 :=alphaTable[Mod(k, 26)+1]
+          label:= alpha1 alpha2
+          if (UserInput = label)
+            MouseMove, A_ScreenWidth/10*(j*2+1), A_ScreenHeight/10*(i*2+1)
+          j+=1
+        }
+        i+=1
+      }
       ShowText(false)
       EnterNormalMode()
       return
