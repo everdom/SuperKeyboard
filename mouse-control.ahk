@@ -204,7 +204,7 @@ EnterFastMode(){
   NORMAL_QUICK := false
   INSERT_MODE := false
   INSERT_QUICK := false
-  SetTimer ShowFastHints, -100
+  SetTimer ShowFastHints, -30
 }
 
 ClickInsert(quick:=true) {
@@ -658,7 +658,7 @@ global hCurrPen:=0
 
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
-ShowText(show){
+ShowText(show:=true){
   if(show){
     Gui Color, White
     Gui -caption +toolwindow +AlwaysOnTop
@@ -702,6 +702,7 @@ ShowFastHints(){
     ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
     ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
 
+    SetTimer ShowText, -20
     matches:=""
     i:=0
     Loop, 5{
@@ -718,7 +719,6 @@ ShowFastHints(){
     }
     matches:=SubStr(matches, 1, StrLen(matches)-1)
 
-    ShowText(true)
     Input, UserInput, B L2, {enter}{esc}, %matches%
 
     if (ErrorLevel = "Max")
