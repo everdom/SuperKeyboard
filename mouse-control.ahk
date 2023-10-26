@@ -35,6 +35,9 @@ global DRAGGING := false
 global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
 
+global FAST_MODE_X :=7
+global FAST_MODE_Y :=5
+global FAST_MODE_FONT_SIZE :=40
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
 ; {
@@ -204,7 +207,7 @@ EnterFastMode(){
   NORMAL_QUICK := false
   INSERT_MODE := false
   INSERT_QUICK := false
-  SetTimer ShowFastHints, -30
+  SetTimer FastModeHints, -30
 }
 
 ClickInsert(quick:=true) {
@@ -658,34 +661,45 @@ global hCurrPen:=0
 
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
-ShowText(show:=true){
+FastModeLabel(show:=true){
   if(show){
     Gui Color, White
     Gui -caption +toolwindow +AlwaysOnTop
-    Gui font, s50, Arial
+    Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
     i:=0
-    Loop, 5{
+    Loop,%FAST_MODE_Y%{
       j:=0
-      Loop, 5{
-        k:=i*5+j
+      Loop, %FAST_MODE_X%{
+        k:=i*FAST_MODE_X+j
         alpha1 :=alphaTable[k//26+1]
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
         
-        Gui add, text,% "cRed " "TransColor " "X" A_ScreenWidth/5*j+1 " Y" A_ScreenHeight/5*i+1 " W"A_ScreenWidth/5-2 " H"A_ScreenHeight/5-2, %label% 
+        Gui add, text,% "cRed " "TransColor " "X" A_ScreenWidth/FAST_MODE_X*j+1 " Y" A_ScreenHeight/FAST_MODE_Y*i+1 " W"A_ScreenWidth/FAST_MODE_X-2 " H"A_ScreenHeight/FAST_MODE_Y-2, %label% 
         j+=1
       }
-      gui, add, text, % "x0" " y" A_ScreenHeight/5*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
-      gui, add, text, % "x" A_ScreenWidth/5*i " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line > Etched Gray
       i+=1
     }
+
+    i:=0
+    Loop, %FAST_MODE_Y%{
+      gui, add, text, % "x0" " y" A_ScreenHeight/FAST_MODE_Y*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
+      i+=1
+    }
+
+    j:=0
+    Loop, %FAST_MODE_X%{
+      gui, add, text, % "x" A_ScreenWidth/FAST_MODE_X*j " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line >% Etched Gray
+      j+=1
+    }
+
     Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
     WinSet TransColor, White, TRANS-WIN
   }else{
     Gui Hide
   }
 }
-ShowFastHints(){
+FastModeHints(){
     ; Gui, 1:Show
     ; Gui, 2:Show,NA 
     ; Canvas_Open(GuiHwnd, "0x00FF00", 3)
@@ -702,13 +716,13 @@ ShowFastHints(){
     ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
     ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
 
-    SetTimer ShowText, -20
+    SetTimer FastModeLabel, -10
     matches:=""
     i:=0
-    Loop, 5{
+    Loop,%FAST_MODE_Y%{
       j:=0
-      Loop, 5{
-        k:=i*5+j
+      Loop, %FAST_MODE_X%{
+        k:=i*FAST_MODE_X+j
         alpha1 :=alphaTable[k//26+1]
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
@@ -725,7 +739,7 @@ ShowFastHints(){
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
         ; Gui, 1:Hide
-        ShowText(false)
+        FastModeLabel(false)
         EnterNormalMode()
         return
     }
@@ -733,7 +747,7 @@ ShowFastHints(){
     ; {
     ;     ; MsgBox, You entered "%UserInput%" at which time the input timed out.
     ;     ; Gui, 1:Hide
-    ;     ShowText(false)
+    ;     FastModeLabel(false)
     ;     EnterNormalMode()
     ;     return
     ; }
@@ -742,34 +756,34 @@ ShowFastHints(){
     {
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
         ; Gui, 1:Hide
-        ShowText(false)
+        FastModeLabel(false)
         EnterNormalMode()
         return
     }
     if (ErrorLevel = "Match")
     {
       i:=0
-      Loop, 5{
+      Loop,%FAST_MODE_Y%{
         j:=0
-        Loop, 5{
-          k:=i*5+j
+        Loop, %FAST_MODE_X%{
+          k:=i*FAST_MODE_X+j
           alpha1 :=alphaTable[k//26+1]
           alpha2 :=alphaTable[Mod(k, 26)+1]
           label:= alpha1 alpha2
           if (UserInput = label)
-            MouseMove, A_ScreenWidth/10*(j*2+1), A_ScreenHeight/10*(i*2+1)
+            MouseMove, A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
           j+=1
         }
         i+=1
       }
-      ShowText(false)
+      FastModeLabel(false)
       EnterNormalMode()
       return
     }
     if (ErrorLevel = "NewInput")
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
         ; Gui, 1:Hide
-        ShowText(false)
+        FastModeLabel(false)
         EnterNormalMode()
         return
 }
@@ -804,21 +818,21 @@ ShowFastHints(){
 ;   DeleteObject(hBm)
 ; }
 
-Canvas_Open(hWnd, p_color, p_w){
- hDC := DllCall("GetDC", UInt, hWnd)
- hCurrPen := DllCall("CreatePen", UInt, 0, UInt, p_w, UInt, p_color)
-}
-Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2)
-{
- p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
- DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
- DllCall("gdi32.dll\MoveToEx", UInt, hdc, Uint,p_x1, Uint, p_y1, Uint, 0 )
- DllCall("gdi32.dll\LineTo", UInt, hdc, Uint, p_x2, Uint, p_y2 )
-}
-Canvas_Close(){
- DllCall("ReleaseDC", UInt, 0, UInt, hDC)  ; Clean-up.
- DllCall("DeleteObject", UInt,hCurrPen)
-}
+; Canvas_Open(hWnd, p_color, p_w){
+;  hDC := DllCall("GetDC", UInt, hWnd)
+;  hCurrPen := DllCall("CreatePen", UInt, 0, UInt, p_w, UInt, p_color)
+; }
+; Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2)
+; {
+;  p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
+;  DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
+;  DllCall("gdi32.dll\MoveToEx", UInt, hdc, Uint,p_x1, Uint, p_y1, Uint, 0 )
+;  DllCall("gdi32.dll\LineTo", UInt, hdc, Uint, p_x2, Uint, p_y2 )
+; }
+; Canvas_Close(){
+;  DllCall("ReleaseDC", UInt, 0, UInt, hDC)  ; Clean-up.
+;  DllCall("DeleteObject", UInt,hCurrPen)
+; }
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
@@ -957,7 +971,7 @@ Insert:: EnterInsertMode()
 #If (WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
-  ; f:: ShowFastHints()
+  ; f:: FastModeHints()
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
