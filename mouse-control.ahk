@@ -9,7 +9,7 @@
 ; Last updated 2022-02-05
 
 
-#Include Gdip_All.ahk
+; #Include Gdip_All.ahk
 
 global INSERT_MODE := false
 global INSERT_QUICK := false
@@ -36,11 +36,11 @@ global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
 
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
-If !pToken := Gdip_Startup()
-{
-	MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
-	ExitApp
-}
+; If !pToken := Gdip_Startup()
+; {
+; 	MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
+; 	ExitApp
+; }
 
 ; Insert Mode by default
 EnterInsertMode()
@@ -141,6 +141,7 @@ EnterNormalMode(quick:=false) {
     Return
   }
   NORMAL_MODE := true
+  FAST_MODE := false
   INSERT_MODE := false
   INSERT_QUICK := false
 
@@ -172,9 +173,10 @@ EnterInsertMode(quick:=false) {
   INSERT_MODE := true
   INSERT_QUICK := quick
   NUMPAD := false
+  NUMPAD_QUICK := false
   NORMAL_MODE := false
   NORMAL_QUICK := false
-  NUMPAD_QUICK := false
+  FAST_MODE := false
 }
 
 EnterNumpadMode(quick:=false) {
@@ -187,6 +189,22 @@ EnterNumpadMode(quick:=false) {
   NUMPAD_QUICK := true
   NORMAL_MODE := false
   NORMAL_QUICK := false
+  FAST_MODE := false
+}
+
+EnterFastMode(){
+  msg := "FAST"
+  ShowModePopup(msg)
+
+  If (FAST_MODE) {
+    Return
+  }
+  FAST_MODE := true
+  NORMAL_MODE := false
+  NORMAL_QUICK := false
+  INSERT_MODE := false
+  INSERT_QUICK := false
+  SetTimer ShowFastHints, -100
 }
 
 ClickInsert(quick:=true) {
@@ -637,32 +655,149 @@ global hDc:=0
 global hCurrPen:=0
 ; global G:=0
 ; global obm:=0
-EnterFastMode(){
-  if(FAST_MODE){
-    Gui, 1:Hide
-    ; Gui, 2:Hide
-    FAST_MODE := false
-  }else{
-    Gui, 1:Show
-    ; Gui, 2:Show,NA
-    Canvas_Open(GuiHwnd, "0x00FF00")
 
-    i=1
-    Loop, 9 {
-    Canvas_DrawLine(GuiHwnd, 0, A_ScreenHeight/10*i, A_ScreenWidth, A_ScreenHeight/10*i, 1)
-    Canvas_DrawLine(GuiHwnd, A_ScreenWidth/10*i, 0, A_ScreenWidth/10*i, A_ScreenHeight, 1)
-     i+=1
+global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+ShowText(show){
+  if(show){
+    Gui Color, White
+    Gui -caption +toolwindow +AlwaysOnTop
+    Gui font, s50, Arial
+    i:=0
+    Loop, 5{
+      j:=0
+      Loop, 5{
+        k:=i*5+j
+        alpha1 :=alphaTable[k//26+1]
+        alpha2 :=alphaTable[Mod(k, 26)+1]
+        label:= alpha1 alpha2
+        
+        Gui add, text,% "cRed " "TransColor " "X" A_ScreenWidth/5*j " Y" A_ScreenHeight/5*i " W"A_ScreenWidth/5 " H"A_ScreenHeight/5, %label% 
+        j+=1
+      }
+      gui, add, text, % "x0" " y" A_ScreenHeight/5*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
+      gui, add, text, % "x" A_ScreenWidth/5*i " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line > Etched Gray
+      i+=1
     }
-
-    DrawText(0, 0, 0,0, "hello")
-    FAST_MODE := true
+    ; gui, add, text, x10 y10 w100 0x10  ;Horizontal Line > Etched Gray
+    ; gui, add, text, x10 y15 h70 0x11  ;Vertical Line > Etched Gray
+    ; gui, add, text, x10 y+10 w75 h1 0x7  ;Horizontal Line > Black
+    ; gui, add, text, x10 y+10 w1 h75 0x7  ;Vertical Line > Black
+    Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
+    WinSet TransColor, White, TRANS-WIN
+  }else{
+    Gui Hide
   }
 }
+ShowFastHints(){
+    ShowText(true)
+    Gui, 1:Show
+    ; Gui, 2:Show,NA 
+    Canvas_Open(GuiHwnd, "0x00FF00", 3)
 
-DrawText(x0, y0, dx, dy, text){
-  Gui, 2:Add, Text,, text
+    ; i:=1
+    ; Loop, 4 {
+    ;   Canvas_DrawLine(GuiHwnd, 0, A_ScreenHeight/5*i, A_ScreenWidth, A_ScreenHeight/5*i)
+    ;   Canvas_DrawLine(GuiHwnd, A_ScreenWidth/5*i, 0, A_ScreenWidth/5*i, A_ScreenHeight)
+    ;   i+=1
+    ; }
+
+    ; DrawText(0, 0, 0,0, "hello")
+    ; Input, UserInput, V B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az, ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz, ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz, da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz
+    ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
+    ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
+    Input, UserInput, V L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az
+    if (ErrorLevel = "Max")
+    {
+        ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
+        Gui, 1:Hide
+        ShowText(false)
+        EnterNormalMode()
+        return
+    }
+    if (ErrorLevel = "Timeout")
+    {
+        ; MsgBox, You entered "%UserInput%" at which time the input timed out.
+        Gui, 1:Hide
+        ShowText(false)
+        EnterNormalMode()
+        return
+    }
+
+    if (ErrorLevel = "Match")
+    {
+      if (UserInput = "aa")
+        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*1
+      else if (UserInput = "ab")
+        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*1
+      else if (UserInput = "ac")
+        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*1
+      else if (UserInput = "ad")
+        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*1
+      else if (UserInput = "ae")
+        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*1
+      else if (UserInput = "af")
+        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*3
+      else if (UserInput = "ag")     
+        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*3
+      else if (UserInput = "ah")     
+        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*3
+      else if (UserInput = "ai")     
+        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*3
+      else if (UserInput = "aj")     
+        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*3
+      else if (UserInput = "ak")
+        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*5
+      else if (UserInput = "al")     
+        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*5
+      else if (UserInput = "am")     
+        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*5
+      else if (UserInput = "an")     
+        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*5
+      else if (UserInput = "ao")     
+        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*5
+      else if (UserInput = "ap")
+        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*7
+      else if (UserInput = "aq")     
+        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*7
+      else if (UserInput = "ar")     
+        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*7
+      else if (UserInput = "as")     
+        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*7
+      else if (UserInput = "at")     
+        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*7
+      else if (UserInput = "au")
+        MouseMove, A_ScreenWidth/10*1, A_ScreenHeight/10*9
+      else if (UserInput = "av")     
+        MouseMove, A_ScreenWidth/10*3, A_ScreenHeight/10*9
+      else if (UserInput = "aw")     
+        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/10*9
+      else if (UserInput = "ax")     
+        MouseMove, A_ScreenWidth/10*7, A_ScreenHeight/10*9
+      else if (UserInput = "ay")     
+        MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*9
+      else if (UserInput = "az")
+        MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/5*1
+      Gui, 1:Hide
+      ShowText(false)
+      EnterNormalMode()
+      return
+    }
+    if (ErrorLevel = "NewInput")
+        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+        Gui, 1:Hide
+        ShowText(false)
+        EnterNormalMode()
+        return
+    If InStr(ErrorLevel, "EndKey:")
+    {
+        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+        Gui, 1:Hide
+        ShowText(false)
+        EnterNormalMode()
+        return
+    }
 }
-
 
 ; Canvas_Open(hWnd, p_color){
 ;   hBm := CreateDIBSection(800, 600)
@@ -694,11 +829,11 @@ DrawText(x0, y0, dx, dy, text){
 ;   DeleteObject(hBm)
 ; }
 
-Canvas_Open(hWnd, p_color){
+Canvas_Open(hWnd, p_color, p_w){
  hDC := DllCall("GetDC", UInt, hWnd)
  hCurrPen := DllCall("CreatePen", UInt, 0, UInt, p_w, UInt, p_color)
 }
-Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2, p_w )
+Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2)
 {
  p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
  DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
@@ -715,6 +850,7 @@ Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
 <#<!i:: EnterInsertMode()
 <#<!p:: EnterNumpadMode()
+; <#<!f:: EnterFastMode()
 
 ; escape hatches
 +Home:: Send {Home}
@@ -742,10 +878,10 @@ Insert:: EnterInsertMode()
   `:: ClickInsert(true)
   ; +S:: DoubleClickInsert()
   ; passthru for Vimium hotlinks 
-  ~f:: EnterInsertMode(true)
+  ; ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
-  +f:: EnterFastMode()
+  f:: EnterFastMode()
   ; passthru for new tab
   ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
@@ -845,6 +981,8 @@ Insert:: EnterInsertMode()
   ^l:: Send {Right}
 #If (WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
+#If (FAST_MODE)
+  ; f:: ShowFastHints()
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
