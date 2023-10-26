@@ -35,9 +35,10 @@ global DRAGGING := false
 global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
 
-global FAST_MODE_X :=7
+global FAST_MODE_X :=8
 global FAST_MODE_Y :=5
-global FAST_MODE_FONT_SIZE :=40
+global FAST_MODE_FONT_SIZE :=48
+global FAST_MODE_FONT_COLOR :="Yellow"
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
 ; {
@@ -636,10 +637,10 @@ SwitchNumpadQuick(){
 }
 
 ; Gui, 1:+LastFound +AlwaysOnTop +ToolWindow
-Gui, 1: -Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
-Gui, 1:Show, NA
-Gui, 1:Maximize
-GuiHwnd := WinExist() ; capture window handle
+; Gui, 1: -Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
+; Gui, 1:Show, NA
+; Gui, 1:Maximize
+; GuiHwnd := WinExist() ; capture window handle
 
 ; Gui, 1:Hide
 
@@ -675,20 +676,22 @@ FastModeLabel(show:=true){
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
         
-        Gui add, text,% "cRed " "TransColor " "X" A_ScreenWidth/FAST_MODE_X*j+1 " Y" A_ScreenHeight/FAST_MODE_Y*i+1 " W"A_ScreenWidth/FAST_MODE_X-2 " H"A_ScreenHeight/FAST_MODE_Y-2, %label% 
+        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" A_ScreenWidth/FAST_MODE_X*j+1 " Y" A_ScreenHeight/FAST_MODE_Y*i+1 " W"A_ScreenWidth/FAST_MODE_X-2 " H"A_ScreenHeight/FAST_MODE_Y-2, %label% 
         j+=1
       }
       i+=1
     }
 
-    i:=0
-    Loop, %FAST_MODE_Y%{
+    i:=1
+    ly:=FAST_MODE_Y-1
+    lx:=FAST_MODE_X-1
+    Loop, %ly%{
       gui, add, text, % "x0" " y" A_ScreenHeight/FAST_MODE_Y*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
       i+=1
     }
 
-    j:=0
-    Loop, %FAST_MODE_X%{
+    j:=1
+    Loop, %lx%{
       gui, add, text, % "x" A_ScreenWidth/FAST_MODE_X*j " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line >% Etched Gray
       j+=1
     }
