@@ -204,7 +204,7 @@ EnterFastMode(){
   NORMAL_QUICK := false
   INSERT_MODE := false
   INSERT_QUICK := false
-  SetTimer ShowFastHints, -100
+  SetTimer ShowFastHints, -10
 }
 
 ClickInsert(quick:=true) {
@@ -691,9 +691,9 @@ ShowText(show){
 }
 ShowFastHints(){
     ShowText(true)
-    Gui, 1:Show
+    ; Gui, 1:Show
     ; Gui, 2:Show,NA 
-    Canvas_Open(GuiHwnd, "0x00FF00", 3)
+    ; Canvas_Open(GuiHwnd, "0x00FF00", 3)
 
     ; i:=1
     ; Loop, 4 {
@@ -706,24 +706,32 @@ ShowFastHints(){
     ; Input, UserInput, V B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az, ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz, ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz, da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz
     ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
     ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
-    Input, UserInput, V L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az
+    Input, UserInput, B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az
     if (ErrorLevel = "Max")
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
-        Gui, 1:Hide
+        ; Gui, 1:Hide
         ShowText(false)
         EnterNormalMode()
         return
     }
-    if (ErrorLevel = "Timeout")
-    {
-        ; MsgBox, You entered "%UserInput%" at which time the input timed out.
-        Gui, 1:Hide
-        ShowText(false)
-        EnterNormalMode()
-        return
-    }
+    ; if (ErrorLevel = "Timeout")
+    ; {
+    ;     ; MsgBox, You entered "%UserInput%" at which time the input timed out.
+    ;     ; Gui, 1:Hide
+    ;     ShowText(false)
+    ;     EnterNormalMode()
+    ;     return
+    ; }
 
+    If InStr(ErrorLevel, "EndKey:")
+    {
+        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+        ; Gui, 1:Hide
+        ShowText(false)
+        EnterNormalMode()
+        return
+    }
     if (ErrorLevel = "Match")
     {
       if (UserInput = "aa")
@@ -778,25 +786,20 @@ ShowFastHints(){
         MouseMove, A_ScreenWidth/10*9, A_ScreenHeight/10*9
       else if (UserInput = "az")
         MouseMove, A_ScreenWidth/10*5, A_ScreenHeight/5*1
-      Gui, 1:Hide
+      ; Gui, 1:Hide
       ShowText(false)
       EnterNormalMode()
       return
     }
     if (ErrorLevel = "NewInput")
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
-        Gui, 1:Hide
+        ; Gui, 1:Hide
         ShowText(false)
         EnterNormalMode()
         return
-    If InStr(ErrorLevel, "EndKey:")
-    {
-        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
-        Gui, 1:Hide
-        ShowText(false)
-        EnterNormalMode()
-        return
-    }
+    ShowText(false)
+    EnterNormalMode()
+    return
 }
 
 ; Canvas_Open(hWnd, p_color){
