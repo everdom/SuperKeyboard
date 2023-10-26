@@ -717,6 +717,7 @@ ShowFastHints(){
       }
       i+=1
     }
+    matches:=SubStr(matches, 1, StrLen(matches)-1)
     Input, UserInput, B L2, {enter}{esc}, %matches%
     if (ErrorLevel = "Max")
     {
