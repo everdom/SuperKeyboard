@@ -18,6 +18,7 @@ global NORMAL_QUICK := false
 global NUMPAD := false
 global NUMPAD_QUICK := false
 global WASD := true
+global FAST_MODE:=false
 
 ; Drag takes care of this now
 ;global MAX_VELOCITY := 72
@@ -652,7 +653,6 @@ SwitchNumpadQuick(){
 ; Gui, 2:Show, NA
 ; Gui, 2:Hide
 
-global FAST_MODE:=false
 
 ; global hBm:=0
 global hDc:=0
@@ -915,12 +915,12 @@ Insert:: EnterInsertMode()
   ; allow for modifier keys (or more importantly a lack of them) by lifting ctrl requirement for these hotkeys
   *]:: End
   *[:: Home
-  `;:: ScrollDown()
-  ':: ScrollUp()
-  ; }:: ScrollDownMore()
-  ; {:: ScrollUpMore()
-  ::: ScrollDownMore()
-  ":: ScrollUpMore()
+  *`;:: ScrollDown()
+  *':: ScrollUp()
+  #`;:: ScrollDownMore()
+  #':: ScrollUpMore()
+  ::: ScrollDown()
+  ":: ScrollUp()
   =:: Send {Volume_Up}
   -:: Send {Volume_Down}
   0:: Send {Volume_Mute}

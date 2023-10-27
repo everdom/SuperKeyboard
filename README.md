@@ -59,10 +59,10 @@ very normal at all)
 - `x` hold down right click (hit `x` or any mouse button again to release)
 - `+c` hold down shft+middle click (hit `+c` or any mouse button again to release)
 - `^c` hold down ctrl+middle click (hit `^c` or any mouse button again to release)
-- `;` scroll down
-- `'` scroll up
-- `"` page up
-- `:` page down
+- `;` scroll down (support modifier)
+- `'` scroll up (support modifier)
+- `#;` page down
+- `#'` page up
 - `[` home
 - `]` end
 - `d,` page down(vim mode)
@@ -78,6 +78,7 @@ very normal at all)
 - `f11,_` decrease mouse move speed
 - `f10,)` set mouse move speed to default
 - `Insert,Win+Alt+i` enter Insert mode
+- `f` fast mode(press the keys on the screen to move the mouse to the specified area)
 
 #### Only in Explorer 
 - `!hjkl|^hjkl`  move the cursor using arrow dirction key
