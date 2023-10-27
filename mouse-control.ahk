@@ -133,6 +133,13 @@ EnterNormalMode(quick:=false) {
   ;MsgBox, "Welcome to Normal Mode"
   NORMAL_QUICK := quick
 
+  ; chrome enter vim mode
+  if(WinActive("ahk_class Chrome_WidgetWin_1")){
+    WASD := false
+  }else{
+    WASD := true
+  }
+
   msg := "NORMAL"
   If (WASD == false) {
     msg := msg . " (VIM)"
@@ -873,7 +880,7 @@ Insert:: EnterInsertMode()
   ; ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
-  f:: EnterFastMode()
+  ; f:: EnterFastMode()
   ; passthru for new tab
   ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
@@ -898,7 +905,7 @@ Insert:: EnterInsertMode()
   ; +X:: Close()
   +Z:: Resize()
   v:: Drag()
-  x:: RightDrag()
+  ; x:: RightDrag()
   c:: MiddleDrag()
   +c:: ShiftMiddleDrag()
   ^c:: CtrlMiddleDrag()
@@ -971,6 +978,12 @@ Insert:: EnterInsertMode()
   ^j:: Send {Down}
   ^k:: Send {Up}
   ^l:: Send {Right}
+#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
+  x:: RightDrag()
+  f:: EnterFastMode()
+#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+  x:: Send ^{w}
+  ~f:: EnterInsertMode(true)
 #If (WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
@@ -1020,7 +1033,7 @@ Insert:: EnterInsertMode()
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
   ~^c:: EnterNormalMode()
-  Escape:: EnterNormalMode()
+  ~Escape:: EnterNormalMode()
   Capslock:: EnterNormalMode()
   +Capslock:: EnterNormalMode()
 #If (NORMAL_MODE && WASD)
