@@ -14,9 +14,8 @@
 global INSERT_MODE := false
 global INSERT_QUICK := false
 global NORMAL_MODE := false
-global NORMAL_QUICK := false
+global SMALL_MODE := false
 global NUMPAD := false
-global NUMPAD_QUICK := false
 global WASD := true
 global FAST_MODE:=false
 
@@ -191,7 +190,6 @@ EnterInsertMode(quick:=false) {
   INSERT_MODE := true
   INSERT_QUICK := quick
   NUMPAD := false
-  NUMPAD_QUICK := false
   NORMAL_MODE := false
   NORMAL_QUICK := false
   FAST_MODE := false
@@ -204,7 +202,6 @@ EnterNumpadMode(quick:=false) {
   INSERT_MODE := true
   INSERT_QUICK := quick
   NUMPAD := true
-  NUMPAD_QUICK := true
   NORMAL_MODE := false
   NORMAL_QUICK := false
   FAST_MODE := false
@@ -641,12 +638,12 @@ SetForce(v, relative){
   ShowModePopup(Format("Speed: {:.1f}", FORCE))
 }
 
-SwitchNumpadQuick(){
-  NUMPAD_QUICK := !NUMPAD_QUICK
-  if(NUMPAD_QUICK){
-    ShowPopup("NUMPAD QUICK ON")
+SwitchSmallMode(){
+  SMALL_MODE := !SMALL_MODE
+  if(SMALL_MODE){
+    ShowPopup("SMALL MODE ON")
   }else{
-    ShowPopup("NUMPAD QUICK OFF")
+    ShowPopup("SMALL MODE OFF")
   }
 }
 
@@ -1000,7 +997,7 @@ Insert:: EnterInsertMode()
 #If (INSERT_MODE && INSERT_QUICK == false)
   Capslock:: EnterNormalMode(true)
   +Capslock:: EnterNormalMode()
-#If (INSERT_MODE && NUMPAD && NUMPAD_QUICK == false)
+#If (INSERT_MODE && NUMPAD && SMALL_MODE)
   !u::Send {Numpad7}
   !i::Send {Numpad8}
   !o::Send {Numpad9}
@@ -1017,8 +1014,64 @@ Insert:: EnterInsertMode()
   ![::Send {*}
   !]::Send {/}
   !Enter::Send {Enter}
-  !`:: SwitchNumpadQuick()
-#If (INSERT_MODE && NUMPAD && NUMPAD_QUICK)
+
+  ; small keyboard layout
+  1::f1
+  2::f2
+  3::f3
+  4::f4
+  5::f5
+  6::f6
+  7::f7
+  8::f8
+  9::f9
+  0::f10
+  +1::!
+  +2::@
+  +3::#
+  +4::$
+  +5::Send {`%}
+  +6::^
+  +7::&
+  +8::*
+  +9::(
+  +0::)
+  !1::1
+  !2::2
+  !3::3
+  !4::4
+  !5::5
+  !6::6
+  !7::7
+  !8::8
+  !9::9
+  !0::0
+  ^1::1
+  ^2::2
+  ^3::3
+  ^4::4
+  ^5::5
+  ^6::6
+  ^7::7
+  ^8::8
+  ^9::9
+  ^0::0
+  #1::1
+  #2::2
+  #3::3
+  #4::4
+  #5::5
+  #6::6
+  #7::7
+  #8::8
+  #9::9
+  #0::0
+  +`::
+  `::Esc
+  ^`::Send {``}
+
+  !`:: SwitchSmallMode()
+#If (INSERT_MODE && NUMPAD && SMALL_MODE == false)
   u::Send {Numpad7}
   i::Send {Numpad8}
   o::Send {Numpad9}
@@ -1067,7 +1120,7 @@ Insert:: EnterInsertMode()
   b::Send {.}
   `::Send {Backspace}
   Tab::Send {=}
-  !`:: SwitchNumpadQuick()
+  !`:: SwitchSmallMode()
 
 #If (INSERT_MODE && INSERT_QUICK)
   ~Enter:: EnterNormalMode()
@@ -1097,6 +1150,7 @@ Insert:: EnterInsertMode()
   t:: MouseRight()
   +T:: MouseRight()
   *y:: MouseMiddle()
+
 #IF (DRAGGING)
   LButton:: ReleaseAllDrag()
   MButton:: ReleaseAllDrag()
