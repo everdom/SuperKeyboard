@@ -8,6 +8,9 @@
 ;
 ; Last updated 2022-02-05
 
+
+; #Include Gdip_All.ahk
+
 global INSERT_MODE := false
 global INSERT_QUICK := false
 global NORMAL_MODE := false
@@ -15,6 +18,7 @@ global NORMAL_QUICK := false
 global NUMPAD := false
 global NUMPAD_QUICK := false
 global WASD := true
+global FAST_MODE:=false
 
 ; Drag takes care of this now
 ;global MAX_VELOCITY := 72
@@ -31,6 +35,19 @@ global POP_UP := false
 global DRAGGING := false
 global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
+
+global FAST_MODE_X :=8
+global FAST_MODE_Y :=5
+global FAST_MODE_FONT_SIZE :=48
+global FAST_MODE_FONT_COLOR :="01AFFD"
+
+global CHROME_VIM_MODE :=true
+; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
+; If !pToken := Gdip_Startup()
+; {
+; 	MsgBox, 48, gdiplus error!, Gdiplus failed to start. Please ensure you have gdiplus on your system
+; 	ExitApp
+; }
 
 ; Insert Mode by default
 EnterInsertMode()
@@ -69,6 +86,16 @@ MoveCursor() {
       return
     }
   }
+
+  if(CHROME_VIM_MODE){
+    ; chrome enter vim mode
+    if(WinActive("ahk_class Chrome_WidgetWin_1")){
+      WASD := false
+    }else{
+      WASD := true
+    }
+  }
+
   LEFT := 0
   DOWN := 0
   UP := 0
@@ -118,6 +145,7 @@ EnterNormalMode(quick:=false) {
   ;MsgBox, "Welcome to Normal Mode"
   NORMAL_QUICK := quick
 
+
   msg := "NORMAL"
   If (WASD == false) {
     msg := msg . " (VIM)"
@@ -131,6 +159,7 @@ EnterNormalMode(quick:=false) {
     Return
   }
   NORMAL_MODE := true
+  FAST_MODE := false
   INSERT_MODE := false
   INSERT_QUICK := false
 
@@ -162,9 +191,10 @@ EnterInsertMode(quick:=false) {
   INSERT_MODE := true
   INSERT_QUICK := quick
   NUMPAD := false
+  NUMPAD_QUICK := false
   NORMAL_MODE := false
   NORMAL_QUICK := false
-  NUMPAD_QUICK := false
+  FAST_MODE := false
 }
 
 EnterNumpadMode(quick:=false) {
@@ -177,6 +207,22 @@ EnterNumpadMode(quick:=false) {
   NUMPAD_QUICK := true
   NORMAL_MODE := false
   NORMAL_QUICK := false
+  FAST_MODE := false
+}
+
+EnterFastMode(){
+  msg := "FAST"
+  ShowModePopup(msg)
+
+  If (FAST_MODE) {
+    Return
+  }
+  FAST_MODE := true
+  NORMAL_MODE := false
+  NORMAL_QUICK := false
+  INSERT_MODE := false
+  INSERT_QUICK := false
+  SetTimer FastModeHints, -30
 }
 
 ClickInsert(quick:=true) {
@@ -604,12 +650,213 @@ SwitchNumpadQuick(){
   }
 }
 
+; Gui, 1:+LastFound +AlwaysOnTop +ToolWindow
+; Gui, 1: -Caption +E0x80000 +LastFound +AlwaysOnTop +ToolWindow +OwnDialogs
+; Gui, 1:Show, NA
+; Gui, 1:Maximize
+; GuiHwnd := WinExist() ; capture window handle
+
+; Gui, 1:Hide
+
+; Gui, 2:-Caption +AlwaysOnTop
+; Gui, 2:Font, s50 w700 q4, Arial
+; Gui, 2:Color, White
+; Gui, 2:Margin, 10, 5
+; Gui, 2:Add, Text, Center, Toggle is on
+; Gui, 2:Show, NA
+; Gui, 2:Hide
+
+
+; global hBm:=0
+global hDc:=0
+global hCurrPen:=0
+; global G:=0
+; global obm:=0
+
+global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+
+FastModeLabel(show:=true){
+  if(show){
+    Gui Color, White
+    Gui -caption +toolwindow +AlwaysOnTop
+    Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
+    i:=0
+    Loop,%FAST_MODE_Y%{
+      j:=0
+      Loop, %FAST_MODE_X%{
+        k:=i*FAST_MODE_X+j
+        alpha1 :=alphaTable[k//26+1]
+        alpha2 :=alphaTable[Mod(k, 26)+1]
+        label:= alpha1 alpha2
+        
+        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" A_ScreenWidth/FAST_MODE_X*j+1 " Y" A_ScreenHeight/FAST_MODE_Y*i+1 " W"A_ScreenWidth/FAST_MODE_X-2 " H"A_ScreenHeight/FAST_MODE_Y-2, %label% 
+        j+=1
+      }
+      i+=1
+    }
+
+    i:=1
+    ly:=FAST_MODE_Y-1
+    lx:=FAST_MODE_X-1
+    Loop, %ly%{
+      gui, add, text, % "x0" " y" A_ScreenHeight/FAST_MODE_Y*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
+      i+=1
+    }
+
+    j:=1
+    Loop, %lx%{
+      gui, add, text, % "x" A_ScreenWidth/FAST_MODE_X*j " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line >% Etched Gray
+      j+=1
+    }
+
+    Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
+    WinSet TransColor, White, TRANS-WIN
+  }else{
+    Gui Hide
+  }
+}
+FastModeHints(){
+    ; Gui, 1:Show
+    ; Gui, 2:Show,NA 
+    ; Canvas_Open(GuiHwnd, "0x00FF00", 3)
+
+    ; i:=1
+    ; Loop, 4 {
+    ;   Canvas_DrawLine(GuiHwnd, 0, A_ScreenHeight/5*i, A_ScreenWidth, A_ScreenHeight/5*i)
+    ;   Canvas_DrawLine(GuiHwnd, A_ScreenWidth/5*i, 0, A_ScreenWidth/5*i, A_ScreenHeight)
+    ;   i+=1
+    ; }
+
+    ; DrawText(0, 0, 0,0, "hello")
+    ; Input, UserInput, V B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az, ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz, ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz, da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz
+    ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
+    ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
+
+    SetTimer FastModeLabel, -10
+    matches:=""
+    i:=0
+    Loop,%FAST_MODE_Y%{
+      j:=0
+      Loop, %FAST_MODE_X%{
+        k:=i*FAST_MODE_X+j
+        alpha1 :=alphaTable[k//26+1]
+        alpha2 :=alphaTable[Mod(k, 26)+1]
+        label:= alpha1 alpha2
+        matches:=matches label ","
+        j+=1
+      }
+      i+=1
+    }
+    matches:=SubStr(matches, 1, StrLen(matches)-1)
+
+    Input, UserInput, B L2, {enter}{esc}, %matches%
+
+    if (ErrorLevel = "Max")
+    {
+        ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
+        ; Gui, 1:Hide
+        FastModeLabel(false)
+        EnterNormalMode()
+        return
+    }
+    ; if (ErrorLevel = "Timeout")
+    ; {
+    ;     ; MsgBox, You entered "%UserInput%" at which time the input timed out.
+    ;     ; Gui, 1:Hide
+    ;     FastModeLabel(false)
+    ;     EnterNormalMode()
+    ;     return
+    ; }
+
+    If InStr(ErrorLevel, "EndKey:")
+    {
+        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+        ; Gui, 1:Hide
+        FastModeLabel(false)
+        EnterNormalMode()
+        return
+    }
+    if (ErrorLevel = "Match")
+    {
+      i:=0
+      Loop,%FAST_MODE_Y%{
+        j:=0
+        Loop, %FAST_MODE_X%{
+          k:=i*FAST_MODE_X+j
+          alpha1 :=alphaTable[k//26+1]
+          alpha2 :=alphaTable[Mod(k, 26)+1]
+          label:= alpha1 alpha2
+          if (UserInput = label)
+            MouseMove, A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
+          j+=1
+        }
+        i+=1
+      }
+      FastModeLabel(false)
+      EnterNormalMode()
+      return
+    }
+    if (ErrorLevel = "NewInput")
+        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+        ; Gui, 1:Hide
+        FastModeLabel(false)
+        EnterNormalMode()
+        return
+}
+
+; Canvas_Open(hWnd, p_color){
+;   hBm := CreateDIBSection(800, 600)
+;   hDc := CreateCompatibleDC()
+;   obm := SelectObject(hdc, hbm)
+;   G := Gdip_GraphicsFromHDC(hdc)
+;   Gdip_SetSmoothingMode(G, 4)
+; }
+; Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2, p_w )
+; {
+;   p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
+;   pPen := Gdip_CreatePen(0xffff0000, 3)
+;   Gdip_DrawEllipse(G, pPen, 100, 50, 200, 300)
+;   Gdip_DeletePen(pPen)
+;   pPen := Gdip_CreatePen(0x660000ff, 10)
+;   ; Draw a rectangle onto the graphics of the bitmap using the pen just created
+;   ; Draws the rectangle from coordinates (250,80) a rectangle of 300x200 and outline width of 10 (specified when creating the pen)
+;   ; 用刚那支蓝笔在画布上画一个矩形。
+;   ; 整个函数的参数分别是 Gdip_DrawRectangle(画布, 画笔, x, y, 矩形宽, 矩形高)
+;   Gdip_DrawRectangle(G, pPen, 250, 80, 300, 200)
+;   ; Delete the brush as it is no longer needed and wastes memory
+;   ; 同样删除画笔。
+;   Gdip_DeletePen(pPen)
+; }
+; Canvas_Close(){
+;   Gdip_DeleteGraphics(G)
+;   SelectObject(hDc, obm)
+;   DeleteDC(hDc)
+;   DeleteObject(hBm)
+; }
+
+; Canvas_Open(hWnd, p_color, p_w){
+;  hDC := DllCall("GetDC", UInt, hWnd)
+;  hCurrPen := DllCall("CreatePen", UInt, 0, UInt, p_w, UInt, p_color)
+; }
+; Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2)
+; {
+;  p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
+;  DllCall("SelectObject", UInt,hdc, UInt,hCurrPen)
+;  DllCall("gdi32.dll\MoveToEx", UInt, hdc, Uint,p_x1, Uint, p_y1, Uint, 0 )
+;  DllCall("gdi32.dll\LineTo", UInt, hdc, Uint, p_x2, Uint, p_y2 )
+; }
+; Canvas_Close(){
+;  DllCall("ReleaseDC", UInt, 0, UInt, hDC)  ; Clean-up.
+;  DllCall("DeleteObject", UInt,hCurrPen)
+; }
 ; "FINAL" MODE SWITCH BINDINGS
+
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
 <#<!i:: EnterInsertMode()
 <#<!p:: EnterNumpadMode()
+; <#<!f:: EnterFastMode()
 
 ; escape hatches
 +Home:: Send {Home}
@@ -637,9 +884,10 @@ Insert:: EnterInsertMode()
   `:: ClickInsert(true)
   ; +S:: DoubleClickInsert()
   ; passthru for Vimium hotlinks 
-  ~f:: EnterInsertMode(true)
+  ; ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
+  ; f:: EnterFastMode()
   ; passthru for new tab
   ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
@@ -664,7 +912,7 @@ Insert:: EnterInsertMode()
   ; +X:: Close()
   +Z:: Resize()
   v:: Drag()
-  x:: RightDrag()
+  ; x:: RightDrag()
   c:: MiddleDrag()
   +c:: ShiftMiddleDrag()
   ^c:: CtrlMiddleDrag()
@@ -681,12 +929,12 @@ Insert:: EnterInsertMode()
   ; allow for modifier keys (or more importantly a lack of them) by lifting ctrl requirement for these hotkeys
   *]:: End
   *[:: Home
-  `;:: ScrollDown()
-  ':: ScrollUp()
-  ; }:: ScrollDownMore()
-  ; {:: ScrollUpMore()
-  ::: ScrollDownMore()
-  ":: ScrollUpMore()
+  *`;:: ScrollDown()
+  *':: ScrollUp()
+  #`;:: ScrollDownMore()
+  #':: ScrollUpMore()
+  ::: ScrollDown()
+  ":: ScrollUp()
   =:: Send {Volume_Up}
   -:: Send {Volume_Down}
   0:: Send {Volume_Mute}
@@ -711,8 +959,8 @@ Insert:: EnterInsertMode()
   ; y:: ScrollUp()
   d:: ScrollDownMore()
   u:: ScrollUpMore()
-  g:: Home
-  +g::End
+  g:: Send {Home}
+  +g::Send {End}
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
@@ -737,8 +985,16 @@ Insert:: EnterInsertMode()
   ^j:: Send {Down}
   ^k:: Send {Up}
   ^l:: Send {Right}
+#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
+  x:: RightDrag()
+  f:: EnterFastMode()
+#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+  x:: Send ^{w}
+  ~f:: EnterInsertMode(true)
 #If (WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
+#If (FAST_MODE)
+  ; f:: FastModeHints()
 #If (INSERT_MODE)
   ; Normal (Quick) Mode
 #If (INSERT_MODE && INSERT_QUICK == false)
@@ -817,7 +1073,7 @@ Insert:: EnterInsertMode()
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
   ~^c:: EnterNormalMode()
-  Escape:: EnterNormalMode()
+  ~Escape:: EnterNormalMode()
   Capslock:: EnterNormalMode()
   +Capslock:: EnterNormalMode()
 #If (NORMAL_MODE && WASD)
