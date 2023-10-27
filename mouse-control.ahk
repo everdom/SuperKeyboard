@@ -14,8 +14,9 @@
 global INSERT_MODE := false
 global INSERT_QUICK := false
 global NORMAL_MODE := false
-global SMALL_MODE := false
+global NORMAL_QUICK := false
 global NUMPAD := false
+global SMALL_MODE := false
 global WASD := true
 global FAST_MODE:=false
 
