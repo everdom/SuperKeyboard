@@ -959,8 +959,8 @@ Insert:: EnterInsertMode()
   ; y:: ScrollUp()
   d:: ScrollDownMore()
   u:: ScrollUpMore()
-  g:: Home
-  +g::End
+  g:: Send {Home}
+  +g::Send {End}
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
