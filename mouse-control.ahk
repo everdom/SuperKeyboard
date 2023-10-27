@@ -84,6 +84,14 @@ MoveCursor() {
       return
     }
   }
+
+  ; chrome enter vim mode
+  if(WinActive("ahk_class Chrome_WidgetWin_1")){
+    WASD := false
+  }else{
+    WASD := true
+  }
+
   LEFT := 0
   DOWN := 0
   UP := 0
@@ -133,12 +141,6 @@ EnterNormalMode(quick:=false) {
   ;MsgBox, "Welcome to Normal Mode"
   NORMAL_QUICK := quick
 
-  ; chrome enter vim mode
-  if(WinActive("ahk_class Chrome_WidgetWin_1")){
-    WASD := false
-  }else{
-    WASD := true
-  }
 
   msg := "NORMAL"
   If (WASD == false) {
@@ -844,6 +846,7 @@ FastModeHints(){
 ;  DllCall("DeleteObject", UInt,hCurrPen)
 ; }
 ; "FINAL" MODE SWITCH BINDINGS
+
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
