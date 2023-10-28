@@ -887,11 +887,11 @@ Insert:: EnterInsertMode()
   ~^f:: EnterInsertMode(true)
   ; f:: EnterFastMode()
   ; passthru for new tab
-  ~^t:: EnterInsertMode(true)
+ ; ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
   ~Delete:: EnterInsertMode(true)
   ; do not pass thru
-  +;:: EnterInsertMode(true)
+  ; +;:: EnterInsertMode(true)
   ; intercept movement keys
   h:: Return
   j:: Return
@@ -983,6 +983,9 @@ Insert:: EnterInsertMode()
   ^j:: Send {Down}
   ^k:: Send {Up}
   ^l:: Send {Right}
+  !x:: Send ^{w}
+#If (NORMAL_MODE && WinActive("ahk_class CabinetWClass"))
+  x:: Send ^{w}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
   x:: RightDrag()
   f:: EnterFastMode()
@@ -1134,7 +1137,7 @@ Insert:: EnterInsertMode()
 #If (INSERT_MODE && INSERT_QUICK)
   ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
-  ~^c:: EnterNormalMode()
+  ; ~^c:: EnterNormalMode()
   ~Escape:: EnterNormalMode()
   Capslock:: EnterNormalMode()
   +Capslock:: EnterNormalMode()
