@@ -38,8 +38,8 @@ global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
 ; global CROSS_RULER := false
 
-global FAST_MODE_X :=8
-global FAST_MODE_Y :=5
+global FAST_MODE_X :=12
+global FAST_MODE_Y :=8
 global FAST_MODE_FONT_SIZE :=48
 ; global FAST_MODE_FONT_COLOR :="01AFFD"
 global FAST_MODE_FONT_COLOR :="Red"
@@ -229,7 +229,7 @@ EnterFastMode(){
   NORMAL_QUICK := false
   INSERT_MODE := false
   INSERT_QUICK := false
-  SetTimer FastModeHints, -30
+  SetTimer FastModeHints, -10
 }
 
 ClickInsert(quick:=true) {
@@ -685,7 +685,7 @@ SwitchSmallMode(){
 
 global hDc:=0
 global hCurrPen:=0
-
+global fastModeCache := false
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
 FastModeLabel(show:=true){
@@ -693,6 +693,12 @@ FastModeLabel(show:=true){
     Gui Color, White
     Gui -caption +toolwindow +AlwaysOnTop
     Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
+    ; add cache to show quickly
+    if(fastModeCache == true){
+      Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
+      WinSet TransColor, White, TRANS-WIN
+      return
+    }
     i:=0
     Loop,%FAST_MODE_Y%{
       j:=0
@@ -721,7 +727,7 @@ FastModeLabel(show:=true){
       gui, add, text, % "x" A_ScreenWidth/FAST_MODE_X*j " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line >% Etched Gray
       j+=1
     }
-
+    firstRun := true
     Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
     WinSet TransColor, White, TRANS-WIN
   }else{
@@ -729,7 +735,7 @@ FastModeLabel(show:=true){
   }
 }
 FastModeHints(){
-    SetTimer FastModeLabel, -10
+    SetTimer FastModeLabel, -1
     matches:=""
     i:=0
     Loop,%FAST_MODE_Y%{
