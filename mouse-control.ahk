@@ -35,6 +35,7 @@ global POP_UP := false
 global DRAGGING := false
 global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
+; global CROSS_RULER := false
 
 global FAST_MODE_X :=8
 global FAST_MODE_Y :=5
@@ -308,6 +309,7 @@ MiddleDrag() {
 ; For Fusion360
 ShiftMiddleDrag() {
   If (DRAGGING) {
+    KeyWait Shift
     Click, Middle, Up
     DRAGGING := false
     SHIFT_DRAGGING := false
@@ -325,6 +327,7 @@ ShiftMiddleDrag() {
 
 CtrlMiddleDrag() {
   If (DRAGGING) {
+    KeyWait Ctrl
     Click, Middle, Up
     DRAGGING := false
     CTRL_DRAGGING := false
@@ -653,23 +656,10 @@ SwitchSmallMode(){
 ; Gui, 1:Show, NA
 ; Gui, 1:Maximize
 ; GuiHwnd := WinExist() ; capture window handle
-
 ; Gui, 1:Hide
 
-; Gui, 2:-Caption +AlwaysOnTop
-; Gui, 2:Font, s50 w700 q4, Arial
-; Gui, 2:Color, White
-; Gui, 2:Margin, 10, 5
-; Gui, 2:Add, Text, Center, Toggle is on
-; Gui, 2:Show, NA
-; Gui, 2:Hide
-
-
-; global hBm:=0
 global hDc:=0
 global hCurrPen:=0
-; global G:=0
-; global obm:=0
 
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
@@ -714,22 +704,6 @@ FastModeLabel(show:=true){
   }
 }
 FastModeHints(){
-    ; Gui, 1:Show
-    ; Gui, 2:Show,NA 
-    ; Canvas_Open(GuiHwnd, "0x00FF00", 3)
-
-    ; i:=1
-    ; Loop, 4 {
-    ;   Canvas_DrawLine(GuiHwnd, 0, A_ScreenHeight/5*i, A_ScreenWidth, A_ScreenHeight/5*i)
-    ;   Canvas_DrawLine(GuiHwnd, A_ScreenWidth/5*i, 0, A_ScreenWidth/5*i, A_ScreenHeight)
-    ;   i+=1
-    ; }
-
-    ; DrawText(0, 0, 0,0, "hello")
-    ; Input, UserInput, V B L2, {enter}{esc}, aa,ab,ac,ad,ae,af,ag,ah,ai,aj,ak,al,am,an,ao,ap,aq,ar,as,at,au,av,aw,ax,ay,az, ba,bb,bc,bd,be,bf,bg,bh,bi,bj,bk,bl,bm,bn,bo,bp,bq,br,bs,bt,bu,bv,bw,bx,by,bz, ca,cb,cc,cd,ce,cf,cg,ch,ci,cj,ck,cl,cm,cn,co,cp,cq,cr,cs,ct,cu,cv,cw,cx,cy,cz, da,db,dc,dd,de,df,dg,dh,di,dj,dk,dl,dm,dn,do,dp,dq,dr,ds,dt,du,dv,dw,dx,dy,dz
-    ; ea,eb,ec,ed,ee,ef,eg,eh,ei,ej,ek,el,em,en,eo,ep,eq,er,es,et,eu,ev,ew,ex,ey,ez,
-    ; Input, UserInput, V T3 B L2, {enter}{esc}, fa,fb,fc,fd,fe,ff,fg,fh,fi,fj,fk,fl,fm,fn,fo,fp,fq,fr,fs,ft,fu,fv,fw,fx,fy,fz
-
     SetTimer FastModeLabel, -10
     matches:=""
     i:=0
@@ -802,36 +776,6 @@ FastModeHints(){
         return
 }
 
-; Canvas_Open(hWnd, p_color){
-;   hBm := CreateDIBSection(800, 600)
-;   hDc := CreateCompatibleDC()
-;   obm := SelectObject(hdc, hbm)
-;   G := Gdip_GraphicsFromHDC(hdc)
-;   Gdip_SetSmoothingMode(G, 4)
-; }
-; Canvas_DrawLine(hWnd, p_x1, p_y1, p_x2, p_y2, p_w )
-; {
-;   p_x1 -= 1, p_y1 -= 1, p_x2 -= 1, p_y2 -= 1
-;   pPen := Gdip_CreatePen(0xffff0000, 3)
-;   Gdip_DrawEllipse(G, pPen, 100, 50, 200, 300)
-;   Gdip_DeletePen(pPen)
-;   pPen := Gdip_CreatePen(0x660000ff, 10)
-;   ; Draw a rectangle onto the graphics of the bitmap using the pen just created
-;   ; Draws the rectangle from coordinates (250,80) a rectangle of 300x200 and outline width of 10 (specified when creating the pen)
-;   ; 用刚那支蓝笔在画布上画一个矩形。
-;   ; 整个函数的参数分别是 Gdip_DrawRectangle(画布, 画笔, x, y, 矩形宽, 矩形高)
-;   Gdip_DrawRectangle(G, pPen, 250, 80, 300, 200)
-;   ; Delete the brush as it is no longer needed and wastes memory
-;   ; 同样删除画笔。
-;   Gdip_DeletePen(pPen)
-; }
-; Canvas_Close(){
-;   Gdip_DeleteGraphics(G)
-;   SelectObject(hDc, obm)
-;   DeleteDC(hDc)
-;   DeleteObject(hBm)
-; }
-
 ; Canvas_Open(hWnd, p_color, p_w){
 ;  hDC := DllCall("GetDC", UInt, hWnd)
 ;  hCurrPen := DllCall("CreatePen", UInt, 0, UInt, p_w, UInt, p_color)
@@ -847,8 +791,44 @@ FastModeHints(){
 ;  DllCall("ReleaseDC", UInt, 0, UInt, hDC)  ; Clean-up.
 ;  DllCall("DeleteObject", UInt,hCurrPen)
 ; }
-; "FINAL" MODE SWITCH BINDINGS
 
+; global M_x:=0
+; global M_y := 0
+; global Old_M_x:=0
+; global Old_M_y := 0
+
+; UpdatePos(){
+;   MouseGetPos, M_x, M_y
+; }
+; CrossRuler(){
+;     If (M_x != Old_M_x or M_y != Old_M_y){
+;       WinSet, Redraw,, ahk_id %GuiHwnd%
+;     }
+;     if(Abs(VELOCITY_X) <10 && Abs(VELOCITY_Y) <10){
+;       Canvas_DrawLine(GuiHwnd, M_x, 0, M_x, A_ScreenHeight)
+;       Canvas_DrawLine(GuiHwnd, 0, M_y, A_ScreenWidth, M_y)
+;     }
+;     Old_M_x := M_x
+;     Old_M_y := M_y
+; }
+
+; ShowCrossRuler(){
+;   CROSS_RULER := !CROSS_RULER
+;   if(CROSS_RULER){
+;     Canvas_Open(GuiHwnd, "0x00FF00", 1)
+;     SetTimer, UpdatePos, 50
+;     SetTimer, CrossRuler, 10
+;   }else{
+;     Canvas_Close()
+;     Gui, 1:Hide
+;     SetTimer, CrossRuler, OFF
+;   }
+; }
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
 <#<!n:: EnterNormalMode()
@@ -946,6 +926,7 @@ Insert:: EnterInsertMode()
   .:: Max()
   /:: Close()
   !p:: Send {PrintScreen}
+  ; !=:: ShowCrossRuler()
   End:: Click, Up
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
