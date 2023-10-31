@@ -965,15 +965,21 @@ Insert:: EnterInsertMode()
   ^k:: Send {Up}
   ^l:: Send {Right}
   !x:: Send ^{w}
-#If (NORMAL_MODE && WinActive("ahk_class CabinetWClass"))
+#If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
   x:: Send ^{w}
+; windows terminal
+#If (NORMAL_MODE && (WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS")))
+  x:: Send ^+{w}
+#If ((WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS")))
+  ^t:: Send ^+{t}
+#If ((WinActive("ahk_class ahk_class Notepad++")))
+  ^t:: Send ^{n}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
   x:: RightDrag()
   f:: EnterFastMode()
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
-  x:: Send ^{w}
   ~f:: EnterInsertMode(true)
-#If (WinActive("ahk_class Chrome_WidgetWin_1"))
+#If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
   ; f:: FastModeHints()
