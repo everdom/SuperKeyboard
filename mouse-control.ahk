@@ -13,6 +13,7 @@
 
 global INSERT_MODE := false
 global INSERT_QUICK := false
+global INSERT_AUTO_QUICK:=true
 global NORMAL_MODE := false
 global NORMAL_QUICK := false
 global NUMPAD := false
@@ -43,6 +44,8 @@ global FAST_MODE_FONT_SIZE :=48
 global FAST_MODE_FONT_COLOR :="01AFFD"
 
 global CHROME_VIM_MODE :=true
+
+global IS_EDIT := false
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
 ; {
@@ -134,12 +137,16 @@ MoveCursor() {
 
   MouseMove, %VELOCITY_X%, %VELOCITY_Y%, 0, R
 
-  ;(humble beginnings)
-  ;MsgBox, %NORMAL_MODE%
-  ;msg1 := "h " . LEFT . " j  " . DOWN . " k " . UP . " l " . RIGHT
-  ;MsgBox, %msg1%
-  ;msg2 := "Moving " . VELOCITY_X . " " . VELOCITY_Y
-  ;MsgBox, %msg2%
+  if(INSERT_AUTO_QUICK){
+    if A_Cursor = IBeam 
+    {  
+      IS_EDIT := true
+    }
+    else
+    {
+      IS_EDIT := false
+    }
+  }
 }
 
 EnterNormalMode(quick:=false) {
@@ -474,10 +481,16 @@ MouseLeft() {
   if (CTRL_DRAGGING){
     Send {Ctrl up}
   }
+
   Click
   DRAGGING := false
   SHIFT_DRAGGING := false
   CTRL_DRAGGING := false
+
+  if(INSERT_AUTO_QUICK && IS_EDIT && NORMAL_MODE)
+  {  
+    EnterInsertMode(true)
+  }
 }
 
 MouseRight() {
@@ -835,8 +848,6 @@ FastModeHints(){
 ;     SetTimer, CrossRuler, OFF
 ;   }
 ; }
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; "FINAL" MODE SWITCH BINDINGS
