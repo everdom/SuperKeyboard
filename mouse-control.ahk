@@ -41,7 +41,8 @@ global CTRL_DRAGGING := false
 global FAST_MODE_X :=8
 global FAST_MODE_Y :=5
 global FAST_MODE_FONT_SIZE :=48
-global FAST_MODE_FONT_COLOR :="01AFFD"
+; global FAST_MODE_FONT_COLOR :="01AFFD"
+global FAST_MODE_FONT_COLOR :="Red"
 
 global CHROME_VIM_MODE :=true
 
