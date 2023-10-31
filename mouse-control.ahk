@@ -237,6 +237,12 @@ ClickInsert(quick:=true) {
   EnterInsertMode(quick)
 }
 
+DoubleClick() {
+  Click
+  Sleep, 100
+  Click
+}
+
 ; FIXME:
 ; doesn't really work well
 DoubleClickInsert(quick:=true) {
@@ -981,6 +987,7 @@ Insert:: EnterInsertMode()
   ; x:: Close()
   z:: Resize()
   ; for windows explorer
+
 #If (WinActive("ahk_class CabinetWClass"))
   !h:: Send {Left}
   !j:: Send {Down}
@@ -996,6 +1003,8 @@ Insert:: EnterInsertMode()
   ^k:: Send {Up}
   ^l:: Send {Right}
   !x:: Send ^{w}
+#If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
+  !i:: DoubleClick()
 #If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
   x:: Send ^{w}
 ; windows terminal
