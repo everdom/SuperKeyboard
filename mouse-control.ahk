@@ -752,7 +752,7 @@ FastModeHints(){
     }
     matches:=SubStr(matches, 1, StrLen(matches)-1)
 
-    Input, UserInput, B L2, {enter}{esc}, %matches%
+    Input, UserInput, B L2, {enter}.{esc}, %matches%
 
     if (ErrorLevel = "Max")
     {
@@ -799,12 +799,13 @@ FastModeHints(){
       EnterNormalMode()
       return
     }
-    if (ErrorLevel = "NewInput")
-        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
-        ; Gui, 1:Hide
-        FastModeLabel(false)
-        EnterNormalMode()
-        return
+    if (ErrorLevel = "NewInput"){
+      ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+      ; Gui, 1:Hide
+      FastModeLabel(false)
+      EnterNormalMode()
+      return
+    }
 }
 
 ; Canvas_Open(hWnd, p_color, p_w){
@@ -1214,8 +1215,7 @@ Insert:: EnterInsertMode()
   +t:: ReleaseAllDrag()
   +y:: ReleaseAllDrag()
 #If (POP_UP && DRAGGING == false)
-  Escape:: 
-    ClosePopup()
+  Escape:: ClosePopup()
 #If (DRAGGING)
   *Escape:: ReleaseAllDrag()
 #If
