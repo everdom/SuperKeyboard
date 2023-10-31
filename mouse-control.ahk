@@ -38,8 +38,8 @@ global SHIFT_DRAGGING := false
 global CTRL_DRAGGING := false
 ; global CROSS_RULER := false
 
-global FAST_MODE_X :=12
-global FAST_MODE_Y :=8
+global FAST_MODE_X :=10
+global FAST_MODE_Y :=6
 global FAST_MODE_FONT_SIZE :=48
 ; global FAST_MODE_FONT_COLOR :="01AFFD"
 global FAST_MODE_FONT_COLOR :="Red"
