@@ -443,6 +443,17 @@ Max(){
   MouseMove, center, y
 }
 
+Back(){
+  wx := 0
+  wy := 0
+  width := 0
+  WinGetPos,wx,wy,width,,A
+  center := wx +24
+  y := wy + 12
+  ;MsgBox, Hello %width% %center%
+  MouseMove, center, y
+}
+
 Resize(){
   wx := 0
   wy := 0
@@ -925,6 +936,7 @@ Insert:: EnterInsertMode()
   ,:: Min()
   .:: Max()
   /:: Close()
+  Backspace:: Back()
   !p:: Send {PrintScreen}
   ; !=:: ShowCrossRuler()
   End:: Click, Up

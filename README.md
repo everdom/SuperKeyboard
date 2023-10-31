@@ -70,6 +70,7 @@ very normal at all)
 - `,` "min" a window (move to the min button of window) (press i to click)
 - `.` "max" a window (move to the max button of window) (press i to click)
 - `/` "close" a window (move to the close button of window) (press i to click)
+- `Backspace` "back" a window (move to the back button of window) (press i to click)
 - `Y` "yank" a window (reposition it) (press i or v to release)
 - `Z` "resize" a window (press i or v to release)
 - `b` "back" mouse button
