@@ -494,7 +494,7 @@ MouseLeft() {
   SHIFT_DRAGGING := false
   CTRL_DRAGGING := false
 
-  if(INSERT_AUTO_QUICK && IS_EDIT && NORMAL_MODE)
+  if(INSERT_AUTO_QUICK && NORMAL_QUICK ==false && IS_EDIT && NORMAL_MODE)
   {  
     EnterInsertMode(true)
   }
