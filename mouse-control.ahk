@@ -867,9 +867,9 @@ FastModeHints(){
 ; "FINAL" MODE SWITCH BINDINGS
 Home:: EnterNormalMode()
 Insert:: EnterInsertMode()
-<#<!n:: EnterNormalMode()
-<#<!i:: EnterInsertMode()
-<#<!p:: EnterNumpadMode()
+#!n:: EnterNormalMode()
+#!i:: EnterInsertMode()
+#!p:: EnterNumpadMode()
 ; <#<!f:: EnterFastMode()
 
 ; escape hatches
