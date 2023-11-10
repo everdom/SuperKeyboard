@@ -1019,6 +1019,7 @@ Insert:: EnterInsertMode()
   f:: EnterFastMode()
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   ~f:: EnterInsertMode(true)
+  ~t:: EnterInsertMode(true)
 #If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
