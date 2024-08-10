@@ -865,16 +865,16 @@ FastModeHints(){
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; "FINAL" MODE SWITCH BINDINGS
-Home:: EnterNormalMode()
-Insert:: EnterInsertMode()
+;Home:: EnterNormalMode()
+;Insert:: EnterInsertMode()
 #!n:: EnterNormalMode()
 #!i:: EnterInsertMode()
 #!p:: EnterNumpadMode()
 ; <#<!f:: EnterFastMode()
 
 ; escape hatches
-+Home:: Send {Home}
-+Insert:: Send {Insert}
+;+Home:: Send {Home}
+;+Insert:: Send {Insert}
 ;FIXME
 ; doesn't turn caplsock off.
 ; ^Capslock:: Send {Capslock}
@@ -1020,6 +1020,7 @@ Insert:: EnterInsertMode()
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
+  ~g:: EnterInsertMode(true)
 #If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
