@@ -1027,8 +1027,10 @@ FastModeHints(){
   +e:: Send ^+{Tab}
   +r:: Send ^{Tab}
 ; windows terminal
-#If (NORMAL_MODE && (WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS")))
+#If (NORMAL_MODE && (WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS"))) ;;; windows terminal
   x:: Send ^+{w}
+  +e:: Send ^+{Tab}
+  +r:: Send ^{Tab}
 #If ((WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS")))
   ^t:: Send ^+{t}
 #If ((WinActive("ahk_class ahk_class Notepad++")))
