@@ -1024,6 +1024,8 @@ FastModeHints(){
   !i:: DoubleClick()
 #If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
   x:: Send ^{w}
+  +e:: Send ^+{Tab}
+  +r:: Send ^{Tab}
 ; windows terminal
 #If (NORMAL_MODE && (WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS")))
   x:: Send ^+{w}
