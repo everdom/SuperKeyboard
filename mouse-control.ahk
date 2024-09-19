@@ -434,8 +434,8 @@ Yank() {
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx + width - 180-24
-  y := wy + 12
+  center := wx + width - DPI_v(180)-DPI_v(24)
+  y := wy + DPI_v(12)
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
   Drag()
@@ -446,8 +446,8 @@ Close(){
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx + width - 24
-  y := wy + 12
+  center := wx + width - DPI_v(24)
+  y := wy + DPI_v(12)
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
 }
@@ -457,8 +457,8 @@ Min(){
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx + width - 24-48*2
-  y := wy + 12
+  center := wx + width - DPI_v(24)-DPI_v(48*2)
+  y := wy + DPI_v(12)
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
 }
@@ -468,8 +468,8 @@ Max(){
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx + width - 24 -48
-  y := wy + 12
+  center := wx + width - DPI_v(24) -DPI_v(48)
+  y := wy + DPI_v(12)
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
 }
@@ -479,8 +479,8 @@ Back(){
   wy := 0
   width := 0
   WinGetPos,wx,wy,width,,A
-  center := wx +24
-  y := wy + 12
+  center := wx +DPI_v(24)
+  y := wy + DPI_v(12)
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
 }
@@ -491,8 +491,8 @@ Resize(){
   width := 0
   height := 0
   WinGetPos,wx,wy,width,height,A
-  center := wx + width - 6 
-  y := wy + height - 6
+  center := wx + width - DPI_v(6) 
+  y := wy + height - DPI_v(6)
   ;MsgBox, Hello %width% %center%
   MouseMove, center, y
   Drag()
