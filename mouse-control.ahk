@@ -9,6 +9,19 @@
 ; Last updated 2022-02-05
 
 
+;@include-winapi
+; --------------------------------------------------------------------------------
+#MaxThreads 255 ; Allows a maximum of 255 instead of default threads.
+#Warn All, OutputDebug
+#SingleInstance Force
+; --------------------------------------------------------------------------------
+DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
+; DllCall("SetThreadDpiAwarenessContext", "ptr", -3, "ptr")
+; --------------------------------------------------------------------------------
+global DPI_Ratio := A_ScreenDPI/96
+global A_ScreenWidth_DPI := A_ScreenWidth / DPI_Ratio
+global A_ScreenHeight_DPI :=A_ScreenHeight / DPI_Ratio
+
 ; #Include Gdip_All.ahk
 
 global INSERT_MODE := false
@@ -56,6 +69,10 @@ global IS_EDIT := false
 
 ; Insert Mode by default
 EnterInsertMode()
+
+DPI_v(v){
+  Return v*DPI_Ratio
+}
 
 Accelerate(velocity, pos, neg) {
   If (pos == 0 && neg == 0) {
@@ -259,8 +276,8 @@ ShowPopup(msg) {
   centery := A_ScreenHeight // 2
   right := MonitorLeftEdge() + A_ScreenWidth
   bottom := A_ScreenHeight
-  popx := right - 150*2
-  popy := bottom - 28*2 - 50
+  popx := right - DPI_v(150*2)
+  popy := bottom - DPI_v(28*2) - DPI_v(50)
   Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
   POP_UP := true
 }
@@ -272,8 +289,8 @@ ShowModePopup(msg) {
   centery := A_ScreenHeight // 2
   right := MonitorLeftEdge() + A_ScreenWidth
   bottom := A_ScreenHeight
-  popx := right - 150*2
-  popy := bottom - 28*2 - 50
+  popx := right - DPI_v(150*2)
+  popy := bottom - DPI_v(28*2) - DPI_v(50)
   Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
   SetTimer, ClosePopup, -1600
   POP_UP := true
@@ -701,7 +718,7 @@ FastModeLabel(show:=true){
     Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
     ; add cache to show quickly
     if(fastModeCache == true){
-      Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
+      Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
       WinSet TransColor, White, TRANS-WIN
       return
     }
@@ -714,7 +731,7 @@ FastModeLabel(show:=true){
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
         
-        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" A_ScreenWidth/FAST_MODE_X*j+1 " Y" A_ScreenHeight/FAST_MODE_Y*i+1 " W"A_ScreenWidth/FAST_MODE_X-2 " H"A_ScreenHeight/FAST_MODE_Y-2, %label% 
+        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" A_ScreenWidth_DPI/FAST_MODE_X*j+1 " Y" A_ScreenHeight_DPI/FAST_MODE_Y*i+1 " W"A_ScreenWidth_DPI/FAST_MODE_X-2 " H"A_ScreenHeight_DPI/FAST_MODE_Y-2, %label% 
         j+=1
       }
       i+=1
@@ -724,17 +741,17 @@ FastModeLabel(show:=true){
     ly:=FAST_MODE_Y-1
     lx:=FAST_MODE_X-1
     Loop, %ly%{
-      gui, add, text, % "x0" " y" A_ScreenHeight/FAST_MODE_Y*i " w" A_ScreenWidth " 0x10"  ;Horizontal Line > Etched Gray
+      gui, add, text, % "x0" " y" A_ScreenHeight_DPI/FAST_MODE_Y*i " w" A_ScreenWidth_DPI " 0x10"  ;Horizontal Line > Etched Gray
       i+=1
     }
 
     j:=1
     Loop, %lx%{
-      gui, add, text, % "x" A_ScreenWidth/FAST_MODE_X*j " y0" " h" A_ScreenHeight " 0x11"  ;Horizontal Line >% Etched Gray
+      gui, add, text, % "x" A_ScreenWidth_DPI/FAST_MODE_X*j " y0" " h" A_ScreenHeight_DPI " 0x11"  ;Horizontal Line >% Etched Gray
       j+=1
     }
     firstRun := true
-    Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth " h"A_ScreenHeight, TRANS-WIN
+    Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
     WinSet TransColor, White, TRANS-WIN
   }else{
     Gui Hide
@@ -843,8 +860,8 @@ FastModeHints(){
 ;       WinSet, Redraw,, ahk_id %GuiHwnd%
 ;     }
 ;     if(Abs(VELOCITY_X) <10 && Abs(VELOCITY_Y) <10){
-;       Canvas_DrawLine(GuiHwnd, M_x, 0, M_x, A_ScreenHeight)
-;       Canvas_DrawLine(GuiHwnd, 0, M_y, A_ScreenWidth, M_y)
+;       Canvas_DrawLine(GuiHwnd, M_x, 0, M_x, A_ScreenHeight_DPI)
+;       Canvas_DrawLine(GuiHwnd, 0, M_y, A_ScreenWidth_DPI, M_y)
 ;     }
 ;     Old_M_x := M_x
 ;     Old_M_y := M_y
