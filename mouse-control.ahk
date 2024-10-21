@@ -97,6 +97,9 @@ Accelerate(velocity, pos, neg) {
   }
 }
 
+global OLD_WASD := true
+global CHROME_VIM_MODE_HINT := true
+global NORMAL_MODE_HINT := true
 MoveCursor() {
   If (WinActive("ahk_class CabinetWClass")){
     ALT := GetKeyState("Alt", "P")
@@ -112,9 +115,28 @@ MoveCursor() {
   if(CHROME_VIM_MODE){
     ; chrome enter vim mode
     if(WinActive("ahk_class Chrome_WidgetWin_1")){
+      if(CHROME_VIM_MODE_HINT){
+        ShowModePopup("CHROME VIM")
+        CHROME_VIM_MODE_HINT := false
+        NORMAL_MODE_HINT := true
+      }
+      if(WASD == true ){
+        OLD_WASD := WASD
+      }
       WASD := false
     }else{
-      WASD := true
+      WASD := OLD_WASD
+      if(NORMAL_MODE_HINT){
+        NORMAL_MODE_HINT := false
+        msg := "NORMAL"
+        If (WASD == false) {
+          msg := msg . " (VIM)"
+        }
+        If (quick) {
+          msg := msg . " (QUICK)"
+        }
+        ShowModePopup(msg)
+      }
     }
   }
 
@@ -171,9 +193,9 @@ EnterNormalMode(quick:=false) {
   ;MsgBox, "Welcome to Normal Mode"
   NORMAL_QUICK := quick
 
-
+  CHROME_VIM_MODE_HINT := true
   msg := "NORMAL"
-  If (WASD == false) {
+  If (WASD == false || (CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))) {
     msg := msg . " (VIM)"
   }
   If (quick) {
@@ -193,18 +215,26 @@ EnterNormalMode(quick:=false) {
 }
 
 EnterWASDMode(quick:=false) {
+  CHROME_VIM_MODE_HINT := true
+  If(CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1")){
+    ExitWASDMode()
+    return
+  }
   msg := "NORMAL"
   If (quick) {
     msg := msg . " (QUICK)"
   }
   ShowModePopup(msg)
   WASD := true
+  OLD_WASD :=WASD
   EnterNormalMode(quick)
 }
 
 ExitWASDMode() {
+  CHROME_VIM_MODE_HINT := true
   ShowModePopup("NORMAL (VIM)")
   WASD := false
+  OLD_WASD :=WASD
 }
 
 EnterInsertMode(quick:=false) {
