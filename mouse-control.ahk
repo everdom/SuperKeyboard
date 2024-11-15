@@ -660,6 +660,11 @@ JumpWindowRightEdge() {
 ; TODO: When we have more monitors, set up H and L to use current screen as basis
 ; hard to test when I only have the one
 
+JumpMiddle_1() {
+  CoordMode, Mouse, Screen
+  MouseMove, (-A_ScreenWidth // 2), (A_ScreenHeight // 2)
+}
+
 JumpMiddle() {
   CoordMode, Mouse, Screen
   MouseMove, (A_ScreenWidth // 2), (A_ScreenHeight // 2)
@@ -1062,8 +1067,9 @@ FastModeHints(){
   +c:: ShiftMiddleDrag()
   ~^c:: CtrlMiddleDrag()
   m:: JumpMiddle()
-  +,:: JumpMiddle2()
-  +.:: JumpMiddle3()
+  +,:: JumpMiddle_1()
+  +.:: JumpMiddle()
+  +?:: JumpMiddle2()
   ; ahh what the heck, remove shift requirements for jump bindings
   ; maybe take "m" back if we ever make marks
   +M:: JumpWindowMiddle()
@@ -1112,8 +1118,9 @@ FastModeHints(){
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
   m:: JumpMiddle()
-  ,:: JumpMiddle2()
-  .:: JumpMiddle3()
+  ,:: JumpMiddle_1()
+  .:: JumpMiddle()
+  ?:: JumpMiddle2()
   y:: Yank()
   ; x:: Close()
   z:: Resize()
