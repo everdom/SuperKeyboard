@@ -33,6 +33,7 @@ global NUMPAD := false
 global SMALL_MODE := false
 global WASD := true
 global FAST_MODE:=false
+global EXT_DRAGGING_MODE:=false
 
 ; Drag takes care of this now
 ;global MAX_VELOCITY := 72
@@ -58,6 +59,9 @@ global FAST_MODE_FONT_SIZE :=48
 global FAST_MODE_FONT_COLOR :="Red"
 
 global CHROME_VIM_MODE :=true
+global CHROME_VIM_MODE_HINT := true
+global NORMAL_MODE_HINT := true
+global OLD_WASD := true
 
 global IS_EDIT := false
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
@@ -97,9 +101,6 @@ Accelerate(velocity, pos, neg) {
   }
 }
 
-global OLD_WASD := true
-global CHROME_VIM_MODE_HINT := true
-global NORMAL_MODE_HINT := true
 MoveCursor() {
   If (WinActive("ahk_class CabinetWClass")){
     ALT := GetKeyState("Alt", "P")
@@ -369,6 +370,9 @@ MiddleDrag() {
 
 ; For Fusion360
 ShiftMiddleDrag() {
+  If(EXT_DRAGGING_MODE == false){
+    return
+  }
   If (DRAGGING) {
     KeyWait Shift
     Click, Middle, Up
@@ -387,6 +391,9 @@ ShiftMiddleDrag() {
 }
 
 CtrlMiddleDrag() {
+  If(EXT_DRAGGING_MODE == false){
+    return
+  }
   If (DRAGGING) {
     KeyWait Ctrl
     Click, Middle, Up
@@ -521,10 +528,10 @@ Resize(){
   width := 0
   height := 0
   WinGetPos,wx,wy,width,height,A
-  center := wx + width - DPI_v(6) 
+  x := wx + width - DPI_v(12) 
   y := wy + height - DPI_v(6)
-  ;MsgBox, Hello %width% %center%
-  MouseMove, center, y
+  ;MsgBox, Hello %width% %x%
+  MouseMove, x, y
   Drag()
 }
 
@@ -571,6 +578,83 @@ MouseMiddle() {
   DRAGGING := false
   SHIFT_DRAGGING := false
   CTRL_DRAGGING := false
+}
+
+JumpWindowLeftEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  ;MsgBox, Hello %width% %center%
+  x := 0
+  CoordMode, Mouse, Screen
+  MouseGetPos,,y
+  MouseMove, wx,y
+}
+
+JumpWindowBottomEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
+
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  ;MsgBox, Hello %width% %center%
+  x := 0
+  CoordMode, Mouse, Screen
+  MouseGetPos, x
+  MouseMove, x,(wy+height - 0)
+}
+
+JumpWindowTopEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
+
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  ;MsgBox, Hello %width% %center%
+  x := 0
+  CoordMode, Mouse, Screen
+  MouseGetPos, x
+  MouseMove, x,wy
+
+}
+
+JumpWindowRightEdge() {
+  if(SHIFT_DRAGGING){
+    return
+  }
+
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  ;MsgBox, Hello %width% %center%
+  x := 0
+  y := 0
+  CoordMode, Mouse, Screen
+  MouseGetPos,,y
+  MouseMove, wx+width,y
 }
 
 ; TODO: When we have more monitors, set up H and L to use current screen as basis
@@ -960,10 +1044,10 @@ FastModeHints(){
   j:: Return
   k:: Return
   l:: Return
-  +H:: JumpLeftEdge()
-  +J:: JumpBottomEdge()
-  +K:: JumpTopEdge()
-  +L:: JumpRightEdge()
+  +H:: JumpWindowLeftEdge()
+  +J:: JumpWindowBottomEdge()
+  +K:: JumpWindowTopEdge()
+  +L:: JumpWindowRightEdge()
   ; commands
   *i:: MouseLeft()
   *o:: MouseRight()
@@ -977,12 +1061,12 @@ FastModeHints(){
   c:: MiddleDrag()
   +c:: ShiftMiddleDrag()
   ~^c:: CtrlMiddleDrag()
-  +M:: JumpMiddle()
+  m:: JumpMiddle()
   +,:: JumpMiddle2()
   +.:: JumpMiddle3()
   ; ahh what the heck, remove shift requirements for jump bindings
   ; maybe take "m" back if we ever make marks
-  m:: JumpWindowMiddle()
+  +M:: JumpWindowMiddle()
   ; ,:: JumpMiddle2()
   ; .:: JumpMiddle3()
   n:: MouseForward()
@@ -1054,7 +1138,7 @@ FastModeHints(){
   !i:: DoubleClick()
 #If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
   x:: Send ^{w}
-  +e:: Send ^+{Tab}
+  +e:: Send ^+{Tab}''''
   +r:: Send ^{Tab}
 ; windows terminal
 #If (NORMAL_MODE && (WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS"))) ;;; windows terminal
