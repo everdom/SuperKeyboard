@@ -1127,20 +1127,21 @@ FastModeHints(){
   ; for windows explorer
 
 #If (WinActive("ahk_class CabinetWClass"))
-  !h:: Send {Left}
+  !h:: Send !{Up}
   !j:: Send {Down}
   !k:: Send {Up}
-  !l:: Send {Right}
-  !u:: Send !{Up}
-  !i:: Send {Enter}
+  ; !l:: Send {Right}
+  ; !u:: Send !{Up}
+  !l:: Send {Enter}
   !b:: MouseBack()
   !n:: MouseForward()
+  !x:: Send ^{w}
+
   ^o:: Send {AppsKey}
   ^h:: Send {Left}
   ^j:: Send {Down}
   ^k:: Send {Up}
   ^l:: Send {Right}
-  !x:: Send ^{w}
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
   !i:: DoubleClick()
 #If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
