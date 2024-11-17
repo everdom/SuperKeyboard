@@ -1133,7 +1133,7 @@ FastModeHints(){
   ; y:: ScrollUp()
   d:: ScrollDownMore()
   u:: ScrollUpMore()
-  ::gg:: Send {Home}
+  ; g:: Send {Home}
   +g::Send {End}
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
@@ -1181,6 +1181,7 @@ FastModeHints(){
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
   x:: RightDrag()
   f:: EnterFastMode()
+  g:: Send {Home}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
