@@ -274,7 +274,7 @@ EnterFastMode(){
   }
   FAST_MODE := true
   NORMAL_MODE := false
-  NORMAL_QUICK := false
+  ; NORMAL_QUICK := false
   INSERT_MODE := false
   INSERT_QUICK := false
   SetTimer FastModeHints, -10
