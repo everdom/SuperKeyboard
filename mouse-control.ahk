@@ -266,8 +266,8 @@ EnterNumpadMode(quick:=false) {
 }
 
 EnterFastMode(){
-  msg := "FAST"
-  ShowModePopup(msg)
+  ; msg := "FAST"
+  ; ShowModePopup(msg)
 
   If (FAST_MODE) {
     Return
@@ -872,6 +872,7 @@ FastModeLabel(show:=true){
     firstRun := true
     Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
     WinSet TransColor, White, TRANS-WIN
+    fastModeCache = true
   }else{
     Gui Hide
   }
@@ -894,14 +895,19 @@ FastModeHints(){
     }
     matches:=SubStr(matches, 1, StrLen(matches)-1)
 
-    Input, UserInput, B L2, {enter}.{esc}, %matches%
+    Input, UserInput, B L2, {esc}.{enter}, %matches%
 
     if (ErrorLevel = "Max")
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
         ; Gui, 1:Hide
         FastModeLabel(false)
-        EnterNormalMode()
+        if(NORMAL_QUICK == false){
+          EnterNormalMode()
+        }else{
+          EnterInsertMode()
+        }
+        ClosePopup()
         return
     }
     ; if (ErrorLevel = "Timeout")
@@ -918,7 +924,12 @@ FastModeHints(){
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
         ; Gui, 1:Hide
         FastModeLabel(false)
-        EnterNormalMode()
+        if(NORMAL_QUICK == false){
+          EnterNormalMode()
+        }else{
+          EnterInsertMode()
+        }
+        ClosePopup()
         return
     }
     if (ErrorLevel = "Match")
@@ -938,14 +949,24 @@ FastModeHints(){
         i+=1
       }
       FastModeLabel(false)
-      EnterNormalMode()
+      if(NORMAL_QUICK == false){
+        EnterNormalMode()
+      }else{
+        EnterInsertMode()
+      }
+      ClosePopup()
       return
     }
     if (ErrorLevel = "NewInput"){
       ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
       ; Gui, 1:Hide
       FastModeLabel(false)
-      EnterNormalMode()
+      if(NORMAL_QUICK == false){
+        EnterNormalMode()
+      }else{
+        EnterInsertMode()
+      }
+      ClosePopup()
       return
     }
 }
