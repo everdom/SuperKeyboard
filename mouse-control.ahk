@@ -31,7 +31,7 @@ global NORMAL_MODE := false
 global NORMAL_QUICK := false
 global NUMPAD := false
 global SMALL_MODE := false
-global WASD := true
+global WASD := false
 global FAST_MODE:=false
 global EXT_DRAGGING_MODE:=false
 
@@ -61,7 +61,7 @@ global FAST_MODE_FONT_COLOR :="Red"
 global CHROME_VIM_MODE :=true
 global CHROME_VIM_MODE_HINT := true
 global NORMAL_MODE_HINT := true
-global OLD_WASD := true
+global OLD_WASD := false
 
 global IS_EDIT := false
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
