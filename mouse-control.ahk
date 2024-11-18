@@ -213,6 +213,28 @@ EnterNormalMode(quick:=false) {
   INSERT_QUICK := false
 
   SetTimer, MoveCursor, 16
+  SysGet, Monitor1, Monitor, 1
+  ; SysGet, MonitorWorkArea1, MonitorWorkArea, 1
+  SysGet, Monitor2, Monitor, 2
+  ; SysGet, MonitorWorkArea2, MonitorWorkArea, 2
+  SysGet, Monitor3, Monitor, 3
+  ; SysGet, MonitorWorkArea3, MonitorWorkArea, 3
+  ; SysGet, Monitor4, Monitor, 4
+  ; SysGet, MonitorWorkArea4, MonitorWorkArea, 4
+
+  Monitor1Width:=Monitor1Right-Monitor1Left
+  Monitor1Height:=Monitor1Bottom-Monitor1Top
+  Monitor2Width:=Monitor2Right-Monitor2Left
+  Monitor2Height:=Monitor2Bottom-Monitor2Top
+  Monitor3Width:=Monitor3Right-Monitor3Left
+  Monitor3Height:=Monitor3Bottom-Monitor3Top
+
+  Mon1Left:=Monitor1Left
+  Mon1Top:=Monitor1Top
+  Mon2Left:=Monitor2Left
+  Mon2Top:=Monitor2Top
+  Mon3Left:=Monitor3Left
+  Mon3Top:=Monitor3Top
 }
 
 EnterWASDMode(quick:=false) {
@@ -830,30 +852,99 @@ global hCurrPen:=0
 global fastModeCache := false
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 global curX := 0
+global MonitorWidth :=0
+global MonitorHeight :=0
+global MonitorWidthDPI :=0
+global MonitorHeightDPI :=0
+global MonitorLeft :=0
+global MonitorTop :=0
+global Monitor1Width:=0
+global Monitor1Height:=0
+global Monitor2Width:=0
+global Monitor2Height:=0
+global Monitor3Width:=0
+global Monitor3Height:=0
+global Monitor4Width:=0
+global Monitor4Height:=0
+global Mon1Left:=0
+global Mon1Top:=0
+global Mon2Left:=0
+global Mon2Top:=0
+global Mon3Left:=0
+global Mon3Top:=0
+; global Mon4Left:=Monitor3Left
+; global Mon4Top:=Monitor3Top
+global lastScreenNum:=1
 
 FastModeLabel(show:=true){
   ClosePopup()
   if(show){
-    Gui Color, White
-    Gui -caption +toolwindow +AlwaysOnTop
-    Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
+    CoordMode, Mouse, Screen
+    MouseGetPos, curX
+
+    ; MsgBox , % "x" Mon1Left " y" Mon1Top " w"Mon2Left " h"Mon2Top
+
+    
+    screenNum:=1
+    if (curX>=0 && curX<= Monitor1Width){
+      MonitorLeft:=Mon1Left
+      MonitorTop:=Mon1Top
+      MonitorWidth:=Monitor1Width
+      MonitorHeight:=Monitor1Height
+      screenNum:=1
+    }else if(curX<0 && curX>= -Monitor2Width){
+      MonitorLeft:=Mon2Left
+      MonitorTop:=Mon2Top
+      MonitorWidth:=Monitor2Width
+      MonitorHeight:=Monitor2Height
+      screenNum:=2
+    }else if(curX>Monitor1Width && curX<=Monitor1Width+Moniter3Width){
+      MonitorLeft:=Mon3Left
+      MonitorTop:=Mon3Top
+      MonitorWidth:=Monitor3Width
+      MonitorHeight:=Monitor3Height
+      screenNum:=3
+    }else{
+      ; MonitorLeft:=Mon4Left
+      ; MonitorTop:=Mon4Top
+      ; MonitorWidth:=Monitor4Right-Monitor4Left
+      ; MonitorHeight:=Monitor4Bottom-Monitor4Top
+      screenNum:=4
+    }
+    MonitorWidthDPI:=MonitorWidth/DPI_Ratio
+    MonitorHeightDPI:=MonitorHeight/DPI_Ratio
+    ; MonitorLeft:=Monitor1Left
+    ; MonitorTop:=Monitor1Top
+
+    ; MsgBox , % "x" MonitorLeft " y" MonitorTop " w"MonitorWiiterdth " h"MonitorHeight
+    ; SysGet, MonitorCount, MonitorCount
+    ; SysGet, MonitorPrimary, MonitorPrimaryLeft
+    ; MsgBox, Monitor Count:`t%MonitorCount%`nPrimary Monitor:`t%MonitorPrimary%
+    ; Loop, %MonitorCount%
+    ; {
+    ;   SysGet, MonitorName, MonitorName, %A_Index%
+    ;     SysGet, Monitor, Monitor, %A_Index%
+    ; ;     SysGet, MonitorWorkArea, MonitorWorkArea, %A_Index%
+    ;     MsgBox, Monitor:`t#%A_Index%`nName:`t%MonitorName%`nLeft:`t%MonitorLeft% (%MonitorWorkAreaLeft% work)`nTop:`t%MonitorTop% (%MonitorWorkAreaTop% work)`nRight:`t%MonitorRight% (%MonitorWorkAreaRight% work)`nBottom:`t%MonitorBottom% (%MonitorWorkAreaBottom% work)
+    ; }
+
+    if(screenNum != lastScreenNum){
+      fastModeCache := false
+      lastScreenNum := screenNum
+    }
+
     ; add cache to show quickly
     if(fastModeCache == true){
-      CoordMode, Mouse, Screen
-      MouseGetPos, curX
-
-      if (curX>0 && curX< A_ScreenWidth){
-        Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-      }else if(curX<0 && curX>= -A_ScreenWidth){
-        Gui Show, % "x" -A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-      }else if(curX>=A_ScreenWidth && curX<2*A_ScreenWidth){
-        Gui Show, % "x" A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-      }else{
-
-      }
+      Gui Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
       WinSet TransColor, White, TRANS-WIN
       return
     }
+
+    Gui, destroy
+    Gui Color, White
+    Gui -caption +toolwindow +AlwaysOnTop
+    Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
+
     i:=0
     Loop,%FAST_MODE_Y%{
       j:=0
@@ -863,7 +954,7 @@ FastModeLabel(show:=true){
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
         
-        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" A_ScreenWidth_DPI/FAST_MODE_X*j+1 " Y" A_ScreenHeight_DPI/FAST_MODE_Y*i+1 " W"A_ScreenWidth_DPI/FAST_MODE_X-2 " H"A_ScreenHeight_DPI/FAST_MODE_Y-2, %label% 
+        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" MonitorWidthDPI/FAST_MODE_X*j+1 " Y" MonitorHeightDPI/FAST_MODE_Y*i+1 " W"MonitorWidthDPI/FAST_MODE_X-2 " H"MonitorHeightDPI/FAST_MODE_Y-2, %label% 
         j+=1
       }
       i+=1
@@ -873,32 +964,19 @@ FastModeLabel(show:=true){
     ly:=FAST_MODE_Y-1
     lx:=FAST_MODE_X-1
     Loop, %ly%{
-      gui, add, text, % "x0" " y" A_ScreenHeight_DPI/FAST_MODE_Y*i " w" A_ScreenWidth_DPI " 0x10"  ;Horizontal Line > Etched Gray
+      gui, add, text, % "x0" " y" MonitorHeightDPI/FAST_MODE_Y*i " w" MonitorWidthDPI " 0x10"  ;Horizontal Line > Etched Gray
       i+=1
     }
 
     j:=1
     Loop, %lx%{
-      gui, add, text, % "x" A_ScreenWidth_DPI/FAST_MODE_X*j " y0" " h" A_ScreenHeight_DPI " 0x11"  ;Horizontal Line >% Etched Gray
+      gui, add, text, % "x" MonitorWidthDPI/FAST_MODE_X*j " y0" " h" MonitorHeightDPI " 0x11"  ;Horizontal Line >% Etched Gray
       j+=1
     }
-    firstRun := true
-    ; Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
 
-    CoordMode, Mouse, Screen
-    MouseGetPos, curX
+    Gui Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
 
-    if (curX>0 && curX< A_ScreenWidth){
-      Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-    }else if(curX<0 && curX>= -A_ScreenWidth){
-      Gui Show, % "x" -A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-    }else if(curX>=A_ScreenWidth && curX<2*A_ScreenWidth){
-      Gui Show, % "x" A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-    }else{
-
-    }
-
-    fastModeCache = true
+    fastModeCache := true
     WinSet TransColor, White, TRANS-WIN
   }else{
     Gui Hide
@@ -971,12 +1049,12 @@ FastModeHints(){
           {
             ; CoordMode, Mouse, Screen
             ; MouseGetPos, x
-            if (curX>0 && curX< A_ScreenWidth){
-              MouseMove, A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else if(curX<0 && curX>= -A_ScreenWidth){
-              MouseMove, -A_ScreenWidth+A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else if(curX>=A_ScreenWidth && curX<2*A_ScreenWidth){
-              MouseMove, A_ScreenWidth+A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
+            if (curX>=0 && curX<= Monitor1Width){
+              MouseMove, MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
+            }else if(curX<0 && curX>= -Monitor2Width){
+              MouseMove, MonitorLeft+MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorTop+MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
+            }else if(curX>Monitor1Width && curX<=Monitor1Width*MonitorWidth){
+              MouseMove, MonitorLeft+MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorTop+MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
             }else{
 
             }
