@@ -110,7 +110,11 @@ MoveCursor() {
   }
 
   CTRL := GetKeyState("Ctrl", "P")
-  if(CTRL){
+  h := GetKeyState("H", "P")
+  j := GetKeyState("J", "P")
+  k := GetKeyState("K", "P")
+  l := GetKeyState("L", "P")
+  if(CTRL && (h||j||k||l)){
     return
   }
 
@@ -683,6 +687,41 @@ JumpWindowRightEdge() {
 ; TODO: When we have more monitors, set up H and L to use current screen as basis
 ; hard to test when I only have the one
 
+JumpCurrentMiddle() {
+    CoordMode, Mouse, Screen
+    MouseGetPos, curX
+    
+    screenNum:=1
+    if (curX>=0 && curX<= Monitor1Width){
+      MonitorLeft:=Mon1Left
+      MonitorTop:=Mon1Top
+      MonitorWidth:=Monitor1Width
+      MonitorHeight:=Monitor1Height
+      screenNum:=1
+    }else if(curX<0 && curX>= -Monitor2Width){
+      MonitorLeft:=Mon2Left
+      MonitorTop:=Mon2Top
+      MonitorWidth:=Monitor2Width
+      MonitorHeight:=Monitor2Height
+      screenNum:=2
+    }else if(curX>Monitor1Width && curX<=Monitor1Width+Moniter3Width){
+      MonitorLeft:=Mon3Left
+      MonitorTop:=Mon3Top
+      MonitorWidth:=Monitor3Width
+      MonitorHeight:=Monitor3Height
+      screenNum:=3
+    }else{
+      ; MonitorLeft:=Mon4Left
+      ; MonitorTop:=Mon4Top
+      ; MonitorWidth:=Monitor4Right-Monitor4Left
+      ; MonitorHeight:=Monitor4Bottom-Monitor4Top
+      screenNum:=4
+    }
+
+  CoordMode, Mouse, Screen
+  MouseMove, MonitorLeft + (MonitorWidth // 2), MonitorTop+(MonitorHeight // 2)
+}
+
 JumpMiddle_1() {
   CoordMode, Mouse, Screen
   MouseMove, (-A_ScreenWidth // 2), (A_ScreenHeight // 2)
@@ -1208,7 +1247,7 @@ FastModeHints(){
   c:: MiddleDrag()
   +c:: ShiftMiddleDrag()
   ~^c:: CtrlMiddleDrag()
-  m:: JumpMiddle()
+  m:: JumpCurrentMiddle()
   +,:: JumpMiddle_1()
   +.:: JumpMiddle()
   +?:: JumpMiddle2()
@@ -1259,7 +1298,7 @@ FastModeHints(){
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
-  m:: JumpMiddle()
+  m:: JumpCurrentMiddle()
   ,:: JumpMiddle_1()
   .:: JumpMiddle()
   ?:: JumpMiddle2()
@@ -1459,7 +1498,7 @@ FastModeHints(){
   s:: Return
   d:: Return
   u:: Return
-  z:: JumpMiddle()
+  z:: JumpCurrentMiddle()
   +W:: JumpTopEdge()
   +A:: JumpLeftEdge()
   +S:: JumpBottomEdge()
