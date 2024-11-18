@@ -107,10 +107,11 @@ MoveCursor() {
     if(ALT){
       return
     }
-    CTRL := GetKeyState("Ctrl", "P")
-    if(CTRL){
-      return
-    }
+  }
+
+  CTRL := GetKeyState("Ctrl", "P")
+  if(CTRL){
+    return
   }
 
   if(CHROME_VIM_MODE){
@@ -1187,6 +1188,13 @@ FastModeHints(){
   +J:: JumpWindowBottomEdge()
   +K:: JumpWindowTopEdge()
   +L:: JumpWindowRightEdge()
+
+  ^o:: Send {AppsKey}
+  ^h:: Send {Left}
+  ^j:: Send {Down}
+  ^k:: Send {Up}
+  ^l:: Send {Right}
+
   ; commands
   *i:: MouseLeft()
   *o:: MouseRight()
@@ -1271,11 +1279,6 @@ FastModeHints(){
   !n:: MouseForward()
   !x:: Send ^{w}
 
-  ^o:: Send {AppsKey}
-  ^h:: Send {Left}
-  ^j:: Send {Down}
-  ^k:: Send {Up}
-  ^l:: Send {Right}
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
   !i:: DoubleClick()
 #If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
