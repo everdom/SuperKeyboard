@@ -829,6 +829,7 @@ global hDc:=0
 global hCurrPen:=0
 global fastModeCache := false
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
+global curX := 0
 
 FastModeLabel(show:=true){
   ClosePopup()
@@ -839,13 +840,13 @@ FastModeLabel(show:=true){
     ; add cache to show quickly
     if(fastModeCache == true){
       CoordMode, Mouse, Screen
-      MouseGetPos, x
+      MouseGetPos, curX
 
-      if (x>0 && x< A_ScreenWidth){
+      if (curX>0 && curX< A_ScreenWidth){
         Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-      }else if(x<0 && x>= -A_ScreenWidth){
+      }else if(curX<0 && curX>= -A_ScreenWidth){
         Gui Show, % "x" -A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-      }else if(x>=A_ScreenWidth && x<2*A_ScreenWidth){
+      }else if(curX>=A_ScreenWidth && curX<2*A_ScreenWidth){
         Gui Show, % "x" A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
       }else{
 
@@ -885,13 +886,13 @@ FastModeLabel(show:=true){
     ; Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
 
     CoordMode, Mouse, Screen
-    MouseGetPos, x
+    MouseGetPos, curX
 
-    if (x>0 && x< A_ScreenWidth){
+    if (curX>0 && curX< A_ScreenWidth){
       Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-    }else if(x<0 && x>= -A_ScreenWidth){
+    }else if(curX<0 && curX>= -A_ScreenWidth){
       Gui Show, % "x" -A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-    }else if(x>=A_ScreenWidth && x<2*A_ScreenWidth){
+    }else if(curX>=A_ScreenWidth && curX<2*A_ScreenWidth){
       Gui Show, % "x" A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
     }else{
 
@@ -968,13 +969,13 @@ FastModeHints(){
           label:= alpha1 alpha2
           if (UserInput = label)
           {
-            CoordMode, Mouse, Screen
-            MouseGetPos, x
-            if (x>0 && x< A_ScreenWidth){
+            ; CoordMode, Mouse, Screen
+            ; MouseGetPos, x
+            if (curX>0 && curX< A_ScreenWidth){
               MouseMove, A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else if(x<0 && x>= -A_ScreenWidth){
+            }else if(curX<0 && curX>= -A_ScreenWidth){
               MouseMove, -A_ScreenWidth+A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else if(x>=A_ScreenWidth && x<2*A_ScreenWidth){
+            }else if(curX>=A_ScreenWidth && curX<2*A_ScreenWidth){
               MouseMove, A_ScreenWidth+A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
             }else{
 
