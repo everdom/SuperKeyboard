@@ -831,6 +831,7 @@ global fastModeCache := false
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
 FastModeLabel(show:=true){
+  ClosePopup()
   if(show){
     Gui Color, White
     Gui -caption +toolwindow +AlwaysOnTop
@@ -926,14 +927,12 @@ FastModeHints(){
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
         ; Gui, 1:Hide
-        ClosePopup()
         FastModeLabel(false)
         if(NORMAL_QUICK == false){
           EnterNormalMode()
         }else{
           EnterInsertMode()
         }
-        ClosePopup()
         return
     }
     ; if (ErrorLevel = "Timeout")
@@ -949,14 +948,12 @@ FastModeHints(){
     {
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
         ; Gui, 1:Hide
-        ClosePopup()
         FastModeLabel(false)
         if(NORMAL_QUICK == false){
           EnterNormalMode()
         }else{
           EnterInsertMode()
         }
-        ClosePopup()
         return
     }
     if (ErrorLevel = "Match")
@@ -987,27 +984,23 @@ FastModeHints(){
         }
         i+=1
       }
-      ClosePopup()
       FastModeLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
       }else{
         EnterInsertMode()
       }
-      ClosePopup()
       return
     }
     if (ErrorLevel = "NewInput"){
       ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
       ; Gui, 1:Hide
-      ClosePopup()
       FastModeLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
       }else{
         EnterInsertMode()
       }
-      ClosePopup()
       return
     }
 }
