@@ -837,7 +837,18 @@ FastModeLabel(show:=true){
     Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
     ; add cache to show quickly
     if(fastModeCache == true){
-      Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+      CoordMode, Mouse, Screen
+      MouseGetPos, x
+
+      if (x>0 && x< A_ScreenWidth){
+        Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+      }else if(x<0 && x>= -A_ScreenWidth){
+        Gui Show, % "x" -A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+      }else if(x>=A_ScreenWidth && x<2*A_ScreenWidth){
+        Gui Show, % "x" A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+      }else{
+
+      }
       WinSet TransColor, White, TRANS-WIN
       return
     }
@@ -870,9 +881,23 @@ FastModeLabel(show:=true){
       j+=1
     }
     firstRun := true
-    Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
-    WinSet TransColor, White, TRANS-WIN
+    ; Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+
+    CoordMode, Mouse, Screen
+    MouseGetPos, x
+
+    if (x>0 && x< A_ScreenWidth){
+      Gui Show, % "x" 0 " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+    }else if(x<0 && x>= -A_ScreenWidth){
+      Gui Show, % "x" -A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+    }else if(x>=A_ScreenWidth && x<2*A_ScreenWidth){
+      Gui Show, % "x" A_ScreenWidth " y" 0 " w"A_ScreenWidth_DPI " h"A_ScreenHeight_DPI, TRANS-WIN
+    }else{
+
+    }
+
     fastModeCache = true
+    WinSet TransColor, White, TRANS-WIN
   }else{
     Gui Hide
   }
@@ -901,6 +926,7 @@ FastModeHints(){
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
         ; Gui, 1:Hide
+        ClosePopup()
         FastModeLabel(false)
         if(NORMAL_QUICK == false){
           EnterNormalMode()
@@ -923,6 +949,7 @@ FastModeHints(){
     {
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
         ; Gui, 1:Hide
+        ClosePopup()
         FastModeLabel(false)
         if(NORMAL_QUICK == false){
           EnterNormalMode()
@@ -943,11 +970,24 @@ FastModeHints(){
           alpha2 :=alphaTable[Mod(k, 26)+1]
           label:= alpha1 alpha2
           if (UserInput = label)
-            MouseMove, A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
+          {
+            CoordMode, Mouse, Screen
+            MouseGetPos, x
+            if (x>0 && x< A_ScreenWidth){
+              MouseMove, A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
+            }else if(x<0 && x>= -A_ScreenWidth){
+              MouseMove, -A_ScreenWidth+A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
+            }else if(x>=A_ScreenWidth && x<2*A_ScreenWidth){
+              MouseMove, A_ScreenWidth+A_ScreenWidth/(FAST_MODE_X*2)*(j*2+1), A_ScreenHeight/(FAST_MODE_Y*2)*(i*2+1)
+            }else{
+
+            }
+          }
           j+=1
         }
         i+=1
       }
+      ClosePopup()
       FastModeLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
@@ -960,6 +1000,7 @@ FastModeHints(){
     if (ErrorLevel = "NewInput"){
       ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
       ; Gui, 1:Hide
+      ClosePopup()
       FastModeLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
