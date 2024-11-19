@@ -1263,10 +1263,10 @@ FastModeHints(){
   *[:: Home
   *`;:: ScrollDown()
   *':: ScrollUp()
-  #`;:: ScrollDownMore()
-  #':: ScrollUpMore()
-  ::: ScrollDown()
-  ":: ScrollUp()
+  ; #`;:: ScrollDownMore()
+  ; #':: ScrollUpMore()
+  ::: ScrollDownMore()
+  ":: ScrollUpMore()
   =:: Send {Volume_Up}
   -:: Send {Volume_Down}
   0:: Send {Volume_Mute}
@@ -1503,14 +1503,15 @@ FastModeHints(){
   +A:: JumpLeftEdge()
   +S:: JumpBottomEdge()
   +D:: JumpRightEdge()
-  e:: ScrollDown()
-  q:: ScrollUp()
-  +e:: ScrollDownMore()
-  +q:: ScrollUpMore()
-  *r:: MouseLeft()
-  t:: MouseRight()
-  +T:: MouseRight()
-  *y:: MouseMiddle()
+  1:: ScrollDown()
+  2:: ScrollUp()
+  !:: ScrollDownMore()
+  @:: ScrollUpMore()
+  3:: Home
+  4:: End
+  *q:: MouseLeft()
+  *e:: MouseRight()
+  *r:: MouseMiddle()
 
 #IF (DRAGGING)
   LButton:: ReleaseAllDrag()

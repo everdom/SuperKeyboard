@@ -66,8 +66,8 @@ very normal at all)
 - `x` hold down right click (hit `x` or any mouse button again to release)
 - `;` scroll down (support modifier)
 - `'` scroll up (support modifier)
-- `#;` page down
-- `#'` page up
+- `:` page down
+- `"` page up
 - `[` home
 - `]` end
 - `d,` page down(vim mode)
@@ -94,7 +94,7 @@ very normal at all)
 - `Capslock/i` insert quick mode 
 
 ### Fast mode
-This mode show a alpha table in the screen when opening, you can type the right key to move the mouse to the specified area, so you can
+This mode show a alpha table in the screen when opening, you can type the corresponding key to move the mouse to the specified area, so you can
 move mouse quickly to the specific district you want in the screen,  you can also type `Esc`, `.`, `Enter` to cancel it. it's cool, enjoy it!
 
 ### Normal Ext dragging mode
@@ -112,12 +112,14 @@ WASD mode is now the default for Normal mode.
 
 - `wasd` move the mouse
 - `WASD` jump to edges of the screen
-- `C` jump to center the screen
-- `r` left click
-- `t` right click
-- `y` middle click
-- `e` scroll down
-- `q` scroll up
+- `z` jump to center the screen
+- `q` left click
+- `e` right click
+- `r` middle click
+- `1` scroll down
+- `2` scroll up
+- `!` scroll down more
+- `@` scroll up more
 
 Note that this necessarily unbinds `d` `e` and `y` from their Vim bindings. The rest of the hotkeys
 remain unchanged.
