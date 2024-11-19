@@ -192,9 +192,6 @@ From quick Insert mode:
 - `Enter` send Enter then exit to Normal mode
 - `Capslock` toggle between Quick Insert and Normal mode
 
-`Home` enters Normal mode
-`Insert` enters regular (persistent) Insert mode
-
 
 ## Last Remarks
 
