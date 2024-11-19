@@ -45,6 +45,8 @@ very normal at all)
 
 `Win Alt n` enters Normal mode
 `Win Alt i` enters Insert mode
+`Win Alt p` enters Numpad mode
+`Win Alt c` toggle Chrome vim mode
 
 ### Modifier hint
 `^`=ctrl
@@ -134,6 +136,9 @@ remain unchanged.
 
 #### Chrome vim mode
 This is automaticlly enabled in web browsers with chrome core, it is based on normal vim mode, especially it can pass through some keys to the browser to enable smoother operation with some extensions like surfingkeys or vimium, which can bring better web surfing experience with keyboard using vim key bindings.
+Switch into and out of chrome vim mode with `Win Alt c`
+
+
 ### Insert mode
 
 Acts like a normal keyboard.

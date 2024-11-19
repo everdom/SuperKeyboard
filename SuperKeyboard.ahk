@@ -307,6 +307,15 @@ EnterFastMode(){
   SetTimer FastModeHints, -10
 }
 
+ToggleChromeVimMode(){
+  CHROME_VIM_MODE := !CHROME_VIM_MODE
+  if(CHROME_VIM_MODE){
+    ShowModePopup("CHROME VIM ON")
+  }else{
+    ShowModePopup("CHROME VIM OFF")
+  }
+}
+
 ClickInsert(quick:=true) {
   Click
   EnterInsertMode(quick)
@@ -874,9 +883,9 @@ SetForce(v, relative){
 SwitchSmallMode(){
   SMALL_MODE := !SMALL_MODE
   if(SMALL_MODE){
-    ShowPopup("SMALL MODE ON")
+    ShowModePopup("SMALL MODE ON")
   }else{
-    ShowPopup("SMALL MODE OFF")
+    ShowModePopup("SMALL MODE OFF")
   }
 }
 
@@ -1180,6 +1189,7 @@ FastModeHints(){
 #!n:: EnterNormalMode()
 #!i:: EnterInsertMode()
 #!p:: EnterNumpadMode()
+#!c:: ToggleChromeVimMode()
 ; <#<!f:: EnterFastMode()
 
 ; escape hatches
@@ -1337,10 +1347,13 @@ FastModeHints(){
   x:: RightDrag()
   f:: EnterFastMode()
   g:: Send {Home}
-#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+#If (NORMAL_MODE && CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
   ~g:: EnterInsertMode(true)
+#If (NORMAL_MODE && !CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+  f:: EnterFastMode()
+  g:: Send {Home}
 #If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
