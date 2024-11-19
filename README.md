@@ -122,6 +122,8 @@ WASD mode is now the default for Normal mode.
 - `2` scroll up
 - `!` scroll down more
 - `@` scroll up more
+- `3` Home
+- `4` End
 
 Note that this necessarily unbinds `d` `e` and `y` from their Vim bindings. The rest of the hotkeys
 remain unchanged.
