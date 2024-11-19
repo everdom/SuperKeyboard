@@ -140,6 +140,10 @@ remain unchanged.
 This is automaticlly enabled in web browsers with chrome core, it is based on normal vim mode, especially it can pass through some keys to the browser to enable smoother operation with some extensions like surfingkeys or vimium, which can bring better web surfing experience with keyboard using vim key bindings.
 Switch into and out of chrome vim mode with `Win Alt c`
 
+- `f` send f then enter QI (only in chrome vim mode for Vimium hotlinks)
+- `^t` send ctrl t then enter QI (new tab in the browser)
+- `x` close current tab 
+- `!x` close current tab
 
 ### Insert mode
 
@@ -178,13 +182,14 @@ input a little text in the UI.
 
 ##### Entering
 From Normal mode
-- `:` enter QI (Quick Insert mode)
 - `Capslock` toggle between QI and Normal mode
 - `i` enter QI when cursor is "I"
-- `f` send f then enter QI (for Vimium hotlinks)
 - `^f` send ctrl f then enter QI (commonly "search")
-- `^t` send ctrl t then enter QI (new tab in the browser)
 - `Delete` send Delete then enter QI (for quick fixes)
+
+###### Only in Chrome vim mode
+- `f` send f then enter QI (only in chrome vim mode for Vimium hotlinks)
+- `^t` send ctrl t then enter QI (new tab in the browser)
 
 ##### Exiting
 From quick Insert mode:

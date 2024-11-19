@@ -1317,6 +1317,7 @@ FastModeHints(){
   z:: Resize()
   ; for windows explorer
 
+;; windows explorer
 #If (WinActive("ahk_class CabinetWClass"))
   !h:: Send !{Up}
   !j:: Send {Down}
@@ -1354,6 +1355,8 @@ FastModeHints(){
 #If (NORMAL_MODE && !CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   f:: EnterFastMode()
   g:: Send {Home}
+#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+  !x:: Send ^{w}
 #If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (FAST_MODE)
