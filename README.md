@@ -144,6 +144,8 @@ Switch into and out of chrome vim mode with `Win Alt c`
 - `^t` send ctrl t then enter QI (new tab in the browser)
 - `x` close current tab 
 - `!x` close current tab
+- `E` prev tab
+- `R` next tab
 
 ### Insert mode
 
