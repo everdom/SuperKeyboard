@@ -92,7 +92,7 @@ very normal at all)
 - `-` volume down
 - `0` volume off
 - `^hjkl` press arrow direction key
-- `f` fast mode(press the keys on the screen to move the mouse to the specified area)
+- `f,F` fast mode(press the keys on the screen to move the mouse to the specified area)
 - `Capslock/i` insert quick mode 
 
 ### Fast mode
@@ -165,9 +165,9 @@ and out of numpad mode with `Win Alt p`
 - `!,`:: Numpad2
 - `!.`:: Numpad3
 - `!n`:: Numpad0
-- `!``:: switch "Quick Numpad" Mode(don't need to press alt key to input number)
+- `!``:: switch "Input Quick Numpad" Mode(need to press alt key to input number)
 
-`Home` and `Win Alt n` put you in Normal mode.
+`Win Alt n` put you in Normal mode.
 
 ### Normal "Quick" mode
 If you're in persistent Insert mode and just need the mouse keys for a second, you can hold
