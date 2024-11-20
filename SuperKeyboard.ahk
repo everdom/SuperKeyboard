@@ -292,7 +292,7 @@ EnterNumpadMode(quick:=false) {
   FAST_MODE := false
 }
 
-EnterFastMode(){
+EnterFastMode(activateWin:=true, chromeVimMode:=true){
   ; msg := "FAST"
   ; ShowModePopup(msg)
 
@@ -306,17 +306,23 @@ EnterFastMode(){
   INSERT_MODE := false
   INSERT_QUICK := false
 
-  MouseGetPos, , , windowUnderMouse  ; 获取鼠标位置和窗口句柄  
-  if(windowUnderMouse)
-  {  
-    WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
+  if(activateWin){
+    MouseGetPos, , , windowUnderMouse  ; 获取鼠标位置和窗口句柄  
+    if(windowUnderMouse)
+    {  
+      WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
+    }
   }
-  
-  if(CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1")){
-    EnterInsertMode(true)
-    Send {f}
+
+  if(chromeVimMode){
+    if(CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1")){
+      EnterInsertMode(true)
+      Send {f}
+    }else{
+      SetTimer FastModeHints, -10
+    }
   }else{
-    SetTimer FastModeHints, -10
+      SetTimer FastModeHints, -10
   }
 }
 
@@ -1234,7 +1240,8 @@ FastModeHints(){
   ; ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
-  f:: EnterFastMode()
+  f:: EnterFastMode(true, true)
+  +F:: EnterFastMode(true, false)
   ; passthru for new tab
  ; ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
@@ -1359,14 +1366,12 @@ FastModeHints(){
   ^t:: Send ^{n}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
   x:: RightDrag()
-  f:: EnterFastMode()
   g:: Send {Home}
 #If (NORMAL_MODE && CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   ; ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
   ~g:: EnterInsertMode(true)
 #If (NORMAL_MODE && !CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
-  ; f:: EnterFastMode()
   g:: Send {Home}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
