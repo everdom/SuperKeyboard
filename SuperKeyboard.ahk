@@ -335,6 +335,16 @@ ToggleChromeVimMode(){
   }
 }
 
+SetMouseSpeedMode(speedMode){
+  if(speedMode == 1){
+    SetForce(16)
+  } else if(speedMode == 2){
+    SetForce(52)
+  } else if(speedMode == 0){
+    SetForce(4)
+  }
+}
+
 ClickInsert(quick:=true) {
   Click
   EnterInsertMode(quick)
@@ -888,7 +898,7 @@ SetVolume(volume){
  ShowModePopup(Format("Volume: {:d}%", Round(masterVolume)))
 }
 
-SetForce(v, relative){
+SetForce(v, relative:=0){
   if(relative == 1){
     if(FORCE+v>0){
       FORCE += v
@@ -1306,6 +1316,9 @@ FastModeHints(){
   +=:: SetForce(+3, 1)
   +-:: SetForce(-3, 1)
   +0:: SetForce(16, 0)
+  !=:: SetMouseSpeedMode(2)
+  !-:: SetMouseSpeedMode(0)
+  !0:: SetMouseSpeedMode(1)
   ,:: Min()
   .:: Max()
   /:: Close()
