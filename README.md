@@ -88,6 +88,9 @@ very normal at all)
 - `f12,+` increase mouse move speed
 - `f11,_` decrease mouse move speed
 - `f10,)` set mouse move speed to default
+- `!0` set mouse move speed to default
+- `!-` set mouse move speed to slow
+- `!=` set mouse move speed to fast
 - `=` volume up
 - `-` volume down
 - `0` volume off
