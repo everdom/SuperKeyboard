@@ -97,6 +97,22 @@ DPI_v(v){
   Return v*DPI_Ratio
 }
 
+;; Tigger two same keys
+Trigger2(timeout) 
+{
+    if(timeout == 0){
+      return (A_ThisHotkey = A_PriorHotkey)
+    }else{
+      return (A_ThisHotkey = A_PriorHotkey) and (A_TimeSincePriorHotkey < timeout)
+    }
+}
+
+gg(){
+  if(Trigger2(0)){
+    Send {Home}
+  }
+}
+
 Accelerate(velocity, pos, neg) {
   If (pos == 0 && neg == 0) {
     Return 0
@@ -1355,7 +1371,7 @@ FastModeHints(){
   ; y:: ScrollUp()
   d:: ScrollDownMore()
   u:: ScrollUpMore()
-  ; g:: Send {Home}
+  g:: gg()
   +g::Send {End}
 ; No shift requirements in normal quick mode
 #If (NORMAL_MODE && NORMAL_QUICK)
@@ -1371,12 +1387,12 @@ FastModeHints(){
 
 ;; windows explorer
 #If (WinActive("ahk_class CabinetWClass"))
-  !h:: Send !{Up}
+  !h:: Up
   !j:: Send {Down}
   !k:: Send {Up}
   ; !l:: Send {Right}
   ; !u:: Send !{Up}
-  !l:: Send {Enter}
+  !l:: SendInput, {Enter}
   !b:: MouseBack()
   !n:: MouseForward()
   !x:: Send ^{w}
@@ -1398,14 +1414,11 @@ FastModeHints(){
   ^t:: Send ^{n}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
   x:: RightDrag()
-  g:: Send {Home}
 #If (NORMAL_MODE && CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   ; ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
   ~g:: EnterInsertMode(true)
   ~^t:: EnterInsertMode(true)
-#If (NORMAL_MODE && !CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
-  g:: Send {Home}
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
