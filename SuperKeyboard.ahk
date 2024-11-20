@@ -39,7 +39,7 @@ global EXT_DRAGGING_MODE:=false
 ;global MAX_VELOCITY := 72
 
 ; mouse speed variables
-global FORCE := 10
+global FORCE := 15
 global RESISTANCE := 0.982
 
 global VELOCITY_X := 0
@@ -1305,7 +1305,7 @@ FastModeHints(){
   f10:: SetForce(10, 0)
   +=:: SetForce(+3, 1)
   +-:: SetForce(-3, 1)
-  +0:: SetForce(10, 0)
+  +0:: SetForce(15, 0)
   ,:: Min()
   .:: Max()
   /:: Close()
