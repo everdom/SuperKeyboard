@@ -83,6 +83,8 @@ global NORMAL_MODE_HINT := true
 global OLD_WASD := false
 
 global IS_EDIT := false
+global THEME_DARK := true
+
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
 ; {
@@ -407,9 +409,13 @@ ShowPopup(msg) {
   centery := A_ScreenHeight // 2
   right := MonitorLeftEdge() + A_ScreenWidth
   bottom := A_ScreenHeight
-  popx := right - DPI_v(150*2)
+  popx := right - DPI_v(170*2)
   popy := bottom - DPI_v(28*2) - DPI_v(50)
-  Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
+  if(THEME_DARK){
+    Progress, b x%popx% y%popy% zh0 w340 h56 fm24 ctFBFBFB cw2D2D2D,, %msg%,,Microsoft YaHei
+  }else{
+    Progress, b x%popx% y%popy% zh0 w340 h56 fm24 ct2D2D2D cwFBFBFB,, %msg%,,Microsoft YaHei
+  }
   POP_UP := true
 }
 
@@ -420,9 +426,13 @@ ShowModePopup(msg) {
   centery := A_ScreenHeight // 2
   right := MonitorLeftEdge() + A_ScreenWidth
   bottom := A_ScreenHeight
-  popx := right - DPI_v(150*2)
+  popx := right - DPI_v(170*2)
   popy := bottom - DPI_v(28*2) - DPI_v(50)
-  Progress, b x%popx% y%popy% zh0 w300 h56 fm24,, %msg%,,SimSun
+  if(THEME_DARK){
+    Progress, b x%popx% y%popy% zh0 w340 h56 fm24 ctFBFBFB cw2D2D2D,, %msg%,,Microsoft YaHei
+  }else{
+    Progress, b x%popx% y%popy% zh0 w340 h56 fm24 ct2D2D2D cwFBFBFB,, %msg%,,Microsoft YaHei
+  }
   SetTimer, ClosePopup, -1600
   POP_UP := true
 }
@@ -1049,14 +1059,19 @@ FastModeLabel(show:=true){
     ; add cache to show quickly
     if(fastModeCache == true){
       Gui Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
-      WinSet TransColor, White, TRANS-WIN
+      WinSet TransColor, 888888, TRANS-WIN
       return
     }
 
     Gui, destroy
-    Gui Color, White
+    Gui Color, 888888
     Gui -caption +toolwindow +AlwaysOnTop
-    Gui font,% "s" FAST_MODE_FONT_SIZE, Arial
+    Gui font,% "s" FAST_MODE_FONT_SIZE, Microsoft Yahei
+    ; if(THEME_DARK){
+    ;   FAST_MODE_FONT_COLOR := "Red"
+    ; }else{
+    ;   FAST_MODE_FONT_COLOR := "Red"
+    ; }
 
     i:=0
     Loop,%FAST_MODE_Y%{
@@ -1067,7 +1082,7 @@ FastModeLabel(show:=true){
         alpha2 :=alphaTable[Mod(k, 26)+1]
         label:= alpha1 alpha2
         
-        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor " "X" MonitorWidthDPI/FAST_MODE_X*j+1 " Y" MonitorHeightDPI/FAST_MODE_Y*i+1 " W"MonitorWidthDPI/FAST_MODE_X-2 " H"MonitorHeightDPI/FAST_MODE_Y-2, %label% 
+        Gui add, text,% "c" FAST_MODE_FONT_COLOR  " TransColor White " "X" MonitorWidthDPI/FAST_MODE_X*j+1 " Y" MonitorHeightDPI/FAST_MODE_Y*i+1 " W"MonitorWidthDPI/FAST_MODE_X-2 " H"MonitorHeightDPI/FAST_MODE_Y-2, %label% 
         j+=1
       }
       i+=1
@@ -1090,7 +1105,7 @@ FastModeLabel(show:=true){
     Gui Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
 
     fastModeCache := true
-    WinSet TransColor, White, TRANS-WIN
+    WinSet TransColor, 888888, TRANS-WIN
   }else{
     Gui Hide
   }
