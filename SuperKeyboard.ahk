@@ -1,5 +1,24 @@
-#InstallKeybdHook
+;OPTIMIZATIONS START
+#NoEnv
+#MaxHotkeysPerInterval 99000000
+#HotkeyInterval 99000000
+#KeyHistory 0
+ListLines Off
+Process, Priority, , A
+SetBatchLines, -1
+SetKeyDelay, -1, -1
+; SetMouseDelay, -1
+; SetDefaultMouseSpeed, 0
+SetWinDelay, -1
+SetControlDelay, -1
+; SendMode Input
+DllCall("ntdll\ZwSetTimerResolution","Int",5000,"Int",1,"Int*",MyCurrentTimerResolution) ;setting the Windows Timer Resolution to 0.5ms, THIS IS A GLOBAL CHANGE
+;OPTIMIZATIONS END
+;YOUR SCRIPT GOES HERE
+DllCall("Sleep","UInt",1) ;I just slept exactly 1ms!
+DllCall("ntdll\ZwDelayExecution","Int",0,"Int64*",-5000) ;you can use this to sleep in increments of 0.5ms if you need even more granularity 
 
+#InstallKeybdHook
 ; vim_mouse_2.ahk
 ; vim (and now also WASD!) bindings to control the mouse with the keyboard
 ; 
@@ -12,7 +31,7 @@
 ;@include-winapi
 ; --------------------------------------------------------------------------------
 #MaxThreads 255 ; Allows a maximum of 255 instead of default threads.
-#Warn All, OutputDebug
+; #Warn All, OutputDebug
 #SingleInstance Force
 ; --------------------------------------------------------------------------------
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
@@ -39,7 +58,7 @@ global EXT_DRAGGING_MODE:=false
 ;global MAX_VELOCITY := 72
 
 ; mouse speed variables
-global FORCE := 16
+global FORCE := 7
 global RESISTANCE := 0.982
 
 global VELOCITY_X := 0
@@ -337,11 +356,11 @@ ToggleChromeVimMode(){
 
 SetMouseSpeedMode(speedMode){
   if(speedMode == 1){
-    SetForce(16)
+    SetForce(7)
   } else if(speedMode == 2){
-    SetForce(52)
+    SetForce(20)
   } else if(speedMode == 0){
-    SetForce(4)
+    SetForce(2)
   }
 }
 
@@ -1310,12 +1329,12 @@ FastModeHints(){
   =:: Send {Volume_Up}
   -:: Send {Volume_Down}
   0:: Send {Volume_Mute}
-  f12:: SetForce(+3, 1)
-  f11:: SetForce(-3, 1)
-  f10:: SetForce(10, 0)
-  +=:: SetForce(+3, 1)
-  +-:: SetForce(-3, 1)
-  +0:: SetForce(16, 0)
+  f12:: SetForce(+1, 1)
+  f11:: SetForce(-1, 1)
+  f10:: SetForce(7, 0)
+  +=:: SetForce(+1, 1)
+  +-:: SetForce(-1, 1)
+  +0:: SetForce(7, 0)
   !=:: SetMouseSpeedMode(2)
   !-:: SetMouseSpeedMode(0)
   !0:: SetMouseSpeedMode(1)
