@@ -320,6 +320,17 @@ EnterNormalMode(quick:=false) {
   ;MsgBox, "Welcome to Normal Mode"
   NORMAL_QUICK := quick
 
+  WinGetActiveTitle, activeTitle   
+  ; 检查窗口标题是否包含 "uTools"  
+  if(InStr(activeTitle, "uTools") ){
+    ;; 二次检测若关闭则进入normal模式
+    Sleep 100
+    WinGetActiveTitle, activeTitle   
+    if(InStr(activeTitle, "uTools") ){
+      return
+    }
+  }
+
   CHROME_VIM_MODE_HINT := true
   msg := "NORMAL"
   If (WASD == false || (CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))) {
@@ -1261,6 +1272,8 @@ FastModeHints(){
  ; ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
   ~Delete:: EnterInsertMode(true)
+  ;; passthru for everything or utools.
+  ~!Space:: EnterInsertMode(true)  
   ; do not pass thru
   ; +;:: EnterInsertMode(true)
   ; intercept movement keys
