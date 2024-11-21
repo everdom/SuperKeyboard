@@ -10,10 +10,10 @@ at creating a program to do so, and I hope you find it as pleasant and convenien
 ## Installation
 Download the script and binary by cloning this repository from GitHub.  The command to run is
 
-`git@github.com:everdom/SuperKeyboard.git`
+`git clone https://github.com/everdom/SuperKeyboard.git`
 
 If that sentence makes no sense to you at all, no worries! Simply download the repository
-as a zip file, unzip it, and run the included executable mouse-control.exe :>
+as a zip file, unzip it, and run the included executable SuperKeyboard.exe :>
 
 The benefit to using git is you can keep up to date with `git pull`. I'm still (periodically)
 pushing little updates here and there to make it better and easier to use.
@@ -33,7 +33,7 @@ the .ahk file to run the script. Pretty easy right?
 
 #### AS OF (WHENEVER IT WAS) AHK has updated to "Version 2.0"
 Luckily it turns out, you can install either version 1.1 or 2.0, as when
-you try to run mouse-control.ahk in Version 2, it will happily download the old version
+you try to run SuperKeyboard.ahk in Version 2, it will happily download the old version
 and run it appropriately. 
 
 ## Modes of Input
@@ -158,17 +158,53 @@ Acts like a normal keyboard.
 
 You can also use the alt+alpha keys to input number instead of the number pad. Switch into
 and out of numpad mode with `Win Alt p`
-- `!u`:: Numpad7
-- `!i`:: Numpad8
-- `!o`:: Numpad9
-- `!j`:: Numpad4
-- `!k`:: Numpad5
-- `!l`:: Numpad6
-- `!m`:: Numpad1
-- `!,`:: Numpad2
-- `!.`:: Numpad3
-- `!n`:: Numpad0
-- `!``:: switch "Input Quick Numpad" Mode(need to press alt key to input number)
+- `!u` Numpad7
+- `!i` Numpad8
+- `!o` Numpad9
+- `!j` Numpad4
+- `!k` Numpad5
+- `!l` Numpad6
+- `!m` Numpad1
+- `!,` Numpad2
+- `!.` Numpad3
+- `!n` Numpad0
+- !` switch Small Mode
+
+### Insert "Numpad" small mode
+This mode is for the keyboard with 65/60 layout which is small and has no F1-F12 keys.
+
+-  `!u` Numpad7
+-  `!i` Numpad8
+-  `!o` Numpad9
+-  `!j` Numpad4
+-  `!k` Numpad5
+-  `!l` Numpad6
+-  `!m` Numpad1
+-  `!,` Numpad2
+-  `!.` Numpad3
+-  `!n` Numpad0
+-  `!Backspace` Backspace
+-  `!;` +
+-  `!'` -
+-  `![` *
+-  `!]` /
+-  `!Enter` Enter
+-  `!1` f1
+-  `!2` f2
+-  `!3` f3 
+-  `!4` f4
+-  `!5` f5
+-  `!6` f6
+-  `!7` f7
+-  `!8` f8
+-  `!9` f9
+-  `!0` f10
+-  `!-` f11
+-  `!=` f12
+-  ` Esc
+-  ^` `
+-  +` ~
+-  `! switch Small Mode
 
 `Win Alt n` put you in Normal mode.
 
