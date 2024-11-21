@@ -78,12 +78,39 @@ global FAST_MODE_FONT_SIZE :=48
 global FAST_MODE_FONT_COLOR :="Red"
 
 global CHROME_VIM_MODE :=true
+;; auto acrivate chrome core when it's under mouse
+global CHROME_VIM_MODE_AUTO_ACTIVATE :=true
 global CHROME_VIM_MODE_HINT := true
 global NORMAL_MODE_HINT := true
 global OLD_WASD := false
 
 global IS_EDIT := false
 global THEME_DARK := true
+
+global curX := 0
+global MonitorWidth :=0
+global MonitorHeight :=0
+global MonitorLeft :=0
+global MonitorTop :=0
+global Monitor1Width:=0
+global Monitor1Height:=0
+global Monitor2Width:=0
+global Monitor2Height:=0
+global Monitor3Width:=0
+global Monitor3Height:=0
+global Monitor4Width:=0
+global Monitor4Height:=0
+global Mon1Left:=0
+global Mon1Top:=0
+global Mon2Left:=0
+global Mon2Top:=0
+global Mon3Left:=0
+global Mon3Top:=0
+; global Mon4Left:=Monitor3Left
+; global Mon4Top:=Monitor3Top
+
+global lastScreenNum:=1
+global screenNum:=1
 
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
@@ -93,6 +120,7 @@ global THEME_DARK := true
 ; }
 
 ; Insert Mode by default
+InitScreenInfo()
 EnterInsertMode()
 
 DPI_v(v){
@@ -113,6 +141,62 @@ gg(){
   if(Trigger2(0)){
     Send {Home}
   }
+}
+
+InitScreenInfo(){
+  SysGet, Monitor1, Monitor, 1
+  ; SysGet, MonitorWorkArea1, MonitorWorkArea, 1
+  SysGet, Monitor2, Monitor, 2
+  ; SysGet, MonitorWorkArea2, MonitorWorkArea, 2
+  SysGet, Monitor3, Monitor, 3
+  ; SysGet, MonitorWorkArea3, MonitorWorkArea, 3
+  ; SysGet, Monitor4, Monitor, 4
+  ; SysGet, MonitorWorkArea4, MonitorWorkArea, 4
+
+  Monitor1Width:=Monitor1Right-Monitor1Left
+  Monitor1Height:=Monitor1Bottom-Monitor1Top
+  Monitor2Width:=Monitor2Right-Monitor2Left
+  Monitor2Height:=Monitor2Bottom-Monitor2Top
+  Monitor3Width:=Monitor3Right-Monitor3Left
+  Monitor3Height:=Monitor3Bottom-Monitor3Top
+
+  Mon1Left:=Monitor1Left
+  Mon1Top:=Monitor1Top
+  Mon2Left:=Monitor2Left
+  Mon2Top:=Monitor2Top
+  Mon3Left:=Monitor3Left
+  Mon3Top:=Monitor3Top
+}
+
+GetCurrentScreenInfo(){
+    CoordMode, Mouse, Screen
+    MouseGetPos, curX
+    
+    if (curX>=0 && curX<= Monitor1Width){
+      MonitorLeft:=Mon1Left
+      MonitorTop:=Mon1Top
+      MonitorWidth:=Monitor1Width
+      MonitorHeight:=Monitor1Height
+      screenNum:=1
+    }else if(curX<0 && curX>= -Monitor2Width){
+      MonitorLeft:=Mon2Left
+      MonitorTop:=Mon2Top
+      MonitorWidth:=Monitor2Width
+      MonitorHeight:=Monitor2Height
+      screenNum:=2
+    }else if(curX>Monitor1Width && curX<=Monitor1Width+Moniter3Width){
+      MonitorLeft:=Mon3Left
+      MonitorTop:=Mon3Top
+      MonitorWidth:=Monitor3Width
+      MonitorHeight:=Monitor3Height
+      screenNum:=3
+    }else{
+      ; MonitorLeft:=Mon4Left
+      ; MonitorTop:=Mon4Top
+      ; MonitorWidth:=Monitor4Right-Monitor4Left
+      ; MonitorHeight:=Monitor4Bottom-Monitor4Top
+      screenNum:=4
+    }
 }
 
 Accelerate(velocity, pos, neg) {
@@ -255,28 +339,6 @@ EnterNormalMode(quick:=false) {
   INSERT_QUICK := false
 
   SetTimer, MoveCursor, 16
-  SysGet, Monitor1, Monitor, 1
-  ; SysGet, MonitorWorkArea1, MonitorWorkArea, 1
-  SysGet, Monitor2, Monitor, 2
-  ; SysGet, MonitorWorkArea2, MonitorWorkArea, 2
-  SysGet, Monitor3, Monitor, 3
-  ; SysGet, MonitorWorkArea3, MonitorWorkArea, 3
-  ; SysGet, Monitor4, Monitor, 4
-  ; SysGet, MonitorWorkArea4, MonitorWorkArea, 4
-
-  Monitor1Width:=Monitor1Right-Monitor1Left
-  Monitor1Height:=Monitor1Bottom-Monitor1Top
-  Monitor2Width:=Monitor2Right-Monitor2Left
-  Monitor2Height:=Monitor2Bottom-Monitor2Top
-  Monitor3Width:=Monitor3Right-Monitor3Left
-  Monitor3Height:=Monitor3Bottom-Monitor3Top
-
-  Mon1Left:=Monitor1Left
-  Mon1Top:=Monitor1Top
-  Mon2Left:=Monitor2Left
-  Mon2Top:=Monitor2Top
-  Mon3Left:=Monitor3Left
-  Mon3Top:=Monitor3Top
 }
 
 EnterWASDMode(quick:=false) {
@@ -329,7 +391,7 @@ EnterNumpadMode(quick:=false) {
   FAST_MODE := false
 }
 
-EnterFastMode(activateWin:=true, chromeVimMode:=true){
+EnterFastMode(mode:=true){
   ; msg := "FAST"
   ; ShowModePopup(msg)
 
@@ -343,24 +405,34 @@ EnterFastMode(activateWin:=true, chromeVimMode:=true){
   INSERT_MODE := false
   INSERT_QUICK := false
 
-  if(activateWin){
     MouseGetPos, , , windowUnderMouse  ; 获取鼠标位置和窗口句柄  
     if(windowUnderMouse)
     {  
-      WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
-    }
-  }
-
-  if(chromeVimMode){
-    if(CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1")){
-      EnterInsertMode(true)
-      Send {f}
+      WinGetClass, className, ahk_id %windowUnderMouse%  ; 获取窗口类名  
+      ; ToolTip, 鼠标下方窗口类: %className%  ; 显示窗口类名  
+      ; WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
+      if(mode){
+        if(CHROME_VIM_MODE && className == "Chrome_WidgetWin_1"){
+            if(CHROME_VIM_MODE_AUTO_ACTIVATE){
+              WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
+              EnterInsertMode(true)
+              Send {f}
+            }else if(WinActive("ahk_class Chrome_WidgetWin_1")){
+              EnterInsertMode(true)
+              Send {f}
+            }else{
+              SetTimer FastModeHints, -10
+            }
+        }else{
+          SetTimer FastModeHints, -10
+        }
+      }else{
+        SetTimer FastModeHints, -10
+      }
     }else{
       SetTimer FastModeHints, -10
     }
-  }else{
-      SetTimer FastModeHints, -10
-  }
+
 }
 
 ToggleChromeVimMode(){
@@ -405,10 +477,11 @@ DoubleClickInsert(quick:=true) {
 ShowPopup(msg) {
   ; clean up any lingering popups
   ; ClosePopup()
-  centerx := MonitorLeftEdge() + (A_ScreenWidth // 2)
-  centery := A_ScreenHeight // 2
-  right := MonitorLeftEdge() + A_ScreenWidth
-  bottom := A_ScreenHeight
+  GetCurrentScreenInfo()
+  centerx := MonitorLeft + (MonitorWidth // 2)
+  centery := MonitorHeight // 2
+  right := MonitorLeft + MonitorWidth
+  bottom := MonitorHeight
   popx := right - DPI_v(170*2)
   popy := bottom - DPI_v(28*2) - DPI_v(50)
   if(THEME_DARK){
@@ -422,19 +495,8 @@ ShowPopup(msg) {
 ShowModePopup(msg) {
   ; clean up any lingering popups
   ClosePopup()
-  centerx := MonitorLeftEdge() + (A_ScreenWidth // 2)
-  centery := A_ScreenHeight // 2
-  right := MonitorLeftEdge() + A_ScreenWidth
-  bottom := A_ScreenHeight
-  popx := right - DPI_v(170*2)
-  popy := bottom - DPI_v(28*2) - DPI_v(50)
-  if(THEME_DARK){
-    Progress, b x%popx% y%popy% zh0 w340 h56 fm24 ctFBFBFB cw2D2D2D,, %msg%,,Microsoft YaHei
-  }else{
-    Progress, b x%popx% y%popy% zh0 w340 h56 fm24 ct2D2D2D cwFBFBFB,, %msg%,,Microsoft YaHei
-  }
+  ShowPopup(msg)
   SetTimer, ClosePopup, -1600
-  POP_UP := true
 }
 
 ClosePopup() {
@@ -771,36 +833,7 @@ JumpWindowRightEdge() {
 ; hard to test when I only have the one
 
 JumpCurrentMiddle() {
-    CoordMode, Mouse, Screen
-    MouseGetPos, curX
-    
-    screenNum:=1
-    if (curX>=0 && curX<= Monitor1Width){
-      MonitorLeft:=Mon1Left
-      MonitorTop:=Mon1Top
-      MonitorWidth:=Monitor1Width
-      MonitorHeight:=Monitor1Height
-      screenNum:=1
-    }else if(curX<0 && curX>= -Monitor2Width){
-      MonitorLeft:=Mon2Left
-      MonitorTop:=Mon2Top
-      MonitorWidth:=Monitor2Width
-      MonitorHeight:=Monitor2Height
-      screenNum:=2
-    }else if(curX>Monitor1Width && curX<=Monitor1Width+Moniter3Width){
-      MonitorLeft:=Mon3Left
-      MonitorTop:=Mon3Top
-      MonitorWidth:=Monitor3Width
-      MonitorHeight:=Monitor3Height
-      screenNum:=3
-    }else{
-      ; MonitorLeft:=Mon4Left
-      ; MonitorTop:=Mon4Top
-      ; MonitorWidth:=Monitor4Right-Monitor4Left
-      ; MonitorHeight:=Monitor4Bottom-Monitor4Top
-      screenNum:=4
-    }
-
+  GetCurrentScreenInfo()
   CoordMode, Mouse, Screen
   MouseMove, MonitorLeft + (MonitorWidth // 2), MonitorTop+(MonitorHeight // 2)
 }
@@ -974,82 +1007,14 @@ global hDc:=0
 global hCurrPen:=0
 global fastModeCache := false
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
-global curX := 0
-global MonitorWidth :=0
-global MonitorHeight :=0
-global MonitorWidthDPI :=0
-global MonitorHeightDPI :=0
-global MonitorLeft :=0
-global MonitorTop :=0
-global Monitor1Width:=0
-global Monitor1Height:=0
-global Monitor2Width:=0
-global Monitor2Height:=0
-global Monitor3Width:=0
-global Monitor3Height:=0
-global Monitor4Width:=0
-global Monitor4Height:=0
-global Mon1Left:=0
-global Mon1Top:=0
-global Mon2Left:=0
-global Mon2Top:=0
-global Mon3Left:=0
-global Mon3Top:=0
-; global Mon4Left:=Monitor3Left
-; global Mon4Top:=Monitor3Top
-global lastScreenNum:=1
 
 FastModeLabel(show:=true){
   ClosePopup()
   if(show){
-    CoordMode, Mouse, Screen
-    MouseGetPos, curX
+    GetCurrentScreenInfo()
 
-    ; MsgBox , % "x" Mon1Left " y" Mon1Top " w"Mon2Left " h"Mon2Top
-
-    
-    screenNum:=1
-    if (curX>=0 && curX<= Monitor1Width){
-      MonitorLeft:=Mon1Left
-      MonitorTop:=Mon1Top
-      MonitorWidth:=Monitor1Width
-      MonitorHeight:=Monitor1Height
-      screenNum:=1
-    }else if(curX<0 && curX>= -Monitor2Width){
-      MonitorLeft:=Mon2Left
-      MonitorTop:=Mon2Top
-      MonitorWidth:=Monitor2Width
-      MonitorHeight:=Monitor2Height
-      screenNum:=2
-    }else if(curX>Monitor1Width && curX<=Monitor1Width+Moniter3Width){
-      MonitorLeft:=Mon3Left
-      MonitorTop:=Mon3Top
-      MonitorWidth:=Monitor3Width
-      MonitorHeight:=Monitor3Height
-      screenNum:=3
-    }else{
-      ; MonitorLeft:=Mon4Left
-      ; MonitorTop:=Mon4Top
-      ; MonitorWidth:=Monitor4Right-Monitor4Left
-      ; MonitorHeight:=Monitor4Bottom-Monitor4Top
-      screenNum:=4
-    }
     MonitorWidthDPI:=MonitorWidth/DPI_Ratio
     MonitorHeightDPI:=MonitorHeight/DPI_Ratio
-    ; MonitorLeft:=Monitor1Left
-    ; MonitorTop:=Monitor1Top
-
-    ; MsgBox , % "x" MonitorLeft " y" MonitorTop " w"MonitorWiiterdth " h"MonitorHeight
-    ; SysGet, MonitorCount, MonitorCount
-    ; SysGet, MonitorPrimary, MonitorPrimaryLeft
-    ; MsgBox, Monitor Count:`t%MonitorCount%`nPrimary Monitor:`t%MonitorPrimary%
-    ; Loop, %MonitorCount%
-    ; {
-    ;   SysGet, MonitorName, MonitorName, %A_Index%
-    ;     SysGet, Monitor, Monitor, %A_Index%
-    ; ;     SysGet, MonitorWorkArea, MonitorWorkArea, %A_Index%
-    ;     MsgBox, Monitor:`t#%A_Index%`nName:`t%MonitorName%`nLeft:`t%MonitorLeft% (%MonitorWorkAreaLeft% work)`nTop:`t%MonitorTop% (%MonitorWorkAreaTop% work)`nRight:`t%MonitorRight% (%MonitorWorkAreaRight% work)`nBottom:`t%MonitorBottom% (%MonitorWorkAreaBottom% work)
-    ; }
 
     if(screenNum != lastScreenNum){
       fastModeCache := false
@@ -1175,17 +1140,7 @@ FastModeHints(){
           label:= alpha1 alpha2
           if (UserInput = label)
           {
-            ; CoordMode, Mouse, Screen
-            ; MouseGetPos, x
-            if (curX>=0 && curX<= Monitor1Width){
-              MouseMove, MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else if(curX<0 && curX>= -Monitor2Width){
               MouseMove, MonitorLeft+MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorTop+MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else if(curX>Monitor1Width && curX<=Monitor1Width*MonitorWidth){
-              MouseMove, MonitorLeft+MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorTop+MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
-            }else{
-
-            }
           }
           j+=1
         }
@@ -1300,8 +1255,8 @@ FastModeHints(){
   ; ~f:: EnterInsertMode(true)
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
-  f:: EnterFastMode(true, true)
-  +F:: EnterFastMode(true, false)
+  f:: EnterFastMode(true)
+  +F:: EnterFastMode(false)
   ; passthru for new tab
  ; ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
