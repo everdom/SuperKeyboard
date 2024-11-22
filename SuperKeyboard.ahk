@@ -1318,6 +1318,7 @@ FastModeHints(){
   n:: MouseForward()
   b:: MouseBack()
   ; allow for modifier keys (or more importantly a lack of them) by lifting ctrl requirement for these hotkeys
+
   *]:: End
   *[:: Home
   *`;:: ScrollDown()
@@ -1345,6 +1346,8 @@ FastModeHints(){
   !p:: Send {PrintScreen}
   ; !=:: ShowCrossRuler()
   End:: Click, Up
+
+
 #If (NORMAL_MODE && NORMAL_QUICK == false)
   Capslock:: EnterInsertMode(true)
   +Capslock:: EnterInsertMode()
@@ -1358,6 +1361,17 @@ FastModeHints(){
   g:: gg()
   +g::Send {End}
 ; No shift requirements in normal quick mode
+#If (NORMAL_MODE && WASD == false && WinActive("ahk_class Chrome_WidgetWin_1") == false)
+  ;; avoid accidental touch
+  q:: Return
+  w:: Return
+  r:: Return
+  t:: Return
+  y:: Return
+  a:: Return
+  s:: Return
+  z:: Return
+
 #If (NORMAL_MODE && NORMAL_QUICK)
   Capslock:: Return
   m:: JumpCurrentMiddle()
@@ -1502,7 +1516,7 @@ FastModeHints(){
   !`:: SwitchSmallMode()
 
 #If (INSERT_MODE && INSERT_QUICK)
-  ~Enter:: EnterNormalMode()
+  ; ~Enter:: EnterNormalMode()
   ; Copy and return to Normal Mode
   ; ~^c:: EnterNormalMode()
   ~Escape:: EnterNormalMode()
