@@ -322,7 +322,7 @@ EnterNormalMode(quick:=false) {
 
   WinGetActiveTitle, activeTitle   
   ; 检查窗口标题是否包含 "uTools"  
-  if(InStr(activeTitle, "uTools") ){
+  if(InStr(activeTitle, "uTools")){
     ;; 二次检测若关闭则进入normal模式
     Sleep 100
     WinGetActiveTitle, activeTitle   
@@ -1274,6 +1274,7 @@ FastModeHints(){
   ~Delete:: EnterInsertMode(true)
   ;; passthru for everything or utools.
   ~!Space:: EnterInsertMode(true)  
+  ~LWin:: EnterInsertMode(true)  
   ; do not pass thru
   ; +;:: EnterInsertMode(true)
   ; intercept movement keys
