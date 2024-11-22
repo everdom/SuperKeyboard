@@ -760,15 +760,16 @@ MouseLeft() {
     Send {Ctrl up}
   }
 
+  if(INSERT_AUTO_QUICK && NORMAL_QUICK ==false && IS_EDIT && NORMAL_MODE)
+  {  
+    EnterInsertMode(true)
+  }
+
   Click
   DRAGGING := false
   SHIFT_DRAGGING := false
   CTRL_DRAGGING := false
 
-  if(INSERT_AUTO_QUICK && NORMAL_QUICK ==false && IS_EDIT && NORMAL_MODE)
-  {  
-    EnterInsertMode(true)
-  }
 }
 
 MouseRight() {
