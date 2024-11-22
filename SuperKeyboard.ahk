@@ -698,11 +698,45 @@ Back(){
   wx := 0
   wy := 0
   width := 0
-  WinGetPos,wx,wy,width,,A
-  center := wx +DPI_v(24)
-  y := wy + DPI_v(12)
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  MouseMove, wx+DPI_v(24), wy+height - DPI_v(24)
   ;MsgBox, Hello %width% %center%
-  MouseMove, center, y
+}
+
+DialogBtnLeft(){
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  MouseMove, wx+width-DPI_v(68+96*2), wy+height - DPI_v(40)
+  ;MsgBox, Hello %width% %center%
+}
+
+DialogBtnCenter(){
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  MouseMove, wx+width-DPI_v(68+96), wy+height - DPI_v(40)
+}
+DialogBtnRight(){
+  wx := 0
+  wy := 0
+  width := 0
+  height := 0
+  WinGetPos,wx,wy,width,height,A
+  centerx := wx + width//2
+  centery := wy + height//2
+  MouseMove, wx+width-DPI_v(68), wy+height - DPI_v(40)
 }
 
 Resize(){
@@ -1310,6 +1344,10 @@ FastModeHints(){
   +,:: JumpMiddle_1()
   +.:: JumpMiddle()
   +?:: JumpMiddle2()
+
+  !,:: DialogBtnLeft()
+  !.:: DialogBtnCenter()
+  !/:: DialogBtnRight()
   ; ahh what the heck, remove shift requirements for jump bindings
   ; maybe take "m" back if we ever make marks
   +M:: JumpWindowMiddle()
