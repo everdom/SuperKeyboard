@@ -37,9 +37,10 @@ DllCall("ntdll\ZwDelayExecution","Int",0,"Int64*",-5000) ;you can use this to sl
 DllCall("SetThreadDpiAwarenessContext", "ptr", -4, "ptr")
 ; DllCall("SetThreadDpiAwarenessContext", "ptr", -3, "ptr")
 ; --------------------------------------------------------------------------------
-global DPI_Ratio := A_ScreenDPI/96
-global A_ScreenWidth_DPI := A_ScreenWidth / DPI_Ratio
-global A_ScreenHeight_DPI :=A_ScreenHeight / DPI_Ratio
+global currentDPI := A_ScreenDPI
+global DPI_Ratio := currentDPI/96
+; global A_ScreenWidth_DPI := A_ScreenWidth / DPI_Ratio
+; global A_ScreenHeight_DPI :=A_ScreenHeight / DPI_Ratio
 
 ; #Include Gdip_All.ahk
 
@@ -143,6 +144,15 @@ gg(){
   }
 }
 
+; 声明 DllCall 需要用到的 Windows API 函数  
+GetDPI() {  
+    hDC := DllCall("GetDC", "ptr", 0) ; 获取桌面设备上下文  
+    DPI := DllCall("GetDeviceCaps", "ptr", hDC, "int", 88) ; 88 是 LOGPIXELSX 的值  
+    DllCall("ReleaseDC", "ptr", 0, "ptr", hDC) ; 释放设备上下文  
+    return DPI  
+}  
+
+
 InitScreenInfo(){
   SysGet, Monitor1, Monitor, 1
   ; SysGet, MonitorWorkArea1, MonitorWorkArea, 1
@@ -152,6 +162,7 @@ InitScreenInfo(){
   ; SysGet, MonitorWorkArea3, MonitorWorkArea, 3
   ; SysGet, Monitor4, Monitor, 4
   ; SysGet, MonitorWorkArea4, MonitorWorkArea, 4
+
 
   Monitor1Width:=Monitor1Right-Monitor1Left
   Monitor1Height:=Monitor1Bottom-Monitor1Top
@@ -172,6 +183,9 @@ GetCurrentScreenInfo(){
     CoordMode, Mouse, Screen
     MouseGetPos, curX
     
+    currentDPI := GetDPI()  
+    DPI_Ratio := currentDPI / 96
+
     if (curX>=0 && curX<= Monitor1Width){
       MonitorLeft:=Mon1Left
       MonitorTop:=Mon1Top
@@ -492,7 +506,7 @@ ShowPopup(msg) {
   centerx := MonitorLeft + (MonitorWidth // 2)
   centery := MonitorHeight // 2
   right := MonitorLeft + MonitorWidth
-  bottom := MonitorHeight
+  bottom := MonitorTop + MonitorHeight
   popx := right - DPI_v(170*2)
   popy := bottom - DPI_v(28*2) - DPI_v(50)
   if(THEME_DARK){
