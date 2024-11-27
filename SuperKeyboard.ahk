@@ -330,18 +330,20 @@ MoveCursor() {
   }
 }
 
-EnterNormalMode(quick:=false) {
+EnterNormalMode(quick:=false, force:=false) {
   ;MsgBox, "Welcome to Normal Mode"
   NORMAL_QUICK := quick
 
-  WinGetActiveTitle, activeTitle   
-  ; 检查窗口标题是否包含 "uTools"  
-  if(InStr(activeTitle, "uTools")){
-    ;; 二次检测若关闭则进入normal模式
-    Sleep 100
+  if(force == false){
     WinGetActiveTitle, activeTitle   
-    if(InStr(activeTitle, "uTools") ){
-      return
+    ; 检查窗口标题是否包含 "uTools"  
+    if(InStr(activeTitle, "uTools")){
+      ;; 二次检测若关闭则进入normal模式
+      Sleep 100
+      WinGetActiveTitle, activeTitle   
+      if(InStr(activeTitle, "uTools") ){
+        return
+      }
     }
   }
 
@@ -1573,8 +1575,8 @@ FastModeHints(){
   ; Copy and return to Normal Mode
   ; ~^c:: EnterNormalMode()
   ~Escape:: EnterNormalMode()
-  Capslock:: EnterNormalMode()
-  +Capslock:: EnterNormalMode()
+  Capslock:: EnterNormalMode(false, true)
+  +Capslock:: EnterNormalMode(false,  true)
 #If (NORMAL_MODE && WASD)
   <#<!v:: ExitWASDMode()
   ; Intercept movement keys
