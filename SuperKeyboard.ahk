@@ -180,6 +180,7 @@ InitScreenInfo(){
 }
 
 GetCurrentScreenInfo(){
+    InitScreenInfo()
     CoordMode, Mouse, Screen
     MouseGetPos, curX
     
