@@ -719,7 +719,7 @@ Back(){
   WinGetPos,wx,wy,width,height,A
   centerx := wx + width//2
   centery := wy + height//2
-  MouseMove, wx+DPI_v(24), wy+height - DPI_v(24)
+  MouseMove, wx+DPI_v(24), wy + DPI_v(24)
   ;MsgBox, Hello %width% %center%
 }
 
