@@ -1473,6 +1473,7 @@ FastModeHints(){
   ~t:: EnterInsertMode(true)
   ~g:: EnterInsertMode(true)
   ~^t:: EnterInsertMode(true)
+  r:: F5
 #If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
   !x:: Send ^{w}
 #If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
