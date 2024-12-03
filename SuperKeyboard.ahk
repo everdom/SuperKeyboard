@@ -815,6 +815,7 @@ MouseMiddle() {
   CTRL_DRAGGING := false
 }
 
+global WINDOW_MARGIN:=5
 JumpWindowLeftEdge() {
   if(SHIFT_DRAGGING){
     return
@@ -830,7 +831,7 @@ JumpWindowLeftEdge() {
   x := 0
   CoordMode, Mouse, Screen
   MouseGetPos,,y
-  MouseMove, wx,y
+  MouseMove, wx+DPI_v(WINDOW_MARGIN),y
 }
 
 JumpWindowBottomEdge() {
@@ -849,7 +850,7 @@ JumpWindowBottomEdge() {
   x := 0
   CoordMode, Mouse, Screen
   MouseGetPos, x
-  MouseMove, x,(wy+height - 0)
+  MouseMove, x,(wy+height - DPI_v(WINDOW_MARGIN))
 }
 
 JumpWindowTopEdge() {
@@ -868,7 +869,7 @@ JumpWindowTopEdge() {
   x := 0
   CoordMode, Mouse, Screen
   MouseGetPos, x
-  MouseMove, x,wy
+  MouseMove, x,wy+DPI_v(WINDOW_MARGIN)
 
 }
 
@@ -889,7 +890,7 @@ JumpWindowRightEdge() {
   y := 0
   CoordMode, Mouse, Screen
   MouseGetPos,,y
-  MouseMove, wx+width,y
+  MouseMove, wx+width-DPI_v(WINDOW_MARGIN),y
 }
 
 ; TODO: When we have more monitors, set up H and L to use current screen as basis
