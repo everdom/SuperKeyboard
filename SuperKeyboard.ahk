@@ -80,7 +80,7 @@ global FAST_MODE_FONT_COLOR :="Red"
 global FAST_MODE_EXT := true
 global FAST_MODE_EXT_X := 5
 global FAST_MODE_EXT_Y := 5
-global FAST_MODE_EXT_FONT_SIZE :=16
+global FAST_MODE_EXT_FONT_SIZE :=14
 global FAST_MODE_EXT_FONT_COLOR :="Red"
 
 global CHROME_VIM_MODE :=true
