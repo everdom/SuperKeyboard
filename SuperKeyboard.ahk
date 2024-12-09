@@ -307,10 +307,17 @@ MoveCursor() {
         OLD_WASD := WASD
       }
       WASD := false
+    }else if(WinActiveInTitles(EXT_DRAGGING_APPS)){
+        if(EXT_DRAGGING_HINT){
+          EXT_DRAGGING_HINT:=false
+          ToggleExtDraggingMode(true)
+          ShowModePopup("EXT DRAG ON")
+        }
     }else{
       WASD := OLD_WASD
       if(NORMAL_MODE_HINT){
         NORMAL_MODE_HINT := false
+        ToggleExtDraggingMode(false)
         msg := "NORMAL"
         If (WASD == false) {
           msg := msg . " (VIM)"
@@ -321,19 +328,22 @@ MoveCursor() {
         ShowModePopup(msg)
       }
     }
+  }else{
+    if(WinActiveInTitles(EXT_DRAGGING_APPS)){
+        if(EXT_DRAGGING_HINT){
+          EXT_DRAGGING_HINT:=false
+          ToggleExtDraggingMode(true)
+          ShowModePopup("EXT DRAG ON")
+        }
+    }else{
+        if(NORMAL_MODE_HINT){
+          NORMAL_MODE_HINT := false
+          ToggleExtDraggingMode(false)
+          ShowModePopup("EXT DRAG OFF")
+        }
+    }
   }
 
-  if(WinActiveInTitles(EXT_DRAGGING_APPS)){
-      if(EXT_DRAGGING_HINT){
-        EXT_DRAGGING_HINT:=false
-        ToggleExtDraggingMode(true)
-      }
-  }else{
-      if(NORMAL_MODE_HINT){
-        NORMAL_MODE_HINT := false
-        ToggleExtDraggingMode(false)
-      }
-  }
 
   LEFT := 0
   DOWN := 0
@@ -400,6 +410,7 @@ EnterNormalMode(quick:=false, force:=false) {
   }
 
   CHROME_VIM_MODE_HINT := true
+  EXT_DRAGGING_HINT :=true
   msg := "NORMAL"
   If (WASD == false || (CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))) {
     msg := msg . " (VIM)"
@@ -528,11 +539,6 @@ ToggleChromeVimMode(){
 
 ToggleExtDraggingMode(open:=false){
   EXT_DRAGGING_MODE := open
-  if(EXT_DRAGGING_MODE){
-    ShowModePopup("EXT DRAG ON")
-  }else{
-    ShowModePopup("EXT DRAG OFF")
-  }
 
 }
 SetMouseSpeedMode(speedMode){
