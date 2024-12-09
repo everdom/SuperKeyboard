@@ -1255,7 +1255,7 @@ FastModeExtLabel(show:=true, row:=0, col:=0){
       j+=1
     }
 
-    Gui,2:Show, % "x" FastModeWidth*col " y" FastModeHeight*row " w"FastModeWidthDPI+2 " h"FastModeHeightDPI+2, TRANS-WIN
+    Gui,2:Show, % "x" MonitorLeft+FastModeWidth*col " y" MonitorTop+FastModeHeight*row " w"FastModeWidthDPI+2 " h"FastModeHeightDPI+2, TRANS-WIN
     WinSet TransColor, 888888, TRANS-WIN
 
     fastModeExtCache := true
@@ -1400,6 +1400,7 @@ FastModeExtHints(){
     {
         ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
         ; Gui, 1:Hide
+        FastModeLabel(false)
         FastModeExtLabel(false)
         if(NORMAL_QUICK == false){
           EnterNormalMode()
@@ -1421,6 +1422,7 @@ FastModeExtHints(){
     {
         ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
         ; Gui, 1:Hide
+        FastModeLabel(false)
         FastModeExtLabel(false)
         if(NORMAL_QUICK == false){
           EnterNormalMode()
@@ -1461,6 +1463,7 @@ FastModeExtHints(){
     if (ErrorLevel = "NewInput"){
       ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
       ; Gui, 1:Hide
+      FastModeLabel(false)
       FastModeExtLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
