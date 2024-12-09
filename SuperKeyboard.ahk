@@ -54,6 +54,8 @@ global SMALL_MODE := false
 global WASD := false
 global FAST_MODE:=false
 global EXT_DRAGGING_MODE:=false
+global EXT_DRAGGING_APPS := ["Fusion 360", "SOLIDWORKS"]
+global EXT_DRAGGING_HINT := true
 
 ; Drag takes care of this now
 ;global MAX_VELOCITY := 72
@@ -321,6 +323,18 @@ MoveCursor() {
     }
   }
 
+  if(WinActiveInTitles(EXT_DRAGGING_APPS)){
+      if(EXT_DRAGGING_HINT){
+        EXT_DRAGGING_HINT:=false
+        ToggleExtDraggingMode(true)
+      }
+  }else{
+      if(NORMAL_MODE_HINT){
+        NORMAL_MODE_HINT := false
+        ToggleExtDraggingMode(false)
+      }
+  }
+
   LEFT := 0
   DOWN := 0
   UP := 0
@@ -512,6 +526,15 @@ ToggleChromeVimMode(){
   }
 }
 
+ToggleExtDraggingMode(open:=false){
+  EXT_DRAGGING_MODE := open
+  if(EXT_DRAGGING_MODE){
+    ShowModePopup("EXT DRAG ON")
+  }else{
+    ShowModePopup("EXT DRAG OFF")
+  }
+
+}
 SetMouseSpeedMode(speedMode){
   if(speedMode == 1){
     SetForce(7)
@@ -1860,7 +1883,7 @@ FastModeExtHints(){
   r:: ReleaseAllDrag()
   t:: ReleaseAllDrag()
   y:: ReleaseAllDrag()
-#IF (CTRL_DRAGGING && WASD)
+#IF (CTRL_DRAGGING)
   ^LButton:: ReleaseAllDrag()
   ^MButton:: ReleaseAllDrag()
   ^RButton:: ReleaseAllDrag()
