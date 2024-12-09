@@ -85,6 +85,8 @@ global CHROME_VIM_MODE_HINT := true
 global NORMAL_MODE_HINT := true
 global OLD_WASD := false
 
+global CHROME_VIM_MODE_BROSWERS := ["Edge", "Google Chrome", "Firefox"]
+
 global IS_EDIT := false
 global THEME_DARK := true
 
@@ -112,6 +114,7 @@ global Mon3Top:=0
 
 global lastScreenNum:=1
 global screenNum:=1
+
 
 ; 这里加个判断，检测一下初始化是否成功，失败就弹窗告知，并退出程序。
 ; If !pToken := Gdip_Startup()
@@ -214,6 +217,28 @@ GetCurrentScreenInfo(){
     }
 }
 
+WinActiveInTitle(title){
+  WinGetActiveTitle, activeTitle   
+  ; 检查窗口标题是否包含 title  
+  if(InStr(activeTitle, title)){
+    return true
+  }else{
+    return false
+  }
+}
+
+WinActiveInTitles(titles){
+  for i,title in titles{
+    WinGetActiveTitle, activeTitle   
+    ; 检查窗口标题是否包含 title  
+    if(InStr(activeTitle, title)){
+      return true
+    } 
+  }
+
+  return false
+}
+
 Accelerate(velocity, pos, neg) {
   If (pos == 0 && neg == 0) {
     Return 0
@@ -256,7 +281,7 @@ MoveCursor() {
 
   if(CHROME_VIM_MODE){
     ; chrome enter vim mode
-    if(WinActive("ahk_class Chrome_WidgetWin_1")){
+    if(WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)){
       if(CHROME_VIM_MODE_HINT){
         ShowModePopup("CHROME VIM")
         CHROME_VIM_MODE_HINT := false
@@ -336,13 +361,11 @@ EnterNormalMode(quick:=false, force:=false) {
   NORMAL_QUICK := quick
 
   if(force == false){
-    WinGetActiveTitle, activeTitle   
     ; 检查窗口标题是否包含 "uTools"  
-    if(InStr(activeTitle, "uTools")){
+    if(WinActiveInTitle("uTools")){
       ;; 二次检测若关闭则进入normal模式
       Sleep 100
-      WinGetActiveTitle, activeTitle   
-      if(InStr(activeTitle, "uTools") ){
+      if(WinActiveInTitle("uTools") ){
         return
       }
     }
@@ -350,7 +373,7 @@ EnterNormalMode(quick:=false, force:=false) {
 
   CHROME_VIM_MODE_HINT := true
   msg := "NORMAL"
-  If (WASD == false || (CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))) {
+  If (WASD == false || (CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))) {
     msg := msg . " (VIM)"
   }
   If (quick) {
@@ -371,7 +394,7 @@ EnterNormalMode(quick:=false, force:=false) {
 
 EnterWASDMode(quick:=false) {
   CHROME_VIM_MODE_HINT := true
-  If(CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1")){
+  If(CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)){
     ExitWASDMode()
     return
   }
@@ -436,16 +459,17 @@ EnterFastMode(mode:=true){
     MouseGetPos, , , windowUnderMouse  ; 获取鼠标位置和窗口句柄  
     if(windowUnderMouse)
     {  
-      WinGetClass, className, ahk_id %windowUnderMouse%  ; 获取窗口类名  
+      WinGetTitle, winTitle, ahk_id %windowUnderMouse%  ; 获取窗口类名  
       ; ToolTip, 鼠标下方窗口类: %className%  ; 显示窗口类名  
+      ; ToolTip, title: %winTitle%  ; 显示窗口类名  
       ; WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
       if(mode){
-        if(CHROME_VIM_MODE && className == "Chrome_WidgetWin_1"){
+        if(CHROME_VIM_MODE && (InStr(winTitle, "Google Chrome") || InStr(winTitle, "Edge") || InStr(winTitle, "Firefox"))){
             if(CHROME_VIM_MODE_AUTO_ACTIVATE){
               WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
               EnterInsertMode(true)
               Send {f}
-            }else if(WinActive("ahk_class Chrome_WidgetWin_1")){
+            }else if(WinActiveInTitles(["Edge", "Google Chrome", "Firefox"])){
               EnterInsertMode(true)
               Send {f}
             }else{
@@ -731,7 +755,7 @@ DialogBtnLeft(){
   WinGetPos,wx,wy,width,height,A
   centerx := wx + width//2
   centery := wy + height//2
-  MouseMove, wx+width-DPI_v(68+96*2), wy+height - DPI_v(40)
+  MouseMove, wx+width-DPI_v(68+96*2), wy+height - DPI_v(32)
   ;MsgBox, Hello %width% %center%
 }
 
@@ -743,7 +767,7 @@ DialogBtnCenter(){
   WinGetPos,wx,wy,width,height,A
   centerx := wx + width//2
   centery := wy + height//2
-  MouseMove, wx+width-DPI_v(68+96), wy+height - DPI_v(40)
+  MouseMove, wx+width-DPI_v(68+96), wy+height - DPI_v(32)
 }
 DialogBtnRight(){
   wx := 0
@@ -753,7 +777,7 @@ DialogBtnRight(){
   WinGetPos,wx,wy,width,height,A
   centerx := wx + width//2
   centery := wy + height//2
-  MouseMove, wx+width-DPI_v(68), wy+height - DPI_v(40)
+  MouseMove, wx+width-DPI_v(68), wy+height - DPI_v(32)
 }
 
 Resize(){
@@ -1095,7 +1119,7 @@ FastModeLabel(show:=true){
     Gui, destroy
     Gui Color, 888888
     Gui -caption +toolwindow +AlwaysOnTop
-    Gui font,% "s" FAST_MODE_FONT_SIZE, Microsoft Yahei
+    Gui font,% "s" FAST_MODE_FONT_SIZE, Microsoft YaHei
     ; if(THEME_DARK){
     ;   FAST_MODE_FONT_COLOR := "Red"
     ; }else{
@@ -1418,7 +1442,7 @@ FastModeHints(){
   g:: gg()
   +g::Send {End}
 ; No shift requirements in normal quick mode
-#If (NORMAL_MODE && WASD == false && WinActive("ahk_class Chrome_WidgetWin_1") == false)
+#If (NORMAL_MODE && WASD == false && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS) == false)
   ;; avoid accidental touch
   q:: Return
   w:: Return
@@ -1454,7 +1478,7 @@ FastModeHints(){
 
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
   !i:: DoubleClick()
-#If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActive("ahk_class Chrome_WidgetWin_1") || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
+#If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActiveInTitles(CHROME_VIM_MODE_BROSWERS) || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
   x:: Send ^{w}
   +e:: Send ^+{Tab}''''
   +r:: Send ^{Tab}
@@ -1467,18 +1491,21 @@ FastModeHints(){
   ^t:: Send ^+{t}
 #If ((WinActive("ahk_class ahk_class Notepad++")))
   ^t:: Send ^{n}
-#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1")==false)
+#If (NORMAL_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)==false)
   x:: RightDrag()
-#If (NORMAL_MODE && CHROME_VIM_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+#If (NORMAL_MODE && CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))
   ; ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
   ~g:: EnterInsertMode(true)
   ~^t:: EnterInsertMode(true)
   r:: F5
-#If (NORMAL_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+#If (NORMAL_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))
   !x:: Send ^{w}
-#If (INSERT_MODE && WinActive("ahk_class Chrome_WidgetWin_1"))
+#If (INSERT_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))
   !x:: Send ^{w}
+#If (NORMAL_MODE && WASD == false && WinActiveInTitle("CrossCore Embedded Studio"))
+  +E::Send ^{PgUp}
+  +R::Send ^{PgDn}
 #If (FAST_MODE)
   ; f:: FastModeHints()
 #If (INSERT_MODE)
