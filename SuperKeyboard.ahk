@@ -77,7 +77,11 @@ global FAST_MODE_Y :=6
 global FAST_MODE_FONT_SIZE :=48
 ; global FAST_MODE_FONT_COLOR :="01AFFD"
 global FAST_MODE_FONT_COLOR :="Red"
-global FAST_MODE_FINE_TUNE := true
+global FAST_MODE_EXT := true
+global FAST_MODE_EXT_X := 5
+global FAST_MODE_EXT_Y := 5
+global FAST_MODE_EXT_FONT_SIZE :=16
+global FAST_MODE_EXT_FONT_COLOR :="Red"
 
 global CHROME_VIM_MODE :=true
 ;; auto acrivate chrome core when it's under mouse
@@ -452,13 +456,15 @@ EnterNumpadMode(quick:=false) {
   FAST_MODE := false
 }
 
-EnterFastMode(mode:=true){
+EnterFastMode(mode:=true, ext:=false){
   ; msg := "FAST"
   ; ShowModePopup(msg)
-
+  
   If (FAST_MODE) {
     Return
   }
+
+  FAST_MODE_EXT:=ext
 
   FAST_MODE := true
   NORMAL_MODE := false
@@ -1101,8 +1107,8 @@ SwitchSmallMode(){
 ; GuiHwnd := WinExist() ; capture window handle
 ; Gui, 1:Hide
 
-global hDc:=0
-global hCurrPen:=0
+; global hDc:=0
+; global hCurrPen:=0
 global fastModeCache := false
 global alphaTable:=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"]
 
@@ -1123,6 +1129,8 @@ FastModeLabel(show:=true){
     if(fastModeCache == true){
       Gui Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
       WinSet TransColor, 888888, TRANS-WIN
+      Gui,3: Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
+        WinSet TransColor, 777777, TRANS-WIN
       return
     }
 
@@ -1130,6 +1138,11 @@ FastModeLabel(show:=true){
     Gui Color, 888888
     Gui -caption +toolwindow +AlwaysOnTop
     Gui font,% "s" FAST_MODE_FONT_SIZE, Microsoft YaHei
+
+    Gui, 3:destroy
+    Gui, 3:Color, 777777
+    Gui, 3:-caption +toolwindow +AlwaysOnTop
+    Gui, 3:font,% "s" FAST_MODE_EXT_FONT_SIZE, Microsoft YaHei
     ; if(THEME_DARK){
     ;   FAST_MODE_FONT_COLOR := "Red"
     ; }else{
@@ -1155,24 +1168,104 @@ FastModeLabel(show:=true){
     ly:=FAST_MODE_Y-1
     lx:=FAST_MODE_X-1
     Loop, %ly%{
-      gui, add, text, % "x0" " y" MonitorHeightDPI/FAST_MODE_Y*i " w" MonitorWidthDPI " 0x10"  ;Horizontal Line > Etched Gray
+      gui, 3: add, text, % "x0" " y" MonitorHeightDPI/FAST_MODE_Y*i " w" MonitorWidthDPI " 0x10"  ;Horizontal Line > Etched Gray
       i+=1
     }
 
     j:=1
     Loop, %lx%{
-      gui, add, text, % "x" MonitorWidthDPI/FAST_MODE_X*j " y0" " h" MonitorHeightDPI " 0x11"  ;Horizontal Line >% Etched Gray
+      gui, 3:add, text, % "x" MonitorWidthDPI/FAST_MODE_X*j " y0" " h" MonitorHeightDPI " 0x11"  ;Horizontal Line >% Etched Gray
       j+=1
     }
 
     Gui Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
+    WinSet TransColor, 888888, TRANS-WIN
+
+    Gui,3: Show, % "x" MonitorLeft " y" MonitorTop " w"MonitorWidthDPI " h"MonitorHeightDPI, TRANS-WIN
+    WinSet TransColor, 777777, TRANS-WIN
 
     fastModeCache := true
-    WinSet TransColor, 888888, TRANS-WIN
   }else{
     Gui Hide
+    Gui,3: Hide
   }
 }
+
+HideFastModeJustLabel(){
+    Gui Hide
+}
+
+global fstModeExtCache:=false
+
+FastModeExtLabel(show:=true, row:=0, col:=0){
+  ClosePopup()
+  if(show){
+    MonitorWidthDPI:=MonitorWidth/DPI_Ratio
+    MonitorHeightDPI:=MonitorHeight/DPI_Ratio
+    FastModeWidth:= MonitorWidth/FAST_MODE_X
+    FastModeHeight:= MonitorHeight/FAST_MODE_Y
+    FastModeWidthDPI:= MonitorWidth/FAST_MODE_X/DPI_Ratio
+    FastModeHeightDPI:= MonitorHeight/FAST_MODE_Y/DPI_Ratio
+
+    ; add cache to show quickly
+    if(fastModeExtCache == true){
+      Gui,2: Show, % "x" MonitorWidth/FAST_MODE_X*col " y" MonitorHeight/FAST_MODE_Y*row " w"FastModeWidthDPI " h"FastModeHeightDPI, TRANS-WIN
+      WinSet TransColor, 888888, TRANS-WIN
+      return
+    }
+
+    Gui, 2:destroy
+    Gui, 2:Color, 888888
+    Gui, 2:-caption +toolwindow +AlwaysOnTop
+    Gui, 2:font,% "s" FAST_MODE_EXT_FONT_SIZE, Microsoft YaHei
+    ; if(THEME_DARK){
+    ;   FAST_MODE_FONT_COLOR := "Red"
+    ; }else{
+    ;   FAST_MODE_FONT_COLOR := "Red"
+    ; }
+
+    i:=0
+    Loop,%FAST_MODE_EXT_Y%{
+      j:=0
+      Loop, %FAST_MODE_EXT_X%{
+        k:=i*FAST_MODE_EXT_X+j
+        alpha2 :=alphaTable[Mod(k,26)+1]
+        label:= alpha2
+        
+        x:=FastModeWidthDPI/FAST_MODE_EXT_X*j+1
+        y:=FastModeHeightDPI/FAST_MODE_EXT_Y*i+1
+        Gui,2: add, text,% "c" FAST_MODE_EXT_FONT_COLOR  " TransColor White " "X"x  " Y"y " W"FastModeWidthDPI/FAST_MODE_EXT_X-2 " H"FastModeHeightDPI/FAST_MODE_EXT_Y-2, %label% 
+        j+=1
+      }
+      i+=1
+    }
+
+
+    i:=0
+    ly:=FAST_MODE_EXT_Y+1
+    lx:=FAST_MODE_EXT_X+1
+    Loop, %ly%{
+      gui,2: add, text, % "x0" " y" FastModeHeightDPI/FAST_MODE_EXT_Y*i " w" FastModeWidthDPI+2 " 0x10"  ;Horizontal Line > Etched Gray
+      i+=1
+    }
+
+    j:=0
+    Loop, %lx%{
+      gui,2: add, text, % "x" FastModeWidthDPI/FAST_MODE_EXT_X*j " y0" " h" FastModeHeightDPI+2 " 0x11"  ;Horizontal Line >% Etched Gray
+      j+=1
+    }
+
+    Gui,2:Show, % "x" FastModeWidth*col " y" FastModeHeight*row " w"FastModeWidthDPI+2 " h"FastModeHeightDPI+2, TRANS-WIN
+    WinSet TransColor, 888888, TRANS-WIN
+
+    fastModeExtCache := true
+  }else{
+    Gui,2: Hide
+  }
+}
+
+global fastModeRow:=0
+global fastModeCol:=0
 FastModeHints(){
     SetTimer FastModeLabel, -1
     matches:=""
@@ -1236,14 +1329,34 @@ FastModeHints(){
           alpha1 :=alphaTable[k//26+1]
           alpha2 :=alphaTable[Mod(k, 26)+1]
           label:= alpha1 alpha2
-          if (UserInput = label)
+          if (UserInput == label)
           {
               MouseMove, MonitorLeft+MonitorWidth/(FAST_MODE_X*2)*(j*2+1), MonitorTop+MonitorHeight/(FAST_MODE_Y*2)*(i*2+1)
+              fastModeRow:=i
+              fastModeCol:=j
+              break
           }
           j+=1
         }
         i+=1
       }
+
+      if(FAST_MODE_EXT){
+        HideFastModeJustLabel()
+        FastModeExtHints()
+      }else{
+        FastModeLabel(false)
+        if(NORMAL_QUICK == false){
+          EnterNormalMode()
+        }else{
+          EnterInsertMode()
+        }
+      }
+      return
+    }
+    if (ErrorLevel = "NewInput"){
+      ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+      ; Gui, 1:Hide
       FastModeLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
@@ -1252,10 +1365,103 @@ FastModeHints(){
       }
       return
     }
+}
+
+FastModeExtLabelTimer(){
+  FastModeExtLabel(true, fastModeRow, fastModeCol)
+}
+
+FastModeExtHints(){
+    SetTimer FastModeExtLabelTimer, -1
+
+    FastModeWidth:= MonitorWidth/FAST_MODE_X
+    FastModeHeight:= MonitorHeight/FAST_MODE_Y
+    FastModeWidthDPI:= MonitorWidth/FAST_MODE_X/DPI_Ratio
+    FastModeHeightDPI:= MonitorHeight/FAST_MODE_Y/DPI_Ratio
+
+    matches:=""
+    i:=0
+    Loop,%FAST_MODE_EXT_Y%{
+      j:=0
+      Loop, %FAST_MODE_EXT_X%{
+        k:=i*FAST_MODE_EXT_X+j
+        ; alpha1 :=alphaTable[k//26+1]
+        alpha2 :=alphaTable[Mod(k, 26)+1]
+        label:= alpha2
+        matches:=matches label ","
+        j+=1
+      }
+      i+=1
+    }
+    matches:=SubStr(matches, 1, StrLen(matches)-1)
+    Input, UserInput, B L1, {esc}.{enter}, %matches%
+
+    if (ErrorLevel = "Max")
+    {
+        ; MsgBox, You entered "%UserInput%", which is the maximum length of text.
+        ; Gui, 1:Hide
+        FastModeExtLabel(false)
+        if(NORMAL_QUICK == false){
+          EnterNormalMode()
+        }else{
+          EnterInsertMode()
+        }
+        return
+    }
+    ; if (ErrorLevel = "Timeout")
+    ; {
+    ;     ; MsgBox, You entered "%UserInput%" at which time the input timed out.
+    ;     ; Gui, 1:Hide
+    ;     FastModeLabel(false)
+    ;     EnterNormalMode()
+    ;     return
+    ; }
+
+    If InStr(ErrorLevel, "EndKey:")
+    {
+        ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
+        ; Gui, 1:Hide
+        FastModeExtLabel(false)
+        if(NORMAL_QUICK == false){
+          EnterNormalMode()
+        }else{
+          EnterInsertMode()
+        }
+        return
+    }
+    if (ErrorLevel = "Match")
+    {
+      i:=0
+      Loop,%FAST_MODE_EXT_Y%{
+        j:=0
+        Loop, %FAST_MODE_EXT_X%{
+          k:=i*FAST_MODE_EXT_X+j
+          alpha2 :=alphaTable[Mod(k, 26)+1]
+          label:= alpha2
+          if (UserInput == label)
+          {
+              MouseMove, MonitorLeft+FastModeWidth*fastModeCol+FastModeWidth/(FAST_MODE_EXT_X*2)*(j*2+1), MonitorTop+FastModeHeight*fastModeRow+FastModeHeight/(FAST_MODE_EXT_Y*2)*(i*2+1)
+              break
+          }
+          j+=1
+        }
+        i+=1
+      }
+
+      FastModeLabel(false)
+      FastModeExtLabel(false)
+      if(NORMAL_QUICK == false){
+        EnterNormalMode()
+      }else{
+        EnterInsertMode()
+      }
+      return
+    }
+
     if (ErrorLevel = "NewInput"){
       ; MsgBox, You entered "%UserInput%" and terminated the input with %ErrorLevel%.
       ; Gui, 1:Hide
-      FastModeLabel(false)
+      FastModeExtLabel(false)
       if(NORMAL_QUICK == false){
         EnterNormalMode()
       }else{
@@ -1354,7 +1560,7 @@ FastModeHints(){
   ; passthru to common "search" hotkey
   ~^f:: EnterInsertMode(true)
   f:: EnterFastMode(true)
-  +F:: EnterFastMode(false)
+  +F:: EnterFastMode(false, true)
   ; passthru for new tab
  ; ~^t:: EnterInsertMode(true)
   ; passthru for quick edits
