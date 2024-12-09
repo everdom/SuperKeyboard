@@ -77,6 +77,7 @@ global FAST_MODE_Y :=6
 global FAST_MODE_FONT_SIZE :=48
 ; global FAST_MODE_FONT_COLOR :="01AFFD"
 global FAST_MODE_FONT_COLOR :="Red"
+global FAST_MODE_FINE_TUNE := true
 
 global CHROME_VIM_MODE :=true
 ;; auto acrivate chrome core when it's under mouse
@@ -215,6 +216,15 @@ GetCurrentScreenInfo(){
       ; MonitorHeight:=Monitor4Bottom-Monitor4Top
       screenNum:=4
     }
+}
+
+InStrs(s, strings){
+  for i,str in strings{
+    if(InStr(s, str)){
+      return true
+    }
+  }
+  return false
 }
 
 WinActiveInTitle(title){
@@ -464,12 +474,12 @@ EnterFastMode(mode:=true){
       ; ToolTip, title: %winTitle%  ; 显示窗口类名  
       ; WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
       if(mode){
-        if(CHROME_VIM_MODE && (InStr(winTitle, "Google Chrome") || InStr(winTitle, "Edge") || InStr(winTitle, "Firefox"))){
+        if(CHROME_VIM_MODE && (InStrs(winTitle, CHROME_VIM_MODE_BROSWERS))){
             if(CHROME_VIM_MODE_AUTO_ACTIVATE){
               WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
               EnterInsertMode(true)
               Send {f}
-            }else if(WinActiveInTitles(["Edge", "Google Chrome", "Firefox"])){
+            }else if(WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)){
               EnterInsertMode(true)
               Send {f}
             }else{
