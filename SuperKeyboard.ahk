@@ -54,7 +54,7 @@ global SMALL_MODE := false
 global WASD := false
 global FAST_MODE:=false
 global EXT_DRAGGING_MODE:=false
-global EXT_DRAGGING_APPS := ["Autodesk Fusion", "SOLIDWORKS"]
+global EXT_DRAGGING_APPS := ["Autodesk Fusion", "SOLIDWORKS", "Autodesk Inventor", "FreeCAD", "Creo", "NX"]
 global EXT_DRAGGING_HINT := true
 
 ; Drag takes care of this now
