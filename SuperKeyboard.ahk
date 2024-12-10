@@ -1794,18 +1794,18 @@ FastModeExtHints(){
   !Enter::Send {Enter}
 
   ; small keyboard layout
-  !1::Send {f1}
-  !2::Send {f2}
-  !3::Send {f3} 
-  !4::Send {f4}
-  !5::Send {f5}
-  !6::Send {f6}
-  !7::Send {f7}
-  !8::Send {f8}
-  !9::Send {f9}
-  !0::Send {f10}
-  !-::Send {f11}
-  !=::Send {f12}
+  >!1::Send {f1}
+  >!2::Send {f2}
+  >!3::Send {f3} 
+  >!4::Send {f4}
+  >!5::Send {f5}
+  >!6::Send {f6}
+  >!7::Send {f7}
+  >!8::Send {f8}
+  >!9::Send {f9}
+  >!0::Send {f10}
+  >!-::Send {f11}
+  >!=::Send {f12}
   `:: Esc
   ^`::Send {``}
   +`::~
