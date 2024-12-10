@@ -95,12 +95,17 @@ very normal at all)
 - `-` volume down
 - `0` volume off
 - `^hjkl` press arrow direction key
-- `f,F` fast mode(press the keys on the screen to move the mouse to the specified area)
+- `f` fast mode(press the keys on the screen to move the mouse to the specified area)
+- `F` fast mode extend mode(extend fast mode, type twice to move to a more precise location)
 - `Capslock/i` insert quick mode 
 
 ### Fast mode
 This mode show a alpha table in the screen when opening, you can type the corresponding key to move the mouse to the specified area, so you can
-move mouse quickly to the specific district you want in the screen,  you can also type `Esc`, `.`, `Enter` to cancel it. it's cool, enjoy it!
+move mouse quickly to the specific district you want in the screen,  you can also type `Esc`, `.`, `Enter` to cancel it. 
+
+There are two modes, the first Express mode, which is activated by pressing the f key in Normal mode, and the second Extended mode, which is activated by pressing the F key in Normal mode. Extended mode adds a level of tab tables to the quick mode to move more precisely to specified locations on the screen
+
+It's a exactly cool way to move mouse, just enjoy it!
 
 ### Normal Ext dragging mode
 This mode is used for some 3D modeling software just like fusion360, it is disabled by default, you need to enable it manally
