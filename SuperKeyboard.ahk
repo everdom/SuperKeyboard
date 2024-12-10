@@ -353,7 +353,11 @@ MoveCursor() {
       ToggleExtDraggingMode(true)
       ShowModePopup("EXT DRAG ON")
     }else{
-      ToggleExtDraggingMode(false)
+      if(NORMAL_MODE_HINT){
+        NORMAL_MODE_HINT:=false
+        ToggleExtDraggingMode(false)
+        ; ShowModePopup("EXT DRAG OFF")
+      }
     }
   }
   
