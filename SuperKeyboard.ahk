@@ -330,12 +330,6 @@ MoveCursor() {
         OLD_WASD := WASD
       }
       WASD := false
-    }else if(WinActiveInTitles(EXT_DRAGGING_APPS)){
-        if(EXT_DRAGGING_HINT){
-          EXT_DRAGGING_HINT:=false
-          ToggleExtDraggingMode(true)
-          ShowModePopup("EXT DRAG ON")
-        }
     }else{
       WASD := OLD_WASD
       if(NORMAL_MODE_HINT){
@@ -351,21 +345,18 @@ MoveCursor() {
         ShowModePopup(msg)
       }
     }
-  }else{
-    if(WinActiveInTitles(EXT_DRAGGING_APPS)){
-        if(EXT_DRAGGING_HINT){
-          EXT_DRAGGING_HINT:=false
-          ToggleExtDraggingMode(true)
-          ShowModePopup("EXT DRAG ON")
-        }
+  }
+
+  if(WinActiveInTitles(EXT_DRAGGING_APPS)){
+    if(EXT_DRAGGING_HINT){
+      EXT_DRAGGING_HINT:=false
+      ToggleExtDraggingMode(true)
+      ShowModePopup("EXT DRAG ON")
     }else{
-        if(NORMAL_MODE_HINT){
-          NORMAL_MODE_HINT := false
-          ToggleExtDraggingMode(false)
-          ShowModePopup("EXT DRAG OFF")
-        }
+      ToggleExtDraggingMode(false)
     }
   }
+  
 
 
   LEFT := 0
