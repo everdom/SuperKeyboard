@@ -92,7 +92,8 @@ global CHROME_VIM_MODE_HINT := true
 global NORMAL_MODE_HINT := true
 global OLD_WASD := false
 
-global CHROME_VIM_MODE_BROSWERS := ["Edge", "Google Chrome", "Firefox"]
+global CHROME_VIM_MODE_BROSWERS_TITLE := ["Edge", "Google Chrome", "Firefox"]
+global CHROME_VIM_MODE_BROSWERS_EXE := ["msedge.exe", "chrome.exe", "firefox.exe"]
 
 global IS_EDIT := false
 global THEME_DARK := true
@@ -255,6 +256,28 @@ WinActiveInTitles(titles){
   return false
 }
 
+WinActiveBrowser(){
+    ; 获取当前激活窗口的 ID  
+  WinGet, activeWindowId, ID, A  ; "A" 表示激活的窗口  
+
+  return WinIsBrowser(activeWindowId)
+}
+
+WinIsBrowser(winId){
+  WinGetTitle, winTitle, ahk_id %winId%  ; 获取窗口类名  
+  WinGet, winProcessName, ProcessName, ahk_id %winId%  ; 获取窗口类名  
+
+  for i,title in CHROME_VIM_MODE_BROSWERS_TITLE{
+    ; 检查窗口标题是否包含 title  
+    exe:= CHROME_VIM_MODE_BROSWERS_EXE[i]
+
+    if(InStr(winTitle, title) || winProcessName == exe){
+      return true
+    } 
+  }
+  return false
+}
+
 Accelerate(velocity, pos, neg) {
   If (pos == 0 && neg == 0) {
     Return 0
@@ -297,7 +320,7 @@ MoveCursor() {
 
   if(CHROME_VIM_MODE){
     ; chrome enter vim mode
-    if(WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)){
+    if(WinActiveBrowser()){
       if(CHROME_VIM_MODE_HINT){
         ShowModePopup("CHROME VIM")
         CHROME_VIM_MODE_HINT := false
@@ -412,7 +435,7 @@ EnterNormalMode(quick:=false, force:=false) {
   CHROME_VIM_MODE_HINT := true
   EXT_DRAGGING_HINT :=true
   msg := "NORMAL"
-  If (WASD == false || (CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))) {
+  If (WASD == false || (CHROME_VIM_MODE && WinActiveBrowser())) {
     msg := msg . " (VIM)"
   }
   If (quick) {
@@ -433,7 +456,7 @@ EnterNormalMode(quick:=false, force:=false) {
 
 EnterWASDMode(quick:=false) {
   CHROME_VIM_MODE_HINT := true
-  If(CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)){
+  If(CHROME_VIM_MODE && WinActiveBrowser()){
     ExitWASDMode()
     return
   }
@@ -500,17 +523,17 @@ EnterFastMode(mode:=true, ext:=false){
     MouseGetPos, , , windowUnderMouse  ; 获取鼠标位置和窗口句柄  
     if(windowUnderMouse)
     {  
-      WinGetTitle, winTitle, ahk_id %windowUnderMouse%  ; 获取窗口类名  
+      ; WinGetTitle, winTitle, ahk_id %windowUnderMouse%  ; 获取窗口类名  
       ; ToolTip, 鼠标下方窗口类: %className%  ; 显示窗口类名  
       ; ToolTip, title: %winTitle%  ; 显示窗口类名  
       ; WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
       if(mode){
-        if(CHROME_VIM_MODE && (InStrs(winTitle, CHROME_VIM_MODE_BROSWERS))){
+        if(CHROME_VIM_MODE && WinIsBrowser(windowUnderMouse)){
             if(CHROME_VIM_MODE_AUTO_ACTIVATE){
               WinActivate, ahk_id %windowUnderMouse%  ; 激活鼠标下方的窗口  
               EnterInsertMode(true)
               Send {f}
-            }else if(WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)){
+            }else if(WinActiveBrowser()){
               EnterInsertMode(true)
               Send {f}
             }else{
@@ -1690,7 +1713,7 @@ FastModeExtHints(){
   g:: gg()
   +g::Send {End}
 ; No shift requirements in normal quick mode
-#If (NORMAL_MODE && WASD == false && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS) == false)
+#If (NORMAL_MODE && WASD == false && WinActiveBrowser() == false)
   ;; avoid accidental touch
   q:: Return
   w:: Return
@@ -1726,7 +1749,7 @@ FastModeExtHints(){
 
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
   !i:: DoubleClick()
-#If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActiveInTitles(CHROME_VIM_MODE_BROSWERS) || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
+#If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActiveBrowser() || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
   x:: Send ^{w}
   +e:: Send ^+{Tab}''''
   +r:: Send ^{Tab}
@@ -1739,17 +1762,17 @@ FastModeExtHints(){
   ^t:: Send ^+{t}
 #If ((WinActive("ahk_class ahk_class Notepad++")))
   ^t:: Send ^{n}
-#If (NORMAL_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS)==false)
+#If (NORMAL_MODE && WinActiveBrowser()==false)
   x:: RightDrag()
-#If (NORMAL_MODE && CHROME_VIM_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))
+#If (NORMAL_MODE && CHROME_VIM_MODE && WinActiveBrowser())
   ; ~f:: EnterInsertMode(true)
   ~t:: EnterInsertMode(true)
   ~g:: EnterInsertMode(true)
   ~^t:: EnterInsertMode(true)
   r:: F5
-#If (NORMAL_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))
+#If (NORMAL_MODE && WinActiveBrowser())
   !x:: Send ^{w}
-#If (INSERT_MODE && WinActiveInTitles(CHROME_VIM_MODE_BROSWERS))
+#If (INSERT_MODE && WinActiveBrowser())
   !x:: Send ^{w}
 #If (NORMAL_MODE && WASD == false && WinActiveInTitle("CrossCore Embedded Studio"))
   +E::Send ^{PgUp}
