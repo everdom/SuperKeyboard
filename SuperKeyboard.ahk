@@ -256,6 +256,17 @@ WinActiveInTitles(titles){
   return false
 }
 
+WinActiveInClasses(classNames){
+  for i,className in classNames{
+    ; 检查窗口标题是否包含 title  
+    if(WinActive("ahk_class " + className)){
+      return true
+    } 
+  }
+
+  return false
+}
+
 WinActiveBrowser(){
     ; 获取当前激活窗口的 ID  
   WinGet, activeWindowId, ID, A  ; "A" 表示激活的窗口  
@@ -1744,18 +1755,14 @@ FastModeExtHints(){
 
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
   !i:: DoubleClick()
-#If (NORMAL_MODE && (WinActive("ahk_class CabinetWClass") || WinActiveBrowser() || WinActive("ahk_class Notepad") || WinActive("ahk_class Notepad++")))
+#If (NORMAL_MODE && (WinActiveInClasses(["CabinetWClass", "Notepad", "Notepad++", "classFoxitReader", "CASCADIA_HOSTING_WINDOW_CLASS"]) || WinActiveBrowser()))
   x:: Send ^{w}
-  +e:: Send ^+{Tab}''''
-  +r:: Send ^{Tab}
-; windows terminal
-#If (NORMAL_MODE && (WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS"))) ;;; windows terminal
-  x:: Send ^+{w}
   +e:: Send ^+{Tab}
   +r:: Send ^{Tab}
+; windows terminal
 #If ((WinActive("ahk_class CASCADIA_HOSTING_WINDOW_CLASS")))
   ^t:: Send ^+{t}
-#If ((WinActive("ahk_class ahk_class Notepad++")))
+#If ((WinActive("ahk_class Notepad++")))
   ^t:: Send ^{n}
 #If (NORMAL_MODE && WinActiveBrowser()==false)
   x:: RightDrag()
