@@ -1755,7 +1755,7 @@ FastModeExtHints(){
 
 #If (NORMAL_MODE && WinActive("ahk_class CabinetWClass")==false)
   !i:: DoubleClick()
-#If (NORMAL_MODE && (WinActiveInClasses(["CabinetWClass", "Notepad", "Notepad++", "classFoxitReader", "CASCADIA_HOSTING_WINDOW_CLASS"]) || WinActiveBrowser()))
+#If (NORMAL_MODE && WASD == false && (WinActiveInClasses(["CabinetWClass", "Notepad", "Notepad++", "classFoxitReader", "CASCADIA_HOSTING_WINDOW_CLASS"]) || WinActiveBrowser()))
   x:: Send ^{w}
   +e:: Send ^+{Tab}
   +r:: Send ^{Tab}
@@ -1764,6 +1764,14 @@ FastModeExtHints(){
   ^t:: Send ^+{t}
 #If ((WinActive("ahk_class Notepad++")))
   ^t:: Send ^{n}
+#If (NORMAL_MODE && WASD == false && WinActiveInTitles(["CrossCore Embedded Studio", "Xtensa Xplorer", "S32 Design Studio for ARM", "Eclipse"]))
+  x:: Send ^{w}
+  +E::Send ^{PgUp}
+  +R::Send ^{PgDn}
+#If (NORMAL_MODE && WASD == false && WinActiveInTitle("Visual Studio Code"))
+  x:: Send ^{F4}
+  +E::Send ^{PgUp}
+  +R::Send ^{PgDn}
 #If (NORMAL_MODE && WinActiveBrowser()==false)
   x:: RightDrag()
 #If (NORMAL_MODE && CHROME_VIM_MODE && WinActiveBrowser())
@@ -1776,9 +1784,6 @@ FastModeExtHints(){
   !x:: Send ^{w}
 #If (INSERT_MODE && WinActiveBrowser())
   !x:: Send ^{w}
-#If (NORMAL_MODE && WASD == false && WinActiveInTitle("CrossCore Embedded Studio"))
-  +E::Send ^{PgUp}
-  +R::Send ^{PgDn}
 #If (FAST_MODE)
   ; f:: FastModeHints()
 #If (INSERT_MODE)
