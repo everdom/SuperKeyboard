@@ -570,14 +570,22 @@ ToggleExtDraggingMode(open:=false){
   EXT_DRAGGING_MODE := open
 
 }
-SetMouseSpeedMode(speedMode){
-  if(speedMode == 1){
+
+global speedMode :=1
+SetMouseSpeedMode(mode){
+  speedMode := mode
+  if(mode == 1){
     SetForce(7)
-  } else if(speedMode == 2){
+  } else if(mode == 2){
     SetForce(20)
-  } else if(speedMode == 0){
+  } else if(mode == 0){
     SetForce(2)
   }
+}
+
+SwitchMouseSpeedMode(){
+  speedMode :=   mod(3+speedMode - 1,  3)
+  SetMouseSpeedMode(speedMode)
 }
 
 ClickInsert(quick:=true) {
@@ -1697,6 +1705,7 @@ FastModeExtHints(){
   !=:: SetMouseSpeedMode(2)
   !-:: SetMouseSpeedMode(0)
   !0:: SetMouseSpeedMode(1)
+  Tab:: SwitchMouseSpeedMode()
   ,:: Min()
   .:: Max()
   /:: Close()
