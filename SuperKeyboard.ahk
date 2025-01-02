@@ -1695,7 +1695,7 @@ FastModeExtHints(){
   ":: ScrollUpMore()
   =:: Send {Volume_Up}
   -:: Send {Volume_Down}
-  0:: Send {Volume_Mute}
+  ; 0:: Send {Volume_Mute}
   f12:: SetForce(+1, 1)
   f11:: SetForce(-1, 1)
   f10:: SetForce(7, 0)
